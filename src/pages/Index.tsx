@@ -35,7 +35,7 @@ const Index = () => {
           </h1>
           
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            From finding your niche to tracking your growth. The all-in-one platform that guides aspiring creators to success.
+            Your personal Coach | Trainer | Producer to help finding your niche to tracking your growth. The all-in-one platform that guides aspiring creators to success.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
