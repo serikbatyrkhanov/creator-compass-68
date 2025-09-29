@@ -113,7 +113,7 @@ const Auth = () => {
           <Link to="/" className="inline-flex items-center gap-2 mb-4">
             <Sparkles className="h-8 w-8 text-primary" />
             <span className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-              CreatorFlow
+              Climbley
             </span>
           </Link>
           <p className="text-muted-foreground">Start your creator journey today</p>

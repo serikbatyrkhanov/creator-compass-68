@@ -10,7 +10,7 @@ const Index = () => {
         <div className="flex items-center gap-2">
           <Sparkles className="h-6 w-6 text-primary" />
           <span className="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-            CreatorFlow
+            Climbley
           </span>
         </div>
         <Link to="/auth">
@@ -28,9 +28,9 @@ const Index = () => {
           </div>
           
           <h1 className="text-5xl lg:text-7xl font-bold tracking-tight">
-            Build Your{" "}
+            Your Next Step{" "}
             <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
-              Creator Empire
+              To The Top
             </span>
           </h1>
           
@@ -120,7 +120,7 @@ const Index = () => {
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
           <div className="flex items-center gap-2">
             <Sparkles className="h-4 w-4 text-primary" />
-            <span>CreatorFlow © 2025</span>
+            <span>Climbley © 2025</span>
           </div>
           <div className="flex gap-6">
             <a href="#" className="hover:text-primary transition-colors">Privacy</a>
