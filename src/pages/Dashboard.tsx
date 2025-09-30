@@ -96,7 +96,7 @@ const Dashboard = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <Button className="w-full">Start Quiz</Button>
+                <Button className="w-full" onClick={() => navigate("/quiz")}>Start Quiz</Button>
               </CardContent>
             </Card>
 

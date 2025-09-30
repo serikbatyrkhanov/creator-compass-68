@@ -14,7 +14,48 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      quiz_responses: {
+        Row: {
+          answers: Json
+          archetype_scores: Json
+          created_at: string
+          gear: string[] | null
+          id: string
+          primary_archetype: string
+          secondary_archetype: string | null
+          selected_topics: string[] | null
+          target_audience: string | null
+          time_bucket: string | null
+          user_id: string | null
+        }
+        Insert: {
+          answers: Json
+          archetype_scores: Json
+          created_at?: string
+          gear?: string[] | null
+          id?: string
+          primary_archetype: string
+          secondary_archetype?: string | null
+          selected_topics?: string[] | null
+          target_audience?: string | null
+          time_bucket?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          answers?: Json
+          archetype_scores?: Json
+          created_at?: string
+          gear?: string[] | null
+          id?: string
+          primary_archetype?: string
+          secondary_archetype?: string | null
+          selected_topics?: string[] | null
+          target_audience?: string | null
+          time_bucket?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
