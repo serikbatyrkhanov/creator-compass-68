@@ -4,15 +4,17 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Sparkles } from "lucide-react";
+import { Sparkles, Check } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useSubscription } from "@/contexts/SubscriptionContext";
 
 const Auth = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { createCheckout } = useSubscription();
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -319,6 +321,44 @@ const Auth = () => {
               By continuing, you agree to our Terms of Service and Privacy Policy
             </p>
           </CardFooter>
+        </Card>
+
+        {/* Pricing Card */}
+        <Card className="border-2 border-primary/20 backdrop-blur-xl bg-card/80 shadow-[var(--shadow-elegant)] mt-6">
+          <CardHeader className="text-center">
+            <div className="mx-auto w-12 h-12 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center mb-3">
+              <Sparkles className="h-6 w-6 text-white" />
+            </div>
+            <CardTitle className="text-xl">Start Your 7-Day Free Trial</CardTitle>
+            <CardDescription>
+              Then just $19.99/month. Cancel anytime.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-3">
+              <div className="flex items-start gap-3">
+                <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                <span className="text-sm">Personalized niche discovery</span>
+              </div>
+              <div className="flex items-start gap-3">
+                <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                <span className="text-sm">AI-powered content planning</span>
+              </div>
+              <div className="flex items-start gap-3">
+                <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                <span className="text-sm">Advanced growth analytics</span>
+              </div>
+            </div>
+            <Button
+              onClick={createCheckout}
+              className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90 transition-opacity"
+            >
+              Start Free Trial
+            </Button>
+            <p className="text-xs text-center text-muted-foreground">
+              No credit card required for trial
+            </p>
+          </CardContent>
         </Card>
       </div>
     </div>
