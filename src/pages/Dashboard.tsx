@@ -221,6 +221,17 @@ const Dashboard = () => {
               </div>
             </CardContent>
           </Card>
+
+          {/* Contact Us Button */}
+          <div className="flex justify-center pt-4">
+            <Button 
+              variant="ghost" 
+              onClick={() => navigate("/contact")}
+              className="text-muted-foreground hover:text-foreground"
+            >
+              Contact Us
+            </Button>
+          </div>
         </div>
       </div>
     </div>
