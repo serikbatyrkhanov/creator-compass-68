@@ -3,13 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Sparkles, Calendar, TrendingUp, Target, LogOut } from "lucide-react";
+import { Sparkles, Calendar, TrendingUp, Target, LogOut, FileCheck } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [user, setUser] = useState<any>(null);
+  const [lastQuizResult, setLastQuizResult] = useState<any>(null);
 
   useEffect(() => {
     // Check if user is authenticated
@@ -20,6 +21,19 @@ const Dashboard = () => {
         return;
       }
       setUser(session.user);
+      
+      // Fetch last quiz result
+      const { data: quizData } = await supabase
+        .from("quiz_responses")
+        .select("id, primary_archetype, created_at")
+        .eq("user_id", session.user.id)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      
+      if (quizData) {
+        setLastQuizResult(quizData);
+      }
     };
 
     checkAuth();
@@ -83,8 +97,35 @@ const Dashboard = () => {
             </p>
           </div>
 
+          {/* Last Quiz Result */}
+          {lastQuizResult && (
+            <Card className="border-2 bg-gradient-to-br from-emerald-50 to-white dark:from-emerald-950/20 dark:to-background animate-fade-in">
+              <CardHeader>
+                <div className="flex items-start justify-between">
+                  <div className="h-12 w-12 rounded-lg bg-emerald-500/10 flex items-center justify-center mb-4">
+                    <FileCheck className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
+                  </div>
+                </div>
+                <CardTitle className="text-emerald-700 dark:text-emerald-300">Last Quiz Result</CardTitle>
+                <CardDescription>
+                  Your archetype: <span className="font-semibold capitalize">{lastQuizResult.primary_archetype}</span>
+                  <br />
+                  <span className="text-xs">Completed {new Date(lastQuizResult.created_at).toLocaleDateString()}</span>
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button 
+                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-white" 
+                  onClick={() => navigate(`/quiz-results/${lastQuizResult.id}`)}
+                >
+                  View Results
+                </Button>
+              </CardContent>
+            </Card>
+          )}
+
           {/* Quick Actions */}
-          <div className="grid md:grid-cols-3 gap-6 animate-slide-up">
+          <div className={`grid gap-6 animate-slide-up ${lastQuizResult ? 'md:grid-cols-3' : 'md:grid-cols-3'}`}>
             <Card className="border-2 hover:shadow-lg transition-all cursor-pointer">
               <CardHeader>
                 <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
@@ -92,11 +133,13 @@ const Dashboard = () => {
                 </div>
                 <CardTitle>Find Your Niche</CardTitle>
                 <CardDescription>
-                  Take our questionnaire to discover your perfect content niche
+                  {lastQuizResult ? 'Retake the quiz to update your niche' : 'Take our questionnaire to discover your perfect content niche'}
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <Button className="w-full" onClick={() => navigate("/quiz")}>Start Quiz</Button>
+                <Button className="w-full" onClick={() => navigate("/quiz")}>
+                  {lastQuizResult ? 'Retake Quiz' : 'Start Quiz'}
+                </Button>
               </CardContent>
             </Card>
 

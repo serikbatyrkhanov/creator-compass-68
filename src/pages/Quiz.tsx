@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,6 +16,37 @@ const Quiz = () => {
   const [answers, setAnswers] = useState<Record<string, string[]>>({});
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    // Check if user is authenticated
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast({
+          title: "Authentication required",
+          description: "Please sign in to take the quiz",
+          variant: "destructive"
+        });
+        navigate("/auth");
+        return;
+      }
+      setUser(session.user);
+    };
+
+    checkAuth();
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!session) {
+        navigate("/auth");
+      } else {
+        setUser(session.user);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [navigate, toast]);
 
   const currentQuestion = quizQuestions[currentStep];
   const progress = ((currentStep + 1) / quizQuestions.length) * 100;
@@ -112,12 +143,14 @@ const Quiz = () => {
 
     // Save to database
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      if (!user?.id) {
+        throw new Error("User not authenticated");
+      }
       
       const { data, error } = await supabase
         .from("quiz_responses")
         .insert({
-          user_id: user?.id || null,
+          user_id: user.id,
           answers,
           primary_archetype: primaryArchetype,
           secondary_archetype: secondaryArchetype,
