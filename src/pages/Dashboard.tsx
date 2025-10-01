@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Sparkles, Calendar, TrendingUp, Target, LogOut, FileCheck } from "lucide-react";
+import { MoveUp, Calendar, TrendingUp, Target, LogOut, FileCheck } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const Dashboard = () => {
@@ -67,7 +67,7 @@ const Dashboard = () => {
       <nav className="border-b bg-card/50 backdrop-blur-sm">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center gap-2">
-            <Sparkles className="h-6 w-6 text-primary" />
+            <MoveUp className="h-6 w-6 text-primary" />
             <span className="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
               Climbley
             </span>
