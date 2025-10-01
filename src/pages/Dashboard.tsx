@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calendar, TrendingUp, Target, LogOut, FileCheck } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import ladderLogo from "@/assets/ladder-logo.png";
+import ladderLogo from "@/assets/ladder-logo-transparent.png";
 
 const Dashboard = () => {
   const navigate = useNavigate();
