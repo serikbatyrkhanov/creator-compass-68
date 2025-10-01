@@ -3,8 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar, TrendingUp, Target, LogOut, FileCheck } from "lucide-react";
+import { Calendar, TrendingUp, Target, LogOut, FileCheck, Crown, RefreshCw } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useSubscription } from "@/contexts/SubscriptionContext";
 import ladderLogo from "@/assets/ladder-logo-transparent.png";
 
 const Dashboard = () => {
@@ -12,6 +13,7 @@ const Dashboard = () => {
   const { toast } = useToast();
   const [user, setUser] = useState<any>(null);
   const [lastQuizResult, setLastQuizResult] = useState<any>(null);
+  const { subscribed, trial, subscriptionEnd, loading, checkSubscription, createCheckout, openCustomerPortal } = useSubscription();
 
   useEffect(() => {
     // Check if user is authenticated
@@ -97,6 +99,53 @@ const Dashboard = () => {
               Let's continue building your creator empire
             </p>
           </div>
+
+          {/* Subscription Status */}
+          {!loading && (
+            <Card className={`border-2 animate-fade-in ${subscribed ? 'bg-gradient-to-br from-amber-50 to-white dark:from-amber-950/20 dark:to-background' : 'bg-gradient-to-br from-muted to-background'}`}>
+              <CardHeader>
+                <div className="flex items-start justify-between">
+                  <div className="h-12 w-12 rounded-lg bg-amber-500/10 flex items-center justify-center mb-4">
+                    <Crown className="h-6 w-6 text-amber-600 dark:text-amber-400" />
+                  </div>
+                  <Button variant="ghost" size="sm" onClick={checkSubscription}>
+                    <RefreshCw className="h-4 w-4" />
+                  </Button>
+                </div>
+                <CardTitle className="text-amber-700 dark:text-amber-300">
+                  {subscribed ? (trial ? "Premium (Trial)" : "Premium Member") : "Free Plan"}
+                </CardTitle>
+                <CardDescription>
+                  {subscribed ? (
+                    trial ? (
+                      <>Your free trial is active until {subscriptionEnd && new Date(subscriptionEnd).toLocaleDateString()}</>
+                    ) : (
+                      <>Access to all features • Next billing: {subscriptionEnd && new Date(subscriptionEnd).toLocaleDateString()}</>
+                    )
+                  ) : (
+                    "Upgrade to Premium for unlimited access"
+                  )}
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="flex gap-2">
+                {subscribed ? (
+                  <Button 
+                    className="w-full bg-amber-600 hover:bg-amber-700 text-white" 
+                    onClick={openCustomerPortal}
+                  >
+                    Manage Subscription
+                  </Button>
+                ) : (
+                  <Button 
+                    className="w-full bg-gradient-to-r from-amber-600 to-amber-500 hover:opacity-90 text-white" 
+                    onClick={createCheckout}
+                  >
+                    Start 7-Day Free Trial
+                  </Button>
+                )}
+              </CardContent>
+            </Card>
+          )}
 
           {/* Last Quiz Result */}
           {lastQuizResult && (

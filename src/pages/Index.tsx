@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowRight, Sparkles, Target, TrendingUp, Calendar } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -91,6 +92,57 @@ const Index = () => {
               Monitor your progress with beautiful charts, celebrate milestones, and get insights to optimize your strategy.
             </p>
           </div>
+        </div>
+      </section>
+
+      {/* Pricing Section */}
+      <section className="container mx-auto px-4 py-20">
+        <div className="max-w-4xl mx-auto text-center mb-12">
+          <h2 className="text-3xl lg:text-4xl font-bold mb-4">Simple, Transparent Pricing</h2>
+          <p className="text-lg text-muted-foreground">
+            Start with a 7-day free trial, then $19.99/month
+          </p>
+        </div>
+        
+        <div className="max-w-md mx-auto">
+          <Card className="border-2 border-primary shadow-xl">
+            <CardHeader className="text-center pb-8">
+              <div className="mx-auto w-16 h-16 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center mb-4">
+                <Sparkles className="h-8 w-8 text-white" />
+              </div>
+              <CardTitle className="text-2xl mb-2">Premium</CardTitle>
+              <div className="flex items-baseline justify-center gap-2">
+                <span className="text-5xl font-bold">$19.99</span>
+                <span className="text-muted-foreground">/month</span>
+              </div>
+              <p className="text-sm text-muted-foreground mt-2">7-day free trial included</p>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <ul className="space-y-3">
+                <li className="flex items-start gap-3">
+                  <Target className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                  <span>Personalized niche discovery</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Calendar className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                  <span>AI-powered content planning</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <TrendingUp className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                  <span>Advanced growth analytics</span>
+                </li>
+              </ul>
+              <Link to="/auth">
+                <Button 
+                  size="lg" 
+                  className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90"
+                >
+                  Start Free Trial
+                  <ArrowRight className="h-4 w-4 ml-2" />
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
         </div>
       </section>
 
