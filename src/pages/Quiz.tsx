@@ -275,7 +275,7 @@ const Quiz = () => {
               <Button
                 onClick={handleNext}
                 disabled={!canProceed()}
-                className="gap-2 bg-[var(--gradient-vibrant)] shadow-[var(--shadow-vibrant)] opacity-100"
+                className="gap-2 bg-[var(--gradient-vibrant)] shadow-[var(--shadow-vibrant)] opacity-100 disabled:opacity-100"
               >
                 {currentStep === quizQuestions.length - 1 ? "See Results" : "Next"}
                 <ChevronRight className="w-4 h-4" />
