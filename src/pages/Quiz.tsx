@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -14,41 +14,14 @@ import { useToast } from "@/hooks/use-toast";
 const Quiz = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string[]>>({});
-  const [isAutoAdvancing, setIsAutoAdvancing] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
-  const autoAdvanceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const currentQuestion = quizQuestions[currentStep];
   const progress = ((currentStep + 1) / quizQuestions.length) * 100;
 
-  // Auto-advance for single-select questions
-  useEffect(() => {
-    return () => {
-      if (autoAdvanceTimeoutRef.current) {
-        clearTimeout(autoAdvanceTimeoutRef.current);
-      }
-    };
-  }, []);
-
   const handleSingleSelect = (optionId: string) => {
     setAnswers({ ...answers, [currentQuestion.id]: [optionId] });
-    setIsAutoAdvancing(true);
-
-    // Clear any existing timeout
-    if (autoAdvanceTimeoutRef.current) {
-      clearTimeout(autoAdvanceTimeoutRef.current);
-    }
-
-    // Auto-advance after a brief delay
-    autoAdvanceTimeoutRef.current = setTimeout(() => {
-      if (currentStep < quizQuestions.length - 1) {
-        setCurrentStep(currentStep + 1);
-      } else {
-        calculateResults();
-      }
-      setIsAutoAdvancing(false);
-    }, 800);
   };
 
   const handleMultiSelect = (optionId: string, checked: boolean) => {
@@ -84,11 +57,6 @@ const Quiz = () => {
   };
 
   const handleBack = () => {
-    // Cancel auto-advance if user clicks back
-    if (autoAdvanceTimeoutRef.current) {
-      clearTimeout(autoAdvanceTimeoutRef.current);
-      setIsAutoAdvancing(false);
-    }
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
     }
@@ -271,30 +239,14 @@ const Quiz = () => {
                 Back
               </Button>
               
-              {canProceed() ? (
-                <div className="flex items-center gap-2">
-                  <span className="text-sm text-muted-foreground">✓ Ready</span>
-                  <Button
-                    onClick={handleNext}
-                    disabled={isAutoAdvancing}
-                    className="gap-2 bg-[var(--gradient-vibrant)] hover:opacity-90"
-                  >
-                    {isAutoAdvancing && currentQuestion.type === "single_select" ? "Moving on..." : (currentStep === quizQuestions.length - 1 ? "See Results" : "Next")}
-                    <ChevronRight className="w-4 h-4" />
-                  </Button>
-                </div>
-              ) : (
-                <div className="flex items-center gap-2">
-                  <span className="text-sm text-muted-foreground">Select an option to continue</span>
-                  <Button
-                    disabled
-                    className="gap-2 bg-[var(--gradient-vibrant)] opacity-50"
-                  >
-                    Next
-                    <ChevronRight className="w-4 h-4" />
-                  </Button>
-                </div>
-              )}
+              <Button
+                onClick={handleNext}
+                disabled={!canProceed()}
+                className="gap-2 bg-[var(--gradient-vibrant)] hover:opacity-90"
+              >
+                {currentStep === quizQuestions.length - 1 ? "See Results" : "Next"}
+                <ChevronRight className="w-4 h-4" />
+              </Button>
             </div>
           </Card>
         </div>
