@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Check, TrendingUp, BookOpen, VideoIcon, Sparkles, Zap, Clock, Stars } from "lucide-react";
+import { Check, TrendingUp, BookOpen, VideoIcon, Sparkles, Zap, Clock } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
@@ -33,30 +33,30 @@ const PROFILES: Record<ArchetypeId, ArchetypeProfile> = {
     id: "educator",
     title: "Educator / Teacher",
     emoji: "📚",
-    tagline: "Turn know-how into clear, actionable lessons.",
+    tagline: "Turn know‑how into clear, actionable lessons.",
     description:
-      "You thrive when teaching, explaining, and helping others learn. You make complex topics simple and actionable.",
+      "You thrive at explaining, simplifying, and helping people make real progress. Your content compounds as evergreen value.",
     strengths: [
-      "Builds trust and authority",
-      "Creates evergreen, searchable content",
-      "Easy to grow into courses or consulting",
+      "Builds trust & authority",
+      "Evergreen, searchable content",
+      "Natural path to courses & coaching",
     ],
     challenges: [
-      "Requires preparation and consistency",
-      "Content may take longer to produce",
+      "Prep time for quality lessons",
+      "Consistency needed for growth",
     ],
     platforms: [
-      "🎥 YouTube (tutorials, step-by-step guides)",
-      "🎬 TikTok / Reels (quick how-to tips)",
-      "💼 LinkedIn (professional knowledge)",
-      "✍️ Blog / Medium",
+      "YouTube (tutorials)",
+      "TikTok/Reels (quick tips)",
+      "LinkedIn (pro topics)",
+      "Blog/Medium",
     ],
     ideas: [
-      "5-Minute Productivity Hacks",
-      "How to Start Investing With $100",
-      "Beginner Python Tutorial",
+      "Beginner Python in 7 days",
+      "5‑minute productivity hacks",
+      "No‑code app tutorial series",
     ],
-    monetization: ["Courses", "Ebooks", "Workshops", "Coaching", "Consulting"],
+    monetization: ["Courses", "Workshops", "Ebooks", "Coaching/Consulting"],
   },
   entertainer: {
     id: "entertainer",
@@ -64,28 +64,21 @@ const PROFILES: Record<ArchetypeId, ArchetypeProfile> = {
     emoji: "🎭",
     tagline: "Capture attention with humor, story, and energy.",
     description:
-      "You shine when entertaining. Whether it’s comedy, reactions, gaming, or storytelling—you grab attention and make people feel.",
-    strengths: [
-      "Fast growth potential (viral content)",
-      "Builds strong audience connection",
-      "Great for trends and challenges",
-    ],
-    challenges: [
-      "High content demand to stay relevant",
-      "Content often has short lifespan",
-    ],
+      "You shine on camera and love making people feel something—laughs, thrills, or surprise. Great fit for trends and rapid iteration.",
+    strengths: ["High viral potential", "Strong parasocial connection", "Trend‑friendly"],
+    challenges: ["High content cadence", "Short shelf life for trends"],
     platforms: [
-      "🎬 TikTok (skits, challenges)",
-      "📸 Instagram Reels (trendy/visual humor)",
-      "🎥 YouTube Shorts",
-      "🎮 Twitch (live gaming/performances)",
+      "TikTok",
+      "Instagram Reels",
+      "YouTube Shorts",
+      "Twitch (live)",
     ],
     ideas: [
-      "Reacting to Viral TikToks",
-      "Comedy Skits About Daily Struggles",
-      "Fun Gaming Challenges",
+      "Daily comedy skits",
+      "Reacting to viral clips",
+      "Gaming challenges with forfeits",
     ],
-    monetization: ["Brand deals", "Merch", "Sponsorships", "Patreon"],
+    monetization: ["Brand deals", "Sponsorships", "Merch", "Patreon"],
   },
   lifestyle: {
     id: "lifestyle",
@@ -93,28 +86,26 @@ const PROFILES: Record<ArchetypeId, ArchetypeProfile> = {
     emoji: "🌿",
     tagline: "Make your habits and taste the brand.",
     description:
-      "You inspire by sharing your routines, habits, or aesthetics. Your personality and lifestyle are the brand.",
-    strengths: [
-      "Easy to connect with audiences",
-      "Strong opportunities for partnerships",
-      "Flexible (covers fashion, wellness, travel, etc.)",
-    ],
-    challenges: [
-      "Relies heavily on personal branding",
-      "Hard to stand out without unique style",
-    ],
+      "You inspire through routines, aesthetics, and personal stories. Your personality is the product—show, don't tell.",
+    strengths: ["High relatability", "Strong brand partnerships", "Broad topics"],
+    challenges: ["Requires unique personal style", "Consistency around your life"],
     platforms: [
-      "📸 Instagram (photos, Reels, Stories)",
-      "🎬 TikTok (relatable daily life)",
-      "🎥 YouTube (vlogs, lifestyle routines)",
-      "📌 Pinterest (aesthetics, inspiration boards)",
+      "Instagram",
+      "TikTok",
+      "YouTube (vlogs)",
+      "Pinterest",
     ],
     ideas: [
-      "Morning Routine for Success",
-      "Budget Travel Hacks",
-      "Healthy Meal Preps for Busy Days",
+      "AM/PM routine reels",
+      "Budget travel mini‑vlogs",
+      "Healthy meal prep week",
     ],
-    monetization: ["Sponsorships", "Affiliate marketing", "Product collabs"],
+    monetization: [
+      "Sponsorships",
+      "Affiliate links",
+      "Product collabs",
+      "Digital presets/templates",
+    ],
   },
   reviewer: {
     id: "reviewer",
@@ -122,31 +113,24 @@ const PROFILES: Record<ArchetypeId, ArchetypeProfile> = {
     emoji: "🔎",
     tagline: "Help people decide with honest breakdowns.",
     description:
-      "You love testing, analyzing, and sharing your honest opinions. You break things down so others can make better choices.",
-    strengths: [
-      "Builds credibility and trust",
-      "Highly searchable content (people seek reviews)",
-      "Strong affiliate marketing potential",
-    ],
-    challenges: [
-      "Competitive in big niches (tech, finance)",
-      "Requires access to products/services",
-    ],
+      "You love testing, comparing, and forming opinions backed by evidence. Trust is your growth engine.",
+    strengths: ["Searchable & intent‑rich", "Credibility builds fast", "Affiliate friendly"],
+    challenges: ["Access to products/services", "Crowded in big niches"],
     platforms: [
-      "🎥 YouTube (deep reviews, comparisons)",
-      "🎬 TikTok / Reels (quick takes, unboxings)",
-      "✍️ Blog / Medium (long-form reviews)",
-      "💬 Reddit/Discord (community engagement)",
+      "YouTube (deep dives)",
+      "TikTok/Reels (quick takes)",
+      "Blog/Medium/Substack",
+      "Reddit/Discord",
     ],
     ideas: [
-      "iPhone 15 vs Samsung S24: Honest Comparison",
-      "Top 5 Budget Microphones for Creators",
-      "Weekly Netflix Show Reviews",
+      "Top 5 budget mics",
+      "iPhone vs Galaxy honest review",
+      "Weekly streaming picks",
     ],
     monetization: [
-      "Affiliate links",
+      "Affiliate programs",
       "Sponsorships",
-      "Brand deals",
+      "Brand partnerships",
       "Amazon Influencer",
     ],
   },
@@ -156,40 +140,29 @@ const PROFILES: Record<ArchetypeId, ArchetypeProfile> = {
     emoji: "🛤",
     tagline: "Bring people along as you learn and build.",
     description:
-      "You bring people along as you learn, build, or transform. The value comes from authenticity and showing progress, not perfection.",
-    strengths: [
-      "Very relatable, inspires community",
-      "Low barrier to start (you don’t need expertise)",
-      "Creates long-term loyalty as audience follows your growth",
-    ],
-    challenges: [
-      "Takes time to show results",
-      "Monetization is slower in the beginning",
-    ],
+      "You share the real process—wins and stumbles. Authenticity and consistency turn long arcs into loyal communities.",
+    strengths: ["Highly relatable", "Low barrier to start", "Long‑term loyalty"],
+    challenges: ["Slower monetization early", "Results take time"],
     platforms: [
-      "🎥 YouTube (progress/documentary series)",
-      "🎬 TikTok (short updates)",
-      "🐦 X/Twitter (threads, reflections)",
-      "📸 Instagram Stories (daily check-ins)",
+      "YouTube (docu/progress)",
+      "TikTok (updates)",
+      "X/Twitter (threads)",
+      "Instagram Stories",
     ],
     ideas: [
-      "Day 1 of Learning Guitar – Watch My Progress",
-      "Building My Startup in Public",
-      "90-Day Fitness Transformation Journey",
+      "90‑day transformation log",
+      "Building a startup in public",
+      "Learning guitar: day‑by‑day",
     ],
-    monetization: [
-      "Community support (Patreon)",
-      "Affiliate links",
-      "Courses (later once expertise develops)",
-    ],
+    monetization: ["Patreon", "Affiliate links", "Courses later", "Community"],
   },
 };
 
 // ---------- Helpers ----------
 const TIME_FILTERS: Record<TimeBucket, { prefer: string[]; avoid: string[] }> = {
-  "under_5": {
+  under_5: {
     prefer: ["TikTok", "Instagram Reels", "YouTube Shorts"],
-    avoid: ["Podcast", "Long‑form YouTube unless batch‑recording"],
+    avoid: ["Podcast", "Long-form YouTube unless batch-recording"],
   },
   "5_to_10": {
     prefer: [
@@ -201,11 +174,11 @@ const TIME_FILTERS: Record<TimeBucket, { prefer: string[]; avoid: string[] }> = 
     avoid: [],
   },
   "10_to_20": {
-    prefer: ["YouTube long‑form + Shorts", "Blog (biweekly)", "Light podcast"],
+    prefer: ["YouTube long-form + Shorts", "Blog (biweekly)", "Light podcast"],
     avoid: [],
   },
   "20_plus": {
-    prefer: ["YouTube long‑form + Shorts", "Podcast", "Newsletter/Blog"],
+    prefer: ["YouTube long-form + Shorts", "Podcast", "Newsletter/Blog"],
     avoid: [],
   },
 };
@@ -235,7 +208,7 @@ const badge = (
 );
 
 const SectionTitle: React.FC<{ icon?: React.ReactNode; children: React.ReactNode }>=({ icon, children })=> (
-  <div className="flex items-center gap-2 text-sm font-semibold tracking-wide uppercase text-neutral-600">
+  <div className="flex items-center gap-2 text-sm font-semibold tracking-wide uppercase text-muted-foreground">
     {icon}
     <span>{children}</span>
   </div>
@@ -253,7 +226,7 @@ const FeatureList: React.FC<{ items: string[]; icon?: React.ComponentType<any> }
 );
 
 const Divider: React.FC = () => (
-  <div className="my-4 h-px w-full bg-gradient-to-r from-transparent via-neutral-200 to-transparent" />
+  <div className="my-4 h-px w-full bg-gradient-to-r from-transparent via-border to-transparent" />
 );
 
 // ---------- Card Component ----------
@@ -273,7 +246,7 @@ const ArchetypeCard: React.FC<ArchetypeCardProps> = ({ profile, time, extras, hi
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
     >
-      <Card className={`${highlight ? "ring-2 ring-emerald-400 shadow-xl" : ""} rounded-2xl bg-white/80 backdrop-blur-sm shadow-md border border-neutral-200`}>
+      <Card className={`${highlight ? "ring-2 ring-primary shadow-xl" : ""} rounded-2xl bg-card/80 backdrop-blur-sm shadow-md border`}>
         <CardContent className="p-6">
           <div className="flex items-start gap-4">
             <div className="text-3xl">{profile.emoji}</div>
@@ -281,16 +254,16 @@ const ArchetypeCard: React.FC<ArchetypeCardProps> = ({ profile, time, extras, hi
               <h3 className="text-xl font-bold tracking-tight">
                 {profile.title}
               </h3>
-              <p className="mt-1 text-sm text-neutral-600">{profile.tagline}</p>
+              <p className="mt-1 text-sm text-muted-foreground">{profile.tagline}</p>
             </div>
             {highlight && (
-              <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700 border border-emerald-200">Top Match</span>
+              <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary border border-primary/20">Top Match</span>
             )}
           </div>
 
           <Divider />
 
-          <p className="text-sm leading-6 text-neutral-800">{profile.description}</p>
+          <p className="text-sm leading-6 text-foreground">{profile.description}</p>
 
           <div className="mt-5 grid grid-cols-1 gap-6 md:grid-cols-2">
             <div>
@@ -343,7 +316,7 @@ const ArchetypeCard: React.FC<ArchetypeCardProps> = ({ profile, time, extras, hi
   );
 };
 
-// ---------- Demo Page Component ----------
+// ---------- Main Results Component ----------
 
 interface ResultsProps {
   primary?: ArchetypeId;
@@ -371,17 +344,20 @@ export default function ArchetypeResults(
   const primaryProfile = PROFILES[primary];
   const secondaryProfile = PROFILES[secondary];
 
+  // Build a display list with primary first, then secondary, then others (collapsed)
+  const rest = orderedIds.filter((id) => id !== primary && id !== secondary);
+
   return (
-    <div className="min-h-screen w-full bg-gradient-to-b from-emerald-50 to-white px-6 py-10">
+    <div className="min-h-screen w-full bg-gradient-to-b from-background to-secondary/20 px-6 py-10">
       <div className="mx-auto max-w-6xl">
         <header className="mb-8 flex flex-col items-start gap-3 md:flex-row md:items-center md:justify-between">
           <div>
             <h1 className="text-2xl font-bold tracking-tight">Your Creator Path</h1>
-            <p className="mt-1 text-neutral-600">
+            <p className="mt-1 text-muted-foreground">
               Based on your quiz, here are your archetypes and tailored platform recommendations.
             </p>
           </div>
-          <div className="flex items-center gap-2 rounded-2xl border bg-white/70 px-3 py-1 text-sm">
+          <div className="flex items-center gap-2 rounded-2xl border bg-card/70 px-3 py-1 text-sm">
             <Clock className="h-4 w-4" />
             <span>Weekly time: </span>
             <strong className="ml-1 capitalize">{time.replace(/_/g, " ")}</strong>
@@ -393,9 +369,14 @@ export default function ArchetypeResults(
           <ArchetypeCard profile={secondaryProfile} time={time} extras={extras} />
         </div>
 
-{/* Showing only primary and optional secondary archetypes per user request */}
+        {/* Optional: show the rest minimized */}
+        <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2">
+          {rest.map((id) => (
+            <ArchetypeCard key={id} profile={PROFILES[id]} time={time} extras={extras} />
+          ))}
+        </div>
 
-        <footer className="mx-auto mt-10 max-w-3xl text-center text-sm text-neutral-500">
+        <footer className="mx-auto mt-10 max-w-3xl text-center text-sm text-muted-foreground">
           <p>
             Tip: Click "Get 3 Starter Prompts" to generate ideas tuned to your archetype, topic, and time budget.
           </p>
