@@ -199,8 +199,8 @@ const Quiz = () => {
           </div>
 
           {/* Question Card */}
-          <Card className="backdrop-blur-sm bg-card/80 border-2 shadow-[var(--shadow-vibrant)]">
-            <CardHeader>
+          <Card className="backdrop-blur-sm bg-card/80 border-2 shadow-[var(--shadow-vibrant)] flex flex-col max-h-[calc(100vh-12rem)]">
+            <CardHeader className="flex-shrink-0">
               <CardTitle className="text-2xl">{currentQuestion.text}</CardTitle>
               {currentQuestion.type === "multi_select" && (
                 <CardDescription>
@@ -208,7 +208,7 @@ const Quiz = () => {
                 </CardDescription>
               )}
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-4 flex-1 overflow-y-auto">
               {currentQuestion.type === "single_select" ? (
                 <RadioGroup
                   value={answers[currentQuestion.id]?.[0] || ""}
@@ -248,27 +248,28 @@ const Quiz = () => {
                 </div>
               )}
 
-              {/* Navigation */}
-              <div className="flex justify-between pt-6 gap-4">
-                <Button
-                  variant="outline"
-                  onClick={handleBack}
-                  disabled={currentStep === 0}
-                  className="gap-2"
-                >
-                  <ChevronLeft className="w-4 h-4" />
-                  Back
-                </Button>
-                <Button
-                  onClick={handleNext}
-                  disabled={!canProceed() || isAutoAdvancing}
-                  className="gap-2 bg-[var(--gradient-vibrant)] hover:opacity-90"
-                >
-                  {isAutoAdvancing && currentQuestion.type === "single_select" ? "Moving on..." : (currentStep === quizQuestions.length - 1 ? "See Results" : "Next")}
-                  <ChevronRight className="w-4 h-4" />
-                </Button>
-              </div>
             </CardContent>
+            
+            {/* Navigation - Sticky at bottom */}
+            <div className="flex justify-between p-6 pt-4 gap-4 border-t border-border/50 bg-card/95 backdrop-blur-sm flex-shrink-0">
+              <Button
+                variant="outline"
+                onClick={handleBack}
+                disabled={currentStep === 0}
+                className="gap-2"
+              >
+                <ChevronLeft className="w-4 h-4" />
+                Back
+              </Button>
+              <Button
+                onClick={handleNext}
+                disabled={!canProceed() || isAutoAdvancing}
+                className="gap-2 bg-[var(--gradient-vibrant)] hover:opacity-90"
+              >
+                {isAutoAdvancing && currentQuestion.type === "single_select" ? "Moving on..." : (currentStep === quizQuestions.length - 1 ? "See Results" : "Next")}
+                <ChevronRight className="w-4 h-4" />
+              </Button>
+            </div>
           </Card>
         </div>
       </div>
