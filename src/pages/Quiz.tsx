@@ -6,7 +6,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
-import { ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
+import { ChevronLeft, ChevronRight, Sparkles, Home } from "lucide-react";
 import { quizQuestions, archetypes } from "@/data/quizData";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -187,7 +187,16 @@ const Quiz = () => {
       <div className="container mx-auto px-4 py-8 relative z-10">
         <div className="max-w-3xl mx-auto">
           {/* Header */}
-          <div className="text-center mb-8">
+          <div className="text-center mb-8 relative">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => navigate('/dashboard')}
+              className="absolute left-0 top-0 gap-2"
+            >
+              <Home className="w-4 h-4" />
+              Home
+            </Button>
             <div className="inline-flex items-center gap-2 bg-primary/10 px-4 py-2 rounded-full mb-4">
               <Sparkles className="w-4 h-4 text-primary" />
               <span className="text-sm font-medium">Find Your Creator Niche</span>
@@ -199,16 +208,16 @@ const Quiz = () => {
           </div>
 
           {/* Question Card */}
-          <Card className="backdrop-blur-sm bg-card/80 border-2 shadow-[var(--shadow-vibrant)] flex flex-col max-h-[calc(100vh-12rem)]">
+          <Card className="backdrop-blur-sm bg-card/80 border-2 shadow-[var(--shadow-vibrant)] flex flex-col max-h-[calc(100vh-16rem)]">
             <CardHeader className="flex-shrink-0">
               <CardTitle className="text-2xl">{currentQuestion.text}</CardTitle>
               {currentQuestion.type === "multi_select" && (
                 <CardDescription>
-                  Select up to {currentQuestion.maxSelect} option{currentQuestion.maxSelect > 1 ? "s" : ""}
+                  Select up to {currentQuestion.maxSelect} option{currentQuestion.maxSelect > 1 ? "s" : ""} (selected: {answers[currentQuestion.id]?.length || 0})
                 </CardDescription>
               )}
             </CardHeader>
-            <CardContent className="space-y-4 flex-1 overflow-y-auto">
+            <CardContent className="space-y-4 flex-1 overflow-y-auto pb-0">
               {currentQuestion.type === "single_select" ? (
                 <RadioGroup
                   value={answers[currentQuestion.id]?.[0] || ""}
@@ -250,8 +259,8 @@ const Quiz = () => {
 
             </CardContent>
             
-            {/* Navigation - Sticky at bottom */}
-            <div className="flex justify-between p-6 pt-4 gap-4 border-t border-border/50 bg-card/95 backdrop-blur-sm flex-shrink-0">
+            {/* Navigation - Always visible at bottom */}
+            <div className="flex justify-between items-center p-6 pt-4 gap-4 border-t-2 border-border bg-card flex-shrink-0">
               <Button
                 variant="outline"
                 onClick={handleBack}
@@ -261,14 +270,31 @@ const Quiz = () => {
                 <ChevronLeft className="w-4 h-4" />
                 Back
               </Button>
-              <Button
-                onClick={handleNext}
-                disabled={!canProceed() || isAutoAdvancing}
-                className="gap-2 bg-[var(--gradient-vibrant)] hover:opacity-90"
-              >
-                {isAutoAdvancing && currentQuestion.type === "single_select" ? "Moving on..." : (currentStep === quizQuestions.length - 1 ? "See Results" : "Next")}
-                <ChevronRight className="w-4 h-4" />
-              </Button>
+              
+              {canProceed() ? (
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-muted-foreground">✓ Ready</span>
+                  <Button
+                    onClick={handleNext}
+                    disabled={isAutoAdvancing}
+                    className="gap-2 bg-[var(--gradient-vibrant)] hover:opacity-90"
+                  >
+                    {isAutoAdvancing && currentQuestion.type === "single_select" ? "Moving on..." : (currentStep === quizQuestions.length - 1 ? "See Results" : "Next")}
+                    <ChevronRight className="w-4 h-4" />
+                  </Button>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-muted-foreground">Select an option to continue</span>
+                  <Button
+                    disabled
+                    className="gap-2 bg-[var(--gradient-vibrant)] opacity-50"
+                  >
+                    Next
+                    <ChevronRight className="w-4 h-4" />
+                  </Button>
+                </div>
+              )}
             </div>
           </Card>
         </div>
