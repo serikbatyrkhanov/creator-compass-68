@@ -196,6 +196,37 @@ function pickPlatforms(
 }
 
 // ---------- UI ----------
+// Platform emoji map
+const PLATFORM_EMOJIS: Record<string, string> = {
+  "YouTube": "🎥",
+  "TikTok": "🎬",
+  "Instagram": "📸",
+  "Pinterest": "📌",
+  "Twitch": "🎮",
+  "LinkedIn": "💼",
+  "Blog": "✍️",
+  "Medium": "✍️",
+  "Reddit": "💬",
+  "Discord": "💬",
+  "X": "🐦",
+  "Twitter": "🐦",
+  "Podcast": "🎙️",
+  "Newsletter": "✉️",
+};
+
+const getPlatformWithEmoji = (platform: string): string => {
+  // Check if platform already has emoji
+  if (/[\u{1F300}-\u{1F9FF}]/u.test(platform)) return platform;
+  
+  // Find matching emoji
+  for (const [key, emoji] of Object.entries(PLATFORM_EMOJIS)) {
+    if (platform.includes(key)) {
+      return `${emoji} ${platform}`;
+    }
+  }
+  return platform;
+};
+
 const badge = (
   label: string,
   key?: string | number
@@ -208,7 +239,7 @@ const badge = (
 );
 
 const SectionTitle: React.FC<{ icon?: React.ReactNode; children: React.ReactNode }>=({ icon, children })=> (
-  <div className="flex items-center gap-2 text-sm font-semibold tracking-wide uppercase text-muted-foreground">
+  <div className="flex items-center gap-2 text-sm font-semibold tracking-wide uppercase text-neutral-600">
     {icon}
     <span>{children}</span>
   </div>
@@ -226,7 +257,7 @@ const FeatureList: React.FC<{ items: string[]; icon?: React.ComponentType<any> }
 );
 
 const Divider: React.FC = () => (
-  <div className="my-4 h-px w-full bg-gradient-to-r from-transparent via-border to-transparent" />
+  <div className="my-4 h-px w-full bg-gradient-to-r from-transparent via-neutral-200 to-transparent" />
 );
 
 // ---------- Card Component ----------
@@ -246,7 +277,7 @@ const ArchetypeCard: React.FC<ArchetypeCardProps> = ({ profile, time, extras, hi
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
     >
-      <Card className={`${highlight ? "ring-2 ring-primary shadow-xl" : ""} rounded-2xl bg-card/80 backdrop-blur-sm shadow-md border`}>
+      <Card className={`${highlight ? "ring-2 ring-emerald-400 shadow-xl" : ""} rounded-2xl bg-white/80 backdrop-blur-sm shadow-md border border-neutral-200`}>
         <CardContent className="p-6">
           <div className="flex items-start gap-4">
             <div className="text-3xl">{profile.emoji}</div>
@@ -254,16 +285,16 @@ const ArchetypeCard: React.FC<ArchetypeCardProps> = ({ profile, time, extras, hi
               <h3 className="text-xl font-bold tracking-tight">
                 {profile.title}
               </h3>
-              <p className="mt-1 text-sm text-muted-foreground">{profile.tagline}</p>
+              <p className="mt-1 text-sm text-neutral-600">{profile.tagline}</p>
             </div>
             {highlight && (
-              <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary border border-primary/20">Top Match</span>
+              <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700 border border-emerald-200">Top Match</span>
             )}
           </div>
 
           <Divider />
 
-          <p className="text-sm leading-6 text-foreground">{profile.description}</p>
+          <p className="text-sm leading-6 text-neutral-800">{profile.description}</p>
 
           <div className="mt-5 grid grid-cols-1 gap-6 md:grid-cols-2">
             <div>
@@ -282,7 +313,7 @@ const ArchetypeCard: React.FC<ArchetypeCardProps> = ({ profile, time, extras, hi
             <div>
               <SectionTitle icon={<VideoIcon className="h-4 w-4" />}>Best Platforms</SectionTitle>
               <div className="mt-2 flex flex-wrap gap-2">
-                {recPlatforms.map((p) => badge(p, p))}
+                {recPlatforms.map((p) => badge(getPlatformWithEmoji(p), p))}
               </div>
             </div>
             <div>
@@ -348,16 +379,16 @@ export default function ArchetypeResults(
   const rest = orderedIds.filter((id) => id !== primary && id !== secondary);
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-b from-background to-secondary/20 px-6 py-10">
+    <div className="min-h-screen w-full bg-gradient-to-b from-emerald-50 to-white px-6 py-10">
       <div className="mx-auto max-w-6xl">
-        <header className="mb-8 flex flex-col items-start gap-3 md:flex-row md:items-center md:justify-between">
+        <header className="mb-8 flex flex-col items-start gap-3 md:flex-row md:items-center md:justify-between" data-testid="archetype-results-v2">
           <div>
             <h1 className="text-2xl font-bold tracking-tight">Your Creator Path</h1>
-            <p className="mt-1 text-muted-foreground">
+            <p className="mt-1 text-neutral-600">
               Based on your quiz, here are your archetypes and tailored platform recommendations.
             </p>
           </div>
-          <div className="flex items-center gap-2 rounded-2xl border bg-card/70 px-3 py-1 text-sm">
+          <div className="flex items-center gap-2 rounded-2xl border bg-white/70 px-3 py-1 text-sm">
             <Clock className="h-4 w-4" />
             <span>Weekly time: </span>
             <strong className="ml-1 capitalize">{time.replace(/_/g, " ")}</strong>
@@ -376,7 +407,7 @@ export default function ArchetypeResults(
           ))}
         </div>
 
-        <footer className="mx-auto mt-10 max-w-3xl text-center text-sm text-muted-foreground">
+        <footer className="mx-auto mt-10 max-w-3xl text-center text-sm text-neutral-500">
           <p>
             Tip: Click "Get 3 Starter Prompts" to generate ideas tuned to your archetype, topic, and time budget.
           </p>

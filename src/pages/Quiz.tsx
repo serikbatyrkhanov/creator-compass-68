@@ -176,7 +176,7 @@ const Quiz = () => {
           </div>
 
           {/* Question Card */}
-          <Card className="backdrop-blur-sm bg-card/80 border-2 shadow-[var(--shadow-vibrant)] flex flex-col max-h-[calc(100vh-16rem)]">
+          <Card className="backdrop-blur-sm bg-card/80 border-2 shadow-[var(--shadow-vibrant)] flex flex-col max-h-[calc(100vh-16rem)] overflow-hidden">
             <CardHeader className="flex-shrink-0">
               <CardTitle className="text-2xl">{currentQuestion.text}</CardTitle>
               {currentQuestion.type === "multi_select" && (
