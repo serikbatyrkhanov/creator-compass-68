@@ -385,7 +385,7 @@ export default function ArchetypeResults(
           <div>
             <h1 className="text-2xl font-bold tracking-tight">Your Creator Path</h1>
             <p className="mt-1 text-neutral-600">
-              Based on your quiz, here are your archetypes and tailored platform recommendations.
+              Based on your quiz, here's your primary archetype and tailored platform recommendations.
             </p>
           </div>
           <div className="flex items-center gap-2 rounded-2xl border bg-white/70 px-3 py-1 text-sm">
@@ -397,14 +397,6 @@ export default function ArchetypeResults(
 
         <div className="grid grid-cols-1 gap-6">
           <ArchetypeCard profile={primaryProfile} time={time} extras={extras} highlight />
-          <ArchetypeCard profile={secondaryProfile} time={time} extras={extras} />
-        </div>
-
-        {/* Optional: show the rest minimized */}
-        <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2">
-          {rest.map((id) => (
-            <ArchetypeCard key={id} profile={PROFILES[id]} time={time} extras={extras} />
-          ))}
         </div>
 
         <footer className="mx-auto mt-10 max-w-3xl text-center text-sm text-neutral-500">

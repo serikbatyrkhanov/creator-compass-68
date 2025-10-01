@@ -228,7 +228,7 @@ const Quiz = () => {
             </CardContent>
             
             {/* Navigation - Always visible at bottom */}
-            <div className="flex justify-between items-center p-6 pt-4 gap-4 border-t-2 border-border bg-card flex-shrink-0">
+            <div className="sticky bottom-0 flex justify-between items-center p-6 pt-4 gap-4 border-t-2 border-border bg-card flex-shrink-0 z-10">
               <Button
                 variant="outline"
                 onClick={handleBack}
@@ -242,7 +242,7 @@ const Quiz = () => {
               <Button
                 onClick={handleNext}
                 disabled={!canProceed()}
-                className="gap-2 bg-[var(--gradient-vibrant)] shadow-[var(--shadow-vibrant)]"
+                className="gap-2 bg-[var(--gradient-vibrant)] shadow-[var(--shadow-vibrant)] opacity-100"
               >
                 {currentStep === quizQuestions.length - 1 ? "See Results" : "Next"}
                 <ChevronRight className="w-4 h-4" />
