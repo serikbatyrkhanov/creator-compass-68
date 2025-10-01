@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "https://esm.sh/resend@4.0.0";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.58.0";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
@@ -24,10 +25,57 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     const { name, email, message }: ContactEmailRequest = await req.json();
 
-    console.log("Sending contact email from:", email, "Name:", name);
+    // Get auth header
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader) {
+      throw new Error("No authorization header");
+    }
 
-    // TODO: Replace with your actual email address
-    const recipientEmail = "your-email@example.com";
+    // Create Supabase client
+    const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
+    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
+    const supabase = createClient(supabaseUrl, supabaseKey, {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false,
+      },
+      global: {
+        headers: {
+          Authorization: authHeader,
+        },
+      },
+    });
+
+    // Get user from auth header
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    
+    if (userError || !user) {
+      throw new Error("User not authenticated");
+    }
+
+    console.log("Processing contact message from:", email, "Name:", name);
+
+    // Store message in database
+    const { data: dbData, error: dbError } = await supabase
+      .from("contact_messages")
+      .insert({
+        user_id: user.id,
+        name,
+        email,
+        message,
+      })
+      .select()
+      .single();
+
+    if (dbError) {
+      console.error("Database error:", dbError);
+      throw new Error(`Failed to store message: ${dbError.message}`);
+    }
+
+    console.log("Message stored in database:", dbData.id);
+
+    // Send email notification to your registered email
+    const recipientEmail = "serik.batyrkhanov@gmail.com";
 
     const emailResponse = await resend.emails.send({
       from: "Climbley <onboarding@resend.dev>",
@@ -47,7 +95,11 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log("Email sent successfully:", emailResponse);
 
-    return new Response(JSON.stringify(emailResponse), {
+    return new Response(JSON.stringify({ 
+      success: true, 
+      messageId: dbData.id,
+      email: emailResponse 
+    }), {
       status: 200,
       headers: {
         "Content-Type": "application/json",
