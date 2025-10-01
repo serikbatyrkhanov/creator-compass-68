@@ -4,17 +4,15 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Sparkles, Check } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { useSubscription } from "@/contexts/SubscriptionContext";
 
 const Auth = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { createCheckout } = useSubscription();
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -46,33 +44,28 @@ const Auth = () => {
     const name = formData.get("name") as string;
 
     try {
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          emailRedirectTo: `${window.location.origin}/`,
-          data: {
-            name,
-          },
-        },
+      // Store signup credentials for account creation after checkout
+      sessionStorage.setItem('pendingSignup', JSON.stringify({ email, password, name }));
+
+      // Create checkout session without authentication
+      const { data, error } = await supabase.functions.invoke('create-checkout', {
+        body: { email }
       });
 
       if (error) throw error;
 
-      toast({
-        title: "Success!",
-        description: "Account created! Starting your free trial...",
-      });
-
-      // Automatically start the free trial checkout
-      await createCheckout();
+      // Redirect to Stripe checkout
+      if (data?.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error("No checkout URL received");
+      }
     } catch (error: any) {
       toast({
         title: "Error",
-        description: error.message || "Failed to create account",
+        description: error.message || "Failed to start checkout",
         variant: "destructive",
       });
-    } finally {
       setIsLoading(false);
     }
   };
