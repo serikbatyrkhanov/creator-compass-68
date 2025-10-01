@@ -242,7 +242,7 @@ const Quiz = () => {
               <Button
                 onClick={handleNext}
                 disabled={!canProceed()}
-                className="gap-2 bg-[var(--gradient-vibrant)] hover:opacity-90"
+                className="gap-2 bg-[var(--gradient-vibrant)] shadow-[var(--shadow-vibrant)]"
               >
                 {currentStep === quizQuestions.length - 1 ? "See Results" : "Next"}
                 <ChevronRight className="w-4 h-4" />

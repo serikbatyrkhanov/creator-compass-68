@@ -33,30 +33,30 @@ const PROFILES: Record<ArchetypeId, ArchetypeProfile> = {
     id: "educator",
     title: "Educator / Teacher",
     emoji: "📚",
-    tagline: "Turn know‑how into clear, actionable lessons.",
+    tagline: "Turn know-how into clear, actionable lessons.",
     description:
-      "You thrive at explaining, simplifying, and helping people make real progress. Your content compounds as evergreen value.",
+      "You thrive when teaching, explaining, and helping others learn. You make complex topics simple and actionable.",
     strengths: [
-      "Builds trust & authority",
-      "Evergreen, searchable content",
-      "Natural path to courses & coaching",
+      "Builds trust and authority",
+      "Creates evergreen, searchable content",
+      "Easy to grow into courses or consulting",
     ],
     challenges: [
-      "Prep time for quality lessons",
-      "Consistency needed for growth",
+      "Requires preparation and consistency",
+      "Content may take longer to produce",
     ],
     platforms: [
-      "YouTube (tutorials)",
-      "TikTok/Reels (quick tips)",
-      "LinkedIn (pro topics)",
-      "Blog/Medium",
+      "🎥 YouTube (tutorials, step-by-step guides)",
+      "🎬 TikTok / Reels (quick how-to tips)",
+      "💼 LinkedIn (professional knowledge)",
+      "✍️ Blog / Medium",
     ],
     ideas: [
-      "Beginner Python in 7 days",
-      "5‑minute productivity hacks",
-      "No‑code app tutorial series",
+      "5-Minute Productivity Hacks",
+      "How to Start Investing With $100",
+      "Beginner Python Tutorial",
     ],
-    monetization: ["Courses", "Workshops", "Ebooks", "Coaching/Consulting"],
+    monetization: ["Courses", "Ebooks", "Workshops", "Coaching", "Consulting"],
   },
   entertainer: {
     id: "entertainer",
@@ -64,21 +64,28 @@ const PROFILES: Record<ArchetypeId, ArchetypeProfile> = {
     emoji: "🎭",
     tagline: "Capture attention with humor, story, and energy.",
     description:
-      "You shine on camera and love making people feel something—laughs, thrills, or surprise. Great fit for trends and rapid iteration.",
-    strengths: ["High viral potential", "Strong parasocial connection", "Trend‑friendly"],
-    challenges: ["High content cadence", "Short shelf life for trends"],
+      "You shine when entertaining. Whether it’s comedy, reactions, gaming, or storytelling—you grab attention and make people feel.",
+    strengths: [
+      "Fast growth potential (viral content)",
+      "Builds strong audience connection",
+      "Great for trends and challenges",
+    ],
+    challenges: [
+      "High content demand to stay relevant",
+      "Content often has short lifespan",
+    ],
     platforms: [
-      "TikTok",
-      "Instagram Reels",
-      "YouTube Shorts",
-      "Twitch (live)",
+      "🎬 TikTok (skits, challenges)",
+      "📸 Instagram Reels (trendy/visual humor)",
+      "🎥 YouTube Shorts",
+      "🎮 Twitch (live gaming/performances)",
     ],
     ideas: [
-      "Daily comedy skits",
-      "Reacting to viral clips",
-      "Gaming challenges with forfeits",
+      "Reacting to Viral TikToks",
+      "Comedy Skits About Daily Struggles",
+      "Fun Gaming Challenges",
     ],
-    monetization: ["Brand deals", "Sponsorships", "Merch", "Patreon"],
+    monetization: ["Brand deals", "Merch", "Sponsorships", "Patreon"],
   },
   lifestyle: {
     id: "lifestyle",
@@ -86,26 +93,28 @@ const PROFILES: Record<ArchetypeId, ArchetypeProfile> = {
     emoji: "🌿",
     tagline: "Make your habits and taste the brand.",
     description:
-      "You inspire through routines, aesthetics, and personal stories. Your personality is the product—show, don’t tell.",
-    strengths: ["High relatability", "Strong brand partnerships", "Broad topics"],
-    challenges: ["Requires unique personal style", "Consistency around your life"],
+      "You inspire by sharing your routines, habits, or aesthetics. Your personality and lifestyle are the brand.",
+    strengths: [
+      "Easy to connect with audiences",
+      "Strong opportunities for partnerships",
+      "Flexible (covers fashion, wellness, travel, etc.)",
+    ],
+    challenges: [
+      "Relies heavily on personal branding",
+      "Hard to stand out without unique style",
+    ],
     platforms: [
-      "Instagram",
-      "TikTok",
-      "YouTube (vlogs)",
-      "Pinterest",
+      "📸 Instagram (photos, Reels, Stories)",
+      "🎬 TikTok (relatable daily life)",
+      "🎥 YouTube (vlogs, lifestyle routines)",
+      "📌 Pinterest (aesthetics, inspiration boards)",
     ],
     ideas: [
-      "AM/PM routine reels",
-      "Budget travel mini‑vlogs",
-      "Healthy meal prep week",
+      "Morning Routine for Success",
+      "Budget Travel Hacks",
+      "Healthy Meal Preps for Busy Days",
     ],
-    monetization: [
-      "Sponsorships",
-      "Affiliate links",
-      "Product collabs",
-      "Digital presets/templates",
-    ],
+    monetization: ["Sponsorships", "Affiliate marketing", "Product collabs"],
   },
   reviewer: {
     id: "reviewer",
@@ -113,24 +122,31 @@ const PROFILES: Record<ArchetypeId, ArchetypeProfile> = {
     emoji: "🔎",
     tagline: "Help people decide with honest breakdowns.",
     description:
-      "You love testing, comparing, and forming opinions backed by evidence. Trust is your growth engine.",
-    strengths: ["Searchable & intent‑rich", "Credibility builds fast", "Affiliate friendly"],
-    challenges: ["Access to products/services", "Crowded in big niches"],
+      "You love testing, analyzing, and sharing your honest opinions. You break things down so others can make better choices.",
+    strengths: [
+      "Builds credibility and trust",
+      "Highly searchable content (people seek reviews)",
+      "Strong affiliate marketing potential",
+    ],
+    challenges: [
+      "Competitive in big niches (tech, finance)",
+      "Requires access to products/services",
+    ],
     platforms: [
-      "YouTube (deep dives)",
-      "TikTok/Reels (quick takes)",
-      "Blog/Medium/Substack",
-      "Reddit/Discord",
+      "🎥 YouTube (deep reviews, comparisons)",
+      "🎬 TikTok / Reels (quick takes, unboxings)",
+      "✍️ Blog / Medium (long-form reviews)",
+      "💬 Reddit/Discord (community engagement)",
     ],
     ideas: [
-      "Top 5 budget mics",
-      "iPhone vs Galaxy honest review",
-      "Weekly streaming picks",
+      "iPhone 15 vs Samsung S24: Honest Comparison",
+      "Top 5 Budget Microphones for Creators",
+      "Weekly Netflix Show Reviews",
     ],
     monetization: [
-      "Affiliate programs",
+      "Affiliate links",
       "Sponsorships",
-      "Brand partnerships",
+      "Brand deals",
       "Amazon Influencer",
     ],
   },
@@ -140,21 +156,32 @@ const PROFILES: Record<ArchetypeId, ArchetypeProfile> = {
     emoji: "🛤",
     tagline: "Bring people along as you learn and build.",
     description:
-      "You share the real process—wins and stumbles. Authenticity and consistency turn long arcs into loyal communities.",
-    strengths: ["Highly relatable", "Low barrier to start", "Long‑term loyalty"],
-    challenges: ["Slower monetization early", "Results take time"],
+      "You bring people along as you learn, build, or transform. The value comes from authenticity and showing progress, not perfection.",
+    strengths: [
+      "Very relatable, inspires community",
+      "Low barrier to start (you don’t need expertise)",
+      "Creates long-term loyalty as audience follows your growth",
+    ],
+    challenges: [
+      "Takes time to show results",
+      "Monetization is slower in the beginning",
+    ],
     platforms: [
-      "YouTube (docu/progress)",
-      "TikTok (updates)",
-      "X/Twitter (threads)",
-      "Instagram Stories",
+      "🎥 YouTube (progress/documentary series)",
+      "🎬 TikTok (short updates)",
+      "🐦 X/Twitter (threads, reflections)",
+      "📸 Instagram Stories (daily check-ins)",
     ],
     ideas: [
-      "90‑day transformation log",
-      "Building a startup in public",
-      "Learning guitar: day‑by‑day",
+      "Day 1 of Learning Guitar – Watch My Progress",
+      "Building My Startup in Public",
+      "90-Day Fitness Transformation Journey",
     ],
-    monetization: ["Patreon", "Affiliate links", "Courses later", "Community"],
+    monetization: [
+      "Community support (Patreon)",
+      "Affiliate links",
+      "Courses (later once expertise develops)",
+    ],
   },
 };
 
@@ -344,9 +371,6 @@ export default function ArchetypeResults(
   const primaryProfile = PROFILES[primary];
   const secondaryProfile = PROFILES[secondary];
 
-  // Build a display list with primary first, then secondary, then others (collapsed)
-  const rest = orderedIds.filter((id) => id !== primary && id !== secondary);
-
   return (
     <div className="min-h-screen w-full bg-gradient-to-b from-emerald-50 to-white px-6 py-10">
       <div className="mx-auto max-w-6xl">
@@ -369,12 +393,7 @@ export default function ArchetypeResults(
           <ArchetypeCard profile={secondaryProfile} time={time} extras={extras} />
         </div>
 
-        {/* Optional: show the rest minimized */}
-        <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2">
-          {rest.map((id) => (
-            <ArchetypeCard key={id} profile={PROFILES[id]} time={time} extras={extras} />
-          ))}
-        </div>
+{/* Showing only primary and optional secondary archetypes per user request */}
 
         <footer className="mx-auto mt-10 max-w-3xl text-center text-sm text-neutral-500">
           <p>
