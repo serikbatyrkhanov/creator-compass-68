@@ -48,29 +48,34 @@ const Auth = () => {
     try {
       // Store signup credentials for account creation after checkout
       sessionStorage.setItem('pendingSignup', JSON.stringify({ email, password, name }));
-      console.log("Stored signup credentials in sessionStorage");
+
+      // Open a new tab immediately (before async call to prevent popup blockers)
+      const stripeTab = window.open('', '_blank');
+
+      toast({
+        title: "Opening checkout...",
+        description: "Opening secure checkout in a new tab",
+      });
 
       // Create checkout session without authentication
-      console.log("Calling create-checkout function...");
       const response = await supabase.functions.invoke('create-checkout', {
         body: { email }
       });
 
-      console.log("Raw response:", response);
-      console.log("Response data:", response.data);
-      console.log("Response error:", response.error);
-
       if (response.error) {
-        console.error("Function error:", response.error);
+        if (stripeTab) stripeTab.close();
         throw response.error;
       }
 
       // Redirect to Stripe checkout
       if (response.data?.url) {
-        console.log("Redirecting to Stripe:", response.data.url);
-        window.location.href = response.data.url;
+        if (stripeTab) {
+          stripeTab.location.href = response.data.url;
+        } else {
+          window.location.assign(response.data.url);
+        }
       } else {
-        console.error("No URL in response. Full data:", response.data);
+        if (stripeTab) stripeTab.close();
         throw new Error("No checkout URL received");
       }
     } catch (error: any) {
