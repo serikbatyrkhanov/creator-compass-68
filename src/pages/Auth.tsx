@@ -43,24 +43,33 @@ const Auth = () => {
     const password = formData.get("signup-password") as string;
     const name = formData.get("name") as string;
 
+    console.log("Starting signup process for:", email);
+
     try {
       // Store signup credentials for account creation after checkout
       sessionStorage.setItem('pendingSignup', JSON.stringify({ email, password, name }));
+      console.log("Stored signup credentials in sessionStorage");
 
       // Create checkout session without authentication
+      console.log("Calling create-checkout function...");
       const { data, error } = await supabase.functions.invoke('create-checkout', {
         body: { email }
       });
+
+      console.log("Function response:", { data, error });
 
       if (error) throw error;
 
       // Redirect to Stripe checkout
       if (data?.url) {
+        console.log("Redirecting to Stripe:", data.url);
         window.location.href = data.url;
       } else {
+        console.log("No URL received in response");
         throw new Error("No checkout URL received");
       }
     } catch (error: any) {
+      console.error("Signup error:", error);
       toast({
         title: "Error",
         description: error.message || "Failed to start checkout",
