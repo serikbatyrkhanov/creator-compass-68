@@ -52,20 +52,25 @@ const Auth = () => {
 
       // Create checkout session without authentication
       console.log("Calling create-checkout function...");
-      const { data, error } = await supabase.functions.invoke('create-checkout', {
+      const response = await supabase.functions.invoke('create-checkout', {
         body: { email }
       });
 
-      console.log("Function response:", { data, error });
+      console.log("Raw response:", response);
+      console.log("Response data:", response.data);
+      console.log("Response error:", response.error);
 
-      if (error) throw error;
+      if (response.error) {
+        console.error("Function error:", response.error);
+        throw response.error;
+      }
 
       // Redirect to Stripe checkout
-      if (data?.url) {
-        console.log("Redirecting to Stripe:", data.url);
-        window.location.href = data.url;
+      if (response.data?.url) {
+        console.log("Redirecting to Stripe:", response.data.url);
+        window.location.href = response.data.url;
       } else {
-        console.log("No URL received in response");
+        console.error("No URL in response. Full data:", response.data);
         throw new Error("No checkout URL received");
       }
     } catch (error: any) {
