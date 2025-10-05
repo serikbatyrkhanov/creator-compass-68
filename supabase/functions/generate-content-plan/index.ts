@@ -154,13 +154,59 @@ Posting days should have actual content creation and publishing tasks.`;
       const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
       const supabase = createClient(supabaseUrl, supabaseKey);
       
-      // Calculate start date as next Monday
-      const today = new Date();
-      const currentDay = today.getDay(); // 0 = Sunday, 1 = Monday, etc.
-      const daysUntilNextMonday = currentDay === 0 ? 1 : (8 - currentDay); // If Sunday, add 1 day, else calculate days to next Monday
-      const nextMonday = new Date(today);
-      nextMonday.setDate(today.getDate() + daysUntilNextMonday);
-      const startDate = nextMonday.toISOString().split('T')[0];
+      // Helper functions for date calculations
+      const getNextMonday = (fromDate: Date): Date => {
+        const date = new Date(fromDate);
+        const currentDay = date.getDay();
+        const daysUntilMonday = currentDay === 0 ? 1 : currentDay === 1 ? 7 : (8 - currentDay);
+        date.setDate(date.getDate() + daysUntilMonday);
+        return date;
+      };
+      
+      const getFirstOfNextMonth = (fromDate: Date): Date => {
+        const date = new Date(fromDate);
+        date.setMonth(date.getMonth() + 1);
+        date.setDate(1);
+        return date;
+      };
+      
+      // Query for user's latest plan to stack on top of it
+      const { data: latestPlan } = await supabase
+        .from('content_plans')
+        .select('start_date, duration')
+        .eq('user_id', userId)
+        .order('start_date', { ascending: false })
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .single();
+      
+      let startDate: string;
+      
+      if (latestPlan) {
+        // Calculate end date of latest plan
+        const lastPlanStart = new Date(latestPlan.start_date);
+        const lastPlanEnd = new Date(lastPlanStart);
+        lastPlanEnd.setDate(lastPlanStart.getDate() + latestPlan.duration);
+        
+        // Calculate new start date based on plan type
+        let newStartDate: Date;
+        if (duration <= 7) {
+          // Weekly plan: start on next Monday after last plan ends
+          newStartDate = getNextMonday(lastPlanEnd);
+        } else {
+          // Monthly plan: start on 1st of next month after last plan ends
+          newStartDate = getFirstOfNextMonth(lastPlanEnd);
+        }
+        
+        startDate = newStartDate.toISOString().split('T')[0];
+        console.log('[GENERATE-PLAN] Stacking plan after latest:', { latestPlanStart: latestPlan.start_date, latestPlanDuration: latestPlan.duration, newStartDate: startDate });
+      } else {
+        // No existing plans, start next Monday
+        const today = new Date();
+        const nextMonday = getNextMonday(today);
+        startDate = nextMonday.toISOString().split('T')[0];
+        console.log('[GENERATE-PLAN] First plan, starting next Monday:', startDate);
+      }
       
       const { data: planData, error: dbError } = await supabase
         .from('content_plans')
