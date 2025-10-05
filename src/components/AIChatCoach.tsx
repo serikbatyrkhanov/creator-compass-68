@@ -42,6 +42,30 @@ export function AIChatCoach({ open, onOpenChange }: AIChatCoachProps) {
     }
   }, [messages]);
 
+  useEffect(() => {
+    const initConversation = async () => {
+      if (open && !conversationId) {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          const { data, error } = await supabase
+            .from("chat_conversations")
+            .insert({
+              user_id: user.id,
+              title: "New Conversation"
+            })
+            .select()
+            .single();
+
+          if (data && !error) {
+            setConversationId(data.id);
+          }
+        }
+      }
+    };
+
+    initConversation();
+  }, [open, conversationId]);
+
   const streamChat = async (userMessage: string) => {
     const updatedMessages: Message[] = [...messages, { role: "user", content: userMessage }];
     setMessages(updatedMessages);
@@ -115,6 +139,37 @@ export function AIChatCoach({ open, onOpenChange }: AIChatCoachProps) {
             }
           } catch {
             // Incomplete JSON, will retry on next iteration
+          }
+        }
+      }
+
+      // Save messages to database
+      if (conversationId) {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          // Save user message
+          await supabase.from("chat_messages").insert({
+            conversation_id: conversationId,
+            user_id: user.id,
+            role: "user",
+            content: userMessage
+          });
+
+          // Save assistant message
+          await supabase.from("chat_messages").insert({
+            conversation_id: conversationId,
+            user_id: user.id,
+            role: "assistant",
+            content: assistantMessage
+          });
+
+          // Update conversation title based on first user message
+          if (messages.length === 1) {
+            const title = userMessage.slice(0, 50) + (userMessage.length > 50 ? "..." : "");
+            await supabase
+              .from("chat_conversations")
+              .update({ title })
+              .eq("id", conversationId);
           }
         }
       }
