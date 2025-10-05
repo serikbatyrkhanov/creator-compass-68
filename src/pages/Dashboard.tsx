@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar, TrendingUp, Target, LogOut, FileCheck, MessageCircle } from "lucide-react";
+import { Calendar, TrendingUp, Target, LogOut, FileCheck, MessageCircle, CheckCircle2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { AIChatCoach } from "@/components/AIChatCoach";
 import ladderLogo from "@/assets/ladder-logo-transparent.png";
@@ -14,6 +14,13 @@ const Dashboard = () => {
   const [user, setUser] = useState<any>(null);
   const [lastQuizResult, setLastQuizResult] = useState<any>(null);
   const [chatOpen, setChatOpen] = useState(false);
+  const [journeyProgress, setJourneyProgress] = useState({
+    hasQuiz: false,
+    hasIdeas: false,
+    hasPlan: false,
+    hasCompletedTask: false,
+    hasChatted: false
+  });
 
   useEffect(() => {
     // Check if user is authenticated
@@ -36,6 +43,48 @@ const Dashboard = () => {
       
       if (quizData) {
         setLastQuizResult(quizData);
+      }
+
+      // Fetch journey progress
+      if (session?.user) {
+        const [ideas, plans, tasks, messages] = await Promise.all([
+          supabase
+            .from("generated_ideas")
+            .select("id")
+            .eq("user_id", session.user.id)
+            .limit(1)
+            .maybeSingle(),
+          
+          supabase
+            .from("content_plans")
+            .select("id")
+            .eq("user_id", session.user.id)
+            .limit(1)
+            .maybeSingle(),
+          
+          supabase
+            .from("plan_tasks")
+            .select("id")
+            .eq("user_id", session.user.id)
+            .eq("completed", true)
+            .limit(1)
+            .maybeSingle(),
+          
+          supabase
+            .from("chat_messages")
+            .select("id")
+            .eq("user_id", session.user.id)
+            .limit(1)
+            .maybeSingle()
+        ]);
+
+        setJourneyProgress({
+          hasQuiz: !!quizData,
+          hasIdeas: !!ideas.data,
+          hasPlan: !!plans.data,
+          hasCompletedTask: !!tasks.data,
+          hasChatted: !!messages.data
+        });
       }
     };
 
@@ -194,47 +243,150 @@ const Dashboard = () => {
             </Card>
           </div>
 
-          {/* Coming Soon Section */}
+          {/* Your Journey Section */}
           <Card className="border-2">
             <CardHeader>
               <CardTitle>Your Journey Begins Here</CardTitle>
               <CardDescription>
-                Complete these steps to get started with your content creation journey
+                Complete these steps to master your content creation journey
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-start gap-4 p-4 rounded-lg bg-muted/50">
-                <div className="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center text-sm font-semibold text-primary">
-                  1
-                </div>
-                <div className="flex-1">
-                  <h4 className="font-semibold mb-1">Complete Your Profile</h4>
-                  <p className="text-sm text-muted-foreground">
-                    Tell us about yourself and your creator goals
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-4 p-4 rounded-lg bg-muted/50">
-                <div className="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center text-sm font-semibold text-primary">
-                  2
+            <CardContent className="space-y-3">
+              <div 
+                className={`flex items-start gap-4 p-4 rounded-lg transition-all cursor-pointer hover:shadow-md ${
+                  journeyProgress.hasQuiz 
+                    ? 'bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200' 
+                    : 'bg-muted/50 hover:bg-muted'
+                }`}
+                onClick={() => !journeyProgress.hasQuiz && navigate("/quiz")}
+              >
+                <div className={`h-8 w-8 rounded-full flex items-center justify-center ${
+                  journeyProgress.hasQuiz 
+                    ? 'bg-emerald-500 text-white' 
+                    : 'bg-primary/20 text-primary'
+                }`}>
+                  {journeyProgress.hasQuiz ? <CheckCircle2 className="h-5 w-5" /> : '1'}
                 </div>
                 <div className="flex-1">
                   <h4 className="font-semibold mb-1">Take the Niche Quiz</h4>
                   <p className="text-sm text-muted-foreground">
-                    Discover which content niche is perfect for you
+                    Discover your perfect content creator archetype
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-4 p-4 rounded-lg bg-muted/50">
-                <div className="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center text-sm font-semibold text-primary">
-                  3
+              <div 
+                className={`flex items-start gap-4 p-4 rounded-lg transition-all ${
+                  journeyProgress.hasIdeas 
+                    ? 'bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200' 
+                    : journeyProgress.hasQuiz 
+                      ? 'bg-muted/50 hover:bg-muted cursor-pointer hover:shadow-md' 
+                      : 'bg-muted/30 opacity-60'
+                }`}
+                onClick={() => {
+                  if (journeyProgress.hasQuiz && !journeyProgress.hasIdeas && lastQuizResult) {
+                    navigate(`/quiz-results/${lastQuizResult.id}`);
+                  }
+                }}
+              >
+                <div className={`h-8 w-8 rounded-full flex items-center justify-center ${
+                  journeyProgress.hasIdeas 
+                    ? 'bg-emerald-500 text-white' 
+                    : journeyProgress.hasQuiz
+                      ? 'bg-primary/20 text-primary'
+                      : 'bg-muted text-muted-foreground'
+                }`}>
+                  {journeyProgress.hasIdeas ? <CheckCircle2 className="h-5 w-5" /> : '2'}
                 </div>
                 <div className="flex-1">
-                  <h4 className="font-semibold mb-1">Choose Your Platforms</h4>
+                  <h4 className="font-semibold mb-1">Generate Content Ideas</h4>
                   <p className="text-sm text-muted-foreground">
-                    Select which social platforms to focus on
+                    Get AI-powered content ideas tailored to your archetype
+                  </p>
+                </div>
+              </div>
+
+              <div 
+                className={`flex items-start gap-4 p-4 rounded-lg transition-all ${
+                  journeyProgress.hasPlan 
+                    ? 'bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200' 
+                    : journeyProgress.hasIdeas 
+                      ? 'bg-muted/50 hover:bg-muted cursor-pointer hover:shadow-md' 
+                      : 'bg-muted/30 opacity-60'
+                }`}
+                onClick={() => {
+                  if (journeyProgress.hasIdeas && !journeyProgress.hasPlan && lastQuizResult) {
+                    navigate(`/quiz-results/${lastQuizResult.id}`);
+                  }
+                }}
+              >
+                <div className={`h-8 w-8 rounded-full flex items-center justify-center ${
+                  journeyProgress.hasPlan 
+                    ? 'bg-emerald-500 text-white' 
+                    : journeyProgress.hasIdeas
+                      ? 'bg-primary/20 text-primary'
+                      : 'bg-muted text-muted-foreground'
+                }`}>
+                  {journeyProgress.hasPlan ? <CheckCircle2 className="h-5 w-5" /> : '3'}
+                </div>
+                <div className="flex-1">
+                  <h4 className="font-semibold mb-1">Create 7-Day Plan</h4>
+                  <p className="text-sm text-muted-foreground">
+                    Build your weekly content schedule with AI
+                  </p>
+                </div>
+              </div>
+
+              <div 
+                className={`flex items-start gap-4 p-4 rounded-lg transition-all ${
+                  journeyProgress.hasCompletedTask 
+                    ? 'bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200' 
+                    : journeyProgress.hasPlan 
+                      ? 'bg-muted/50 hover:bg-muted cursor-pointer hover:shadow-md' 
+                      : 'bg-muted/30 opacity-60'
+                }`}
+                onClick={() => {
+                  if (journeyProgress.hasPlan && !journeyProgress.hasCompletedTask) {
+                    navigate("/content-calendar");
+                  }
+                }}
+              >
+                <div className={`h-8 w-8 rounded-full flex items-center justify-center ${
+                  journeyProgress.hasCompletedTask 
+                    ? 'bg-emerald-500 text-white' 
+                    : journeyProgress.hasPlan
+                      ? 'bg-primary/20 text-primary'
+                      : 'bg-muted text-muted-foreground'
+                }`}>
+                  {journeyProgress.hasCompletedTask ? <CheckCircle2 className="h-5 w-5" /> : '4'}
+                </div>
+                <div className="flex-1">
+                  <h4 className="font-semibold mb-1">Complete Your First Task</h4>
+                  <p className="text-sm text-muted-foreground">
+                    Start executing your content plan
+                  </p>
+                </div>
+              </div>
+
+              <div 
+                className={`flex items-start gap-4 p-4 rounded-lg transition-all cursor-pointer hover:shadow-md ${
+                  journeyProgress.hasChatted 
+                    ? 'bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200' 
+                    : 'bg-muted/50 hover:bg-muted'
+                }`}
+                onClick={() => setChatOpen(true)}
+              >
+                <div className={`h-8 w-8 rounded-full flex items-center justify-center ${
+                  journeyProgress.hasChatted 
+                    ? 'bg-emerald-500 text-white' 
+                    : 'bg-primary/20 text-primary'
+                }`}>
+                  {journeyProgress.hasChatted ? <CheckCircle2 className="h-5 w-5" /> : '5'}
+                </div>
+                <div className="flex-1">
+                  <h4 className="font-semibold mb-1">Chat with AI Coach</h4>
+                  <p className="text-sm text-muted-foreground">
+                    Get personalized advice and overcome creative blocks
                   </p>
                 </div>
               </div>
