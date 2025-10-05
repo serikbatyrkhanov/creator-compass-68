@@ -105,21 +105,27 @@ export type Database = {
           created_at: string
           id: string
           plan: Json
+          posting_days: string[] | null
           quiz_response_id: string | null
+          start_date: string
           user_id: string | null
         }
         Insert: {
           created_at?: string
           id?: string
           plan: Json
+          posting_days?: string[] | null
           quiz_response_id?: string | null
+          start_date?: string
           user_id?: string | null
         }
         Update: {
           created_at?: string
           id?: string
           plan?: Json
+          posting_days?: string[] | null
           quiz_response_id?: string | null
+          start_date?: string
           user_id?: string | null
         }
         Relationships: [
@@ -242,6 +248,7 @@ export type Database = {
           created_at: string
           gear: string[] | null
           id: string
+          posting_days: string[] | null
           primary_archetype: string
           secondary_archetype: string | null
           selected_topics: string[] | null
@@ -255,6 +262,7 @@ export type Database = {
           created_at?: string
           gear?: string[] | null
           id?: string
+          posting_days?: string[] | null
           primary_archetype: string
           secondary_archetype?: string | null
           selected_topics?: string[] | null
@@ -268,6 +276,7 @@ export type Database = {
           created_at?: string
           gear?: string[] | null
           id?: string
+          posting_days?: string[] | null
           primary_archetype?: string
           secondary_archetype?: string | null
           selected_topics?: string[] | null

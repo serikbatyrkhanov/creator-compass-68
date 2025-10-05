@@ -12,6 +12,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
+import { format, addDays, parseISO } from "date-fns";
+import { PostingFrequencySelector } from "@/components/PostingFrequencySelector";
 
 interface PlanTask {
   id: string;
@@ -32,6 +34,8 @@ interface PlanTask {
 interface ContentPlan {
   id: string;
   created_at: string;
+  start_date: string;
+  posting_days: string[];
   plan: Array<{
     day: string;
     dayNumber: number;
@@ -57,6 +61,7 @@ const ContentCalendar = () => {
   const [editedPostDescription, setEditedPostDescription] = useState("");
   const [expandedNotes, setExpandedNotes] = useState<string | null>(null);
   const [generatingPlan, setGeneratingPlan] = useState(false);
+  const [currentUserId, setCurrentUserId] = useState<string>("");
 
   useEffect(() => {
     fetchPlans();
@@ -69,6 +74,8 @@ const ContentCalendar = () => {
         navigate("/auth");
         return;
       }
+      
+      setCurrentUserId(user.id);
 
       // Fetch plans with their tasks
       const { data: plansData, error: plansError } = await supabase
@@ -327,7 +334,8 @@ const ContentCalendar = () => {
           extras: quizResponse.gear || [],
           quizResponseId: quizResponse.id,
           selectedTopics: quizResponse.selected_topics || [],
-          targetAudience: quizResponse.target_audience || ""
+          targetAudience: quizResponse.target_audience || "",
+          postingDays: quizResponse.posting_days || ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
         },
         headers: {
           Authorization: `Bearer ${session?.access_token}`
@@ -352,6 +360,15 @@ const ContentCalendar = () => {
     } finally {
       setGeneratingPlan(false);
     }
+  };
+
+  const getActualDate = (plan: ContentPlan, dayNumber: number): Date => {
+    const startDate = parseISO(plan.start_date);
+    return addDays(startDate, dayNumber - 1);
+  };
+
+  const formatDateDisplay = (date: Date): string => {
+    return format(date, 'EEE, MMM d');
   };
 
   if (loading) {
@@ -393,6 +410,19 @@ const ContentCalendar = () => {
               {generatingPlan ? "Generating..." : "Generate New Plan"}
             </Button>
           </div>
+
+          {/* Posting Frequency Selector */}
+          {currentUserId && (
+            <PostingFrequencySelector 
+              userId={currentUserId}
+              onUpdate={() => {
+                toast({
+                  title: "Schedule updated",
+                  description: "Generate a new plan to apply your posting schedule"
+                });
+              }}
+            />
+          )}
 
           {plans.length === 0 ? (
             <Card className="text-center py-12">
@@ -473,6 +503,8 @@ const ContentCalendar = () => {
                   {selectedPlan?.plan.map((day, idx) => {
                     const dayTask = selectedPlan.tasks.find(t => t.day_number === day.dayNumber);
                     const isCompleted = dayTask?.completed || false;
+                    const actualDate = getActualDate(selectedPlan, day.dayNumber);
+                    const dateDisplay = formatDateDisplay(actualDate);
 
                     return (
                       <Card
@@ -484,7 +516,10 @@ const ContentCalendar = () => {
                         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-secondary" />
                         <CardHeader>
                           <div className="flex items-center justify-between">
-                            <CardTitle className="text-base">{day.day}</CardTitle>
+                            <div className="flex flex-col">
+                              <CardTitle className="text-base">{dateDisplay}</CardTitle>
+                              <p className="text-xs text-muted-foreground">{day.day}</p>
+                            </div>
                             <Badge variant="secondary">{day.timeEstimate}</Badge>
                           </div>
                           {day.platform && (

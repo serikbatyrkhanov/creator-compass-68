@@ -12,9 +12,9 @@ serve(async (req) => {
   }
 
   try {
-    const { archetype, topics, timeBucket, gear, selectedIdeas, quizResponseId } = await req.json();
+    const { archetype, topics, timeBucket, gear, selectedIdeas, quizResponseId, postingDays } = await req.json();
     
-    console.log('[GENERATE-PLAN] Starting generation', { archetype, timeBucket, ideasCount: selectedIdeas?.length });
+    console.log('[GENERATE-PLAN] Starting generation', { archetype, timeBucket, ideasCount: selectedIdeas?.length, postingDays });
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
@@ -27,23 +27,30 @@ serve(async (req) => {
     const timeText = timeBucket || '1-5 hours per week';
     const ideasText = selectedIdeas?.map((idea: any) => `- ${idea.title}`).join('\n') || 'general content ideas';
     
+    // Get posting days (default to all days)
+    const selectedPostingDays = postingDays || ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+    const postingDaysText = selectedPostingDays.map((d: string) => d.charAt(0).toUpperCase() + d.slice(1)).join(', ');
+    
     const systemPrompt = `You are an expert content planning coach. Create a realistic 7-day content creation schedule for a ${archetype} creator.
 The plan should be achievable within ${timeText} total per week.
 Available gear: ${gearText}
-Topics: ${topicsText}`;
+Topics: ${topicsText}
+IMPORTANT: Only create content for these posting days: ${postingDaysText}. For non-posting days, assign planning/research tasks.`;
 
     const userPrompt = `Create a 7-day content plan based on these ideas:
 ${ideasText}
 
+The user posts content on: ${postingDaysText}
+
 For each day (Monday-Sunday), provide:
-1. Main task for the day (specific action)
+1. Main task for the day (specific action - actual content creation ONLY on posting days: ${postingDaysText})
 2. Time estimate (in hours)
-3. Platform to post on (if applicable)
+3. Platform to post on (ONLY for posting days: ${postingDaysText})
 4. Key tip or note
 
 The total time across all 7 days should fit within ${timeText}.
-Some days can be lighter (research, planning) and some heavier (filming, editing).
-Include at least 1 rest/planning day.`;
+Non-posting days should have planning, research, or rest activities.
+Posting days should have actual content creation and publishing tasks.`;
 
     // Call Lovable AI with structured output
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
@@ -144,12 +151,17 @@ Include at least 1 rest/planning day.`;
       const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
       const supabase = createClient(supabaseUrl, supabaseKey);
       
+      // Get current date as start date
+      const startDate = new Date().toISOString().split('T')[0];
+      
       const { data: planData, error: dbError } = await supabase
         .from('content_plans')
         .insert({
           user_id: userId,
           quiz_response_id: quizResponseId,
-          plan: generatedPlan.days
+          plan: generatedPlan.days,
+          start_date: startDate,
+          posting_days: postingDays || ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
         })
         .select()
         .single();
