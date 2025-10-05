@@ -10,10 +10,12 @@ import {
   LogOut, 
   FileCheck, 
   MessageCircle, 
-  CheckCircle2 
+  CheckCircle2,
+  Sparkles
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { AIChatCoach } from "@/components/AIChatCoach";
+import { TrendingTitlesDialog } from "@/components/TrendingTitlesDialog";
 import ladderLogo from "@/assets/ladder-logo-transparent.png";
 
 const Dashboard = () => {
@@ -22,6 +24,7 @@ const Dashboard = () => {
   const [user, setUser] = useState<any>(null);
   const [lastQuizResult, setLastQuizResult] = useState<any>(null);
   const [chatOpen, setChatOpen] = useState(false);
+  const [trendingTitlesOpen, setTrendingTitlesOpen] = useState(false);
   const [journeyProgress, setJourneyProgress] = useState({
     hasQuiz: false,
     hasIdeas: false,
@@ -216,6 +219,23 @@ const Dashboard = () => {
               <CardContent>
                 <Button className="w-full bg-emerald-600 hover:bg-emerald-700">
                   Chat Now
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card className="border-2 hover:shadow-lg transition-all cursor-pointer" onClick={() => setTrendingTitlesOpen(true)}>
+              <CardHeader>
+                <div className="h-12 w-12 rounded-lg bg-purple-500/10 flex items-center justify-center mb-4">
+                  <Sparkles className="h-6 w-6 text-purple-600" />
+                </div>
+                <CardTitle>Trending Titles</CardTitle>
+                <CardDescription>
+                  Generate 50 viral content titles with AI
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button className="w-full bg-purple-600 hover:bg-purple-700">
+                  Generate Titles
                 </Button>
               </CardContent>
             </Card>
@@ -415,6 +435,7 @@ const Dashboard = () => {
       </div>
       
       <AIChatCoach open={chatOpen} onOpenChange={setChatOpen} />
+      <TrendingTitlesDialog open={trendingTitlesOpen} onOpenChange={setTrendingTitlesOpen} />
     </div>
   );
 };
