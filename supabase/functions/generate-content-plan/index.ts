@@ -158,7 +158,11 @@ Posting days should have actual content creation and publishing tasks.`;
       const getNextMonday = (fromDate: Date): Date => {
         const date = new Date(fromDate);
         const currentDay = date.getDay();
-        const daysUntilMonday = currentDay === 0 ? 1 : currentDay === 1 ? 7 : (8 - currentDay);
+        // If already Monday, use that date. Otherwise find next Monday
+        if (currentDay === 1) {
+          return date;
+        }
+        const daysUntilMonday = currentDay === 0 ? 1 : (8 - currentDay);
         date.setDate(date.getDate() + daysUntilMonday);
         return date;
       };

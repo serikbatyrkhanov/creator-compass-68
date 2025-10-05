@@ -472,11 +472,14 @@ const ContentCalendar = () => {
 
   const getPlanWeekInfo = (plan: ContentPlan) => {
     const startDate = parseISO(plan.start_date);
-    const monthStart = startOfMonth(startDate);
-    const weekOfMonth = Math.ceil((getDate(startDate) + differenceInDays(startDate, monthStart)) / 7);
     const month = format(startDate, 'MMMM yyyy');
     const year = getYear(startDate);
     const isMonthly = (plan.duration || 7) === 30;
+    
+    // Calculate which Monday of the month this is (1st Monday = Week 1, etc.)
+    const dayOfMonth = getDate(startDate);
+    const weekOfMonth = Math.floor((dayOfMonth - 1) / 7) + 1;
+    
     return { weekOfMonth, month, year, isMonthly };
   };
 
