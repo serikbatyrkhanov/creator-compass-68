@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { format, addDays, parseISO, startOfWeek, getWeek, getMonth, getYear } from "date-fns";
+import { format, addDays, parseISO, startOfWeek, getMonth, getYear, startOfMonth, differenceInDays, getDate } from "date-fns";
 import { PostingFrequencySelector } from "@/components/PostingFrequencySelector";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
@@ -38,6 +38,7 @@ interface ContentPlan {
   created_at: string;
   start_date: string;
   posting_days: string[];
+  duration?: number;
   plan: Array<{
     day: string;
     dayNumber: number;
@@ -471,10 +472,12 @@ const ContentCalendar = () => {
 
   const getPlanWeekInfo = (plan: ContentPlan) => {
     const startDate = parseISO(plan.start_date);
-    const weekNumber = getWeek(startDate);
+    const monthStart = startOfMonth(startDate);
+    const weekOfMonth = Math.ceil((getDate(startDate) + differenceInDays(startDate, monthStart)) / 7);
     const month = format(startDate, 'MMMM yyyy');
     const year = getYear(startDate);
-    return { weekNumber, month, year };
+    const isMonthly = (plan.duration || 7) === 30;
+    return { weekOfMonth, month, year, isMonthly };
   };
 
   const groupPlansByMonth = (plans: ContentPlan[]) => {
@@ -486,6 +489,12 @@ const ContentCalendar = () => {
       }
       grouped[month].push(plan);
     });
+    
+    // Sort plans within each month by start date
+    Object.keys(grouped).forEach(month => {
+      grouped[month].sort((a, b) => new Date(a.start_date).getTime() - new Date(b.start_date).getTime());
+    });
+    
     return grouped;
   };
 
@@ -594,9 +603,9 @@ const ContentCalendar = () => {
                           const planTotal = visibleTasks.length;
                           const isSelected = selectedPlan?.id === plan.id;
                           const isDeleting = deletingPlanId === plan.id;
-                          const { weekNumber } = getPlanWeekInfo(plan);
+                          const { weekOfMonth, isMonthly } = getPlanWeekInfo(plan);
                           const startDate = parseISO(plan.start_date);
-                          const endDate = addDays(startDate, plan.plan.length - 1);
+                          const endDate = addDays(startDate, (plan.duration || 7) - 1);
                           
                           return (
                             <div key={plan.id} className="relative group">
@@ -607,7 +616,14 @@ const ContentCalendar = () => {
                                 disabled={isDeleting}
                               >
                                 <div className="flex flex-col items-start w-full gap-0.5 overflow-hidden">
-                                  <span className="font-semibold text-sm truncate w-full">Week {weekNumber}</span>
+                                  <div className="flex items-center gap-2 w-full">
+                                    <span className="font-semibold text-sm truncate">
+                                      {isMonthly ? "Month Plan" : `Week ${weekOfMonth}`}
+                                    </span>
+                                    <Badge variant={isMonthly ? "default" : "secondary"} className="text-xs">
+                                      {isMonthly ? "30d" : "7d"}
+                                    </Badge>
+                                  </div>
                                   <span className="text-xs opacity-75 truncate w-full">
                                     {format(startDate, 'MMM d')} - {format(endDate, 'MMM d')}
                                   </span>

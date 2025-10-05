@@ -169,7 +169,8 @@ Posting days should have actual content creation and publishing tasks.`;
           quiz_response_id: quizResponseId,
           plan: generatedPlan.days,
           start_date: startDate,
-          posting_days: postingDays || ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
+          posting_days: postingDays || ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'],
+          duration: duration
         })
         .select()
         .single();

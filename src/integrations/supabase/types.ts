@@ -103,6 +103,7 @@ export type Database = {
       content_plans: {
         Row: {
           created_at: string
+          duration: number
           id: string
           plan: Json
           posting_days: string[] | null
@@ -112,6 +113,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          duration?: number
           id?: string
           plan: Json
           posting_days?: string[] | null
@@ -121,6 +123,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          duration?: number
           id?: string
           plan?: Json
           posting_days?: string[] | null
