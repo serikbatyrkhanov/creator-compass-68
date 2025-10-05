@@ -38,6 +38,21 @@ const Auth = () => {
     return () => subscription.unsubscribe();
   }, [navigate]);
 
+  // Fallback: if Stripe blocks iframe embedding, auto-open in a new tab after a short timeout
+  useEffect(() => {
+    if (!showCheckoutModal || !checkoutUrl) return;
+    const t = setTimeout(() => {
+      if (isIframeLoading && checkoutUrl) {
+        toast({
+          title: "Opening secure checkout",
+          description: "Your browser blocked embedded checkout; opened in a new tab.",
+        });
+        window.open(checkoutUrl, "_blank");
+      }
+    }, 3000);
+    return () => clearTimeout(t);
+  }, [showCheckoutModal, checkoutUrl, isIframeLoading, toast]);
+
   const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
@@ -192,6 +207,7 @@ const Auth = () => {
                 src={checkoutUrl}
                 className="w-full h-full border-0"
                 title="Stripe Checkout"
+                allow="payment *; fullscreen; accelerometer; autoplay; camera; gyroscope; magnetometer; microphone; midi; geolocation; clipboard-write"
                 onLoad={() => setIsIframeLoading(false)}
                 onError={() => {
                   setIsIframeLoading(false);
@@ -200,6 +216,9 @@ const Auth = () => {
                     description: "Please try opening in a new tab",
                     variant: "destructive",
                   });
+                  if (checkoutUrl) {
+                    window.open(checkoutUrl, '_blank');
+                  }
                 }}
               />
             )}
