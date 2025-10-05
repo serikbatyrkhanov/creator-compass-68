@@ -174,11 +174,17 @@ export type Database = {
         Row: {
           completed: boolean
           completed_at: string | null
+          content_created: boolean
+          content_edited: boolean
+          content_published: boolean
           created_at: string
           day_number: number
           id: string
           notes: string | null
           plan_id: string
+          post_description: string | null
+          post_title: string | null
+          script_completed: boolean
           task_title: string
           updated_at: string | null
           user_id: string | null
@@ -186,11 +192,17 @@ export type Database = {
         Insert: {
           completed?: boolean
           completed_at?: string | null
+          content_created?: boolean
+          content_edited?: boolean
+          content_published?: boolean
           created_at?: string
           day_number: number
           id?: string
           notes?: string | null
           plan_id: string
+          post_description?: string | null
+          post_title?: string | null
+          script_completed?: boolean
           task_title: string
           updated_at?: string | null
           user_id?: string | null
@@ -198,11 +210,17 @@ export type Database = {
         Update: {
           completed?: boolean
           completed_at?: string | null
+          content_created?: boolean
+          content_edited?: boolean
+          content_published?: boolean
           created_at?: string
           day_number?: number
           id?: string
           notes?: string | null
           plan_id?: string
+          post_description?: string | null
+          post_title?: string | null
+          script_completed?: boolean
           task_title?: string
           updated_at?: string | null
           user_id?: string | null

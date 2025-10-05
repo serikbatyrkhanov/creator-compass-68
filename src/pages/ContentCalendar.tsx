@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface PlanTask {
   id: string;
@@ -20,6 +21,12 @@ interface PlanTask {
   completed_at: string | null;
   notes: string;
   updated_at?: string;
+  post_title?: string;
+  post_description?: string;
+  script_completed: boolean;
+  content_created: boolean;
+  content_edited: boolean;
+  content_published: boolean;
 }
 
 interface ContentPlan {
@@ -46,6 +53,8 @@ const ContentCalendar = () => {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [editedTitle, setEditedTitle] = useState("");
   const [editedNotes, setEditedNotes] = useState("");
+  const [editedPostTitle, setEditedPostTitle] = useState("");
+  const [editedPostDescription, setEditedPostDescription] = useState("");
   const [expandedNotes, setExpandedNotes] = useState<string | null>(null);
   const [generatingPlan, setGeneratingPlan] = useState(false);
 
@@ -156,6 +165,8 @@ const ContentCalendar = () => {
     setEditingTask(task);
     setEditedTitle(task.task_title);
     setEditedNotes(task.notes || "");
+    setEditedPostTitle(task.post_title || "");
+    setEditedPostDescription(task.post_description || "");
     setEditDialogOpen(true);
   };
 
@@ -167,7 +178,9 @@ const ContentCalendar = () => {
         .from("plan_tasks")
         .update({
           task_title: editedTitle,
-          notes: editedNotes
+          notes: editedNotes,
+          post_title: editedPostTitle,
+          post_description: editedPostDescription
         })
         .eq("id", editingTask.id);
 
@@ -176,7 +189,13 @@ const ContentCalendar = () => {
       // Update local state
       const updateTask = (task: PlanTask) =>
         task.id === editingTask.id
-          ? { ...task, task_title: editedTitle, notes: editedNotes }
+          ? { 
+              ...task, 
+              task_title: editedTitle, 
+              notes: editedNotes,
+              post_title: editedPostTitle,
+              post_description: editedPostDescription
+            }
           : task;
 
       setPlans(prevPlans =>
@@ -234,6 +253,42 @@ const ContentCalendar = () => {
       toast({
         title: "Error updating notes",
         description: "Failed to update task notes",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const toggleProgressCheckbox = async (taskId: string, field: 'script_completed' | 'content_created' | 'content_edited' | 'content_published', currentValue: boolean) => {
+    try {
+      const { error } = await supabase
+        .from("plan_tasks")
+        .update({ [field]: !currentValue })
+        .eq("id", taskId);
+
+      if (error) throw error;
+
+      setPlans(prevPlans =>
+        prevPlans.map(plan => ({
+          ...plan,
+          tasks: plan.tasks.map(task =>
+            task.id === taskId ? { ...task, [field]: !currentValue } : task
+          )
+        }))
+      );
+
+      if (selectedPlan) {
+        setSelectedPlan(prev => prev ? ({
+          ...prev,
+          tasks: prev.tasks.map(task =>
+            task.id === taskId ? { ...task, [field]: !currentValue } : task
+          )
+        }) : null);
+      }
+    } catch (error) {
+      console.error("Error updating progress:", error);
+      toast({
+        title: "Error",
+        description: "Failed to update progress",
         variant: "destructive"
       });
     }
@@ -439,13 +494,122 @@ const ContentCalendar = () => {
                           )}
                         </CardHeader>
                         <CardContent className="space-y-3">
-                          <div>
-                            <p className="text-sm font-medium mb-1">Task:</p>
-                            <p className="text-sm text-muted-foreground">{day.task}</p>
+                          {/* Post Title */}
+                          {dayTask && (
+                            <div className="space-y-2">
+                              <Label className="text-xs font-medium">Post Title</Label>
+                              <Input
+                                value={dayTask.post_title || ""}
+                                onChange={(e) => {
+                                  const newTitle = e.target.value;
+                                  supabase.from("plan_tasks").update({ post_title: newTitle }).eq("id", dayTask.id);
+                                  setPlans(plans.map(p => ({
+                                    ...p,
+                                    tasks: p.tasks.map(t => t.id === dayTask.id ? { ...t, post_title: newTitle } : t)
+                                  })));
+                                }}
+                                placeholder="Enter post title..."
+                                className="text-sm"
+                              />
+                            </div>
+                          )}
+
+                          {/* Post Description */}
+                          {dayTask && (
+                            <div className="space-y-2">
+                              <Label className="text-xs font-medium">Description</Label>
+                              <Textarea
+                                value={dayTask.post_description || ""}
+                                onChange={(e) => {
+                                  const newDesc = e.target.value;
+                                  supabase.from("plan_tasks").update({ post_description: newDesc }).eq("id", dayTask.id);
+                                  setPlans(plans.map(p => ({
+                                    ...p,
+                                    tasks: p.tasks.map(t => t.id === dayTask.id ? { ...t, post_description: newDesc } : t)
+                                  })));
+                                }}
+                                placeholder="What will this content be about..."
+                                className="text-xs min-h-[60px] resize-none"
+                              />
+                            </div>
+                          )}
+
+                          {/* Original AI Task */}
+                          <div className="space-y-1">
+                            <Label className="text-xs font-medium text-muted-foreground">AI Suggestion</Label>
+                            <p className="text-xs text-muted-foreground">{day.task}</p>
                           </div>
+
                           <div className="pt-2 border-t">
                             <p className="text-xs text-muted-foreground italic">💡 {day.tip}</p>
                           </div>
+
+                          {/* Progress Tracking Checkboxes */}
+                          {dayTask && (
+                            <div className="pt-2 border-t space-y-2">
+                              <Label className="text-xs font-semibold">Progress Steps</Label>
+                              <div className="space-y-2">
+                                <div className="flex items-center space-x-2">
+                                  <Checkbox
+                                    id={`script-${dayTask.id}`}
+                                    checked={dayTask.script_completed}
+                                    onCheckedChange={() => toggleProgressCheckbox(dayTask.id, 'script_completed', dayTask.script_completed)}
+                                  />
+                                  <label
+                                    htmlFor={`script-${dayTask.id}`}
+                                    className="text-xs font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                                  >
+                                    Work on Script/Plan
+                                  </label>
+                                </div>
+                                <div className="flex items-center space-x-2">
+                                  <Checkbox
+                                    id={`content-${dayTask.id}`}
+                                    checked={dayTask.content_created}
+                                    onCheckedChange={() => toggleProgressCheckbox(dayTask.id, 'content_created', dayTask.content_created)}
+                                  />
+                                  <label
+                                    htmlFor={`content-${dayTask.id}`}
+                                    className="text-xs font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                                  >
+                                    Shoot Video / Take Photo
+                                  </label>
+                                </div>
+                                <div className="flex items-center space-x-2">
+                                  <Checkbox
+                                    id={`edit-${dayTask.id}`}
+                                    checked={dayTask.content_edited}
+                                    onCheckedChange={() => toggleProgressCheckbox(dayTask.id, 'content_edited', dayTask.content_edited)}
+                                  />
+                                  <label
+                                    htmlFor={`edit-${dayTask.id}`}
+                                    className="text-xs font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                                  >
+                                    Edit Content
+                                  </label>
+                                </div>
+                                <div className="flex items-center space-x-2">
+                                  <Checkbox
+                                    id={`publish-${dayTask.id}`}
+                                    checked={dayTask.content_published}
+                                    onCheckedChange={() => toggleProgressCheckbox(dayTask.id, 'content_published', dayTask.content_published)}
+                                  />
+                                  <label
+                                    htmlFor={`publish-${dayTask.id}`}
+                                    className="text-xs font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                                  >
+                                    Published
+                                  </label>
+                                </div>
+                              </div>
+                              {/* Mini Progress Indicator */}
+                              <div className="pt-1">
+                                <p className="text-xs text-muted-foreground">
+                                  {[dayTask.script_completed, dayTask.content_created, dayTask.content_edited, dayTask.content_published].filter(Boolean).length}/4 steps completed
+                                </p>
+                              </div>
+                            </div>
+                          )}
 
                           {/* Quick Notes Section */}
                           {dayTask && (
@@ -507,33 +671,101 @@ const ContentCalendar = () => {
 
         {/* Edit Task Dialog */}
         <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
-          <DialogContent className="sm:max-w-[500px]">
+          <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>Edit Task</DialogTitle>
+              <DialogTitle>Edit Task Details</DialogTitle>
               <DialogDescription>
-                Customize your task title and add notes to help you stay on track
+                Customize your post details, track progress, and add notes
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-4 py-4">
               <div className="space-y-2">
-                <Label htmlFor="task-title">Task Title</Label>
+                <Label htmlFor="post-title">Post Title</Label>
+                <Input
+                  id="post-title"
+                  value={editedPostTitle}
+                  onChange={(e) => setEditedPostTitle(e.target.value)}
+                  placeholder="Enter post title..."
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="post-description">Description</Label>
+                <Textarea
+                  id="post-description"
+                  value={editedPostDescription}
+                  onChange={(e) => setEditedPostDescription(e.target.value)}
+                  placeholder="What will this content be about..."
+                  className="min-h-[80px]"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="task-title" className="text-muted-foreground">Original AI Task</Label>
                 <Input
                   id="task-title"
                   value={editedTitle}
                   onChange={(e) => setEditedTitle(e.target.value)}
                   placeholder="Enter task title..."
+                  disabled
+                  className="bg-muted"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="task-notes">Notes</Label>
+                <Label htmlFor="task-notes">Quick Notes</Label>
                 <Textarea
                   id="task-notes"
                   value={editedNotes}
                   onChange={(e) => setEditedNotes(e.target.value)}
                   placeholder="Add notes, ideas, or reminders..."
-                  className="min-h-[120px]"
+                  className="min-h-[100px]"
                 />
               </div>
+              {editingTask && (
+                <div className="space-y-3 pt-2 border-t">
+                  <Label className="font-semibold">Progress Tracking</Label>
+                  <div className="space-y-3">
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="edit-script"
+                        checked={editingTask.script_completed}
+                        onCheckedChange={() => toggleProgressCheckbox(editingTask.id, 'script_completed', editingTask.script_completed)}
+                      />
+                      <label htmlFor="edit-script" className="text-sm font-medium cursor-pointer">
+                        Work on Script/Plan
+                      </label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="edit-content"
+                        checked={editingTask.content_created}
+                        onCheckedChange={() => toggleProgressCheckbox(editingTask.id, 'content_created', editingTask.content_created)}
+                      />
+                      <label htmlFor="edit-content" className="text-sm font-medium cursor-pointer">
+                        Shoot Video / Take Photo
+                      </label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="edit-edit"
+                        checked={editingTask.content_edited}
+                        onCheckedChange={() => toggleProgressCheckbox(editingTask.id, 'content_edited', editingTask.content_edited)}
+                      />
+                      <label htmlFor="edit-edit" className="text-sm font-medium cursor-pointer">
+                        Edit Content
+                      </label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="edit-publish"
+                        checked={editingTask.content_published}
+                        onCheckedChange={() => toggleProgressCheckbox(editingTask.id, 'content_published', editingTask.content_published)}
+                      />
+                      <label htmlFor="edit-publish" className="text-sm font-medium cursor-pointer">
+                        Published
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
             <div className="flex justify-end gap-2">
               <Button variant="outline" onClick={() => setEditDialogOpen(false)}>
