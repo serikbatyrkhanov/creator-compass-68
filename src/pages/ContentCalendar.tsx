@@ -15,7 +15,6 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { format, addDays, parseISO, startOfWeek, getMonth, getYear, startOfMonth, differenceInDays, getDate } from "date-fns";
 import { PostingFrequencySelector } from "@/components/PostingFrequencySelector";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface PlanTask {
   id: string;
@@ -67,7 +66,6 @@ const ContentCalendar = () => {
   const [currentUserId, setCurrentUserId] = useState<string>("");
   const [deletingPlanId, setDeletingPlanId] = useState<string | null>(null);
   const [planToDelete, setPlanToDelete] = useState<string | null>(null);
-  const [planDuration, setPlanDuration] = useState<"weekly" | "monthly">("weekly");
 
   useEffect(() => {
     fetchPlans();
@@ -342,7 +340,7 @@ const ContentCalendar = () => {
           selectedTopics: quizResponse.selected_topics || [],
           targetAudience: quizResponse.target_audience || "",
           postingDays: quizResponse.posting_days || ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'],
-          duration: planDuration === "weekly" ? 7 : 30
+          duration: 7
         },
         headers: {
           Authorization: `Bearer ${session?.access_token}`
@@ -353,7 +351,7 @@ const ContentCalendar = () => {
 
       toast({
         title: "Plan generated!",
-        description: `Your new ${planDuration} content plan is ready`
+        description: "Your new weekly content plan is ready"
       });
 
       await fetchPlans();
@@ -554,15 +552,6 @@ const ContentCalendar = () => {
                 <Sparkles className="h-4 w-4 mr-2" />
                 {generatingPlan ? "Generating..." : "Generate New Plan"}
               </Button>
-              <Select value={planDuration} onValueChange={(value: "weekly" | "monthly") => setPlanDuration(value)}>
-                <SelectTrigger className="w-[140px]">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="weekly">Weekly (7d)</SelectItem>
-                  <SelectItem value="monthly">Monthly (30d)</SelectItem>
-                </SelectContent>
-              </Select>
             </div>
           </div>
 
