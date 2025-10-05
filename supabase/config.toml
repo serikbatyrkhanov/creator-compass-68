@@ -2,3 +2,6 @@ project_id = "ecvjkkrsbladfplgvzuc"
 
 [functions.create-checkout]
 verify_jwt = false
+
+[functions.generate-content-ideas]
+verify_jwt = false

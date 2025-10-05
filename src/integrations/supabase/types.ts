@@ -41,6 +41,41 @@ export type Database = {
         }
         Relationships: []
       }
+      generated_ideas: {
+        Row: {
+          created_at: string
+          id: string
+          ideas: Json
+          quiz_response_id: string | null
+          saved: boolean
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          ideas: Json
+          quiz_response_id?: string | null
+          saved?: boolean
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          ideas?: Json
+          quiz_response_id?: string | null
+          saved?: boolean
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "generated_ideas_quiz_response_id_fkey"
+            columns: ["quiz_response_id"]
+            isOneToOne: false
+            referencedRelation: "quiz_responses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       quiz_responses: {
         Row: {
           answers: Json

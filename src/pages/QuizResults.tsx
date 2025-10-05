@@ -15,6 +15,7 @@ interface QuizResult {
   selected_topics: string[];
   time_bucket: string;
   gear: string[];
+  target_audience: string;
 }
 
 const QuizResults = () => {
@@ -92,6 +93,9 @@ const QuizResults = () => {
           secondary={result.secondary_archetype as ArchetypeId}
           time={result.time_bucket as TimeBucket}
           extras={result.gear}
+          quizResponseId={result.id}
+          selectedTopics={result.selected_topics}
+          targetAudience={result.target_audience}
         />
       </div>
     </div>

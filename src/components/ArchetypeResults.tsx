@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Check, TrendingUp, BookOpen, VideoIcon, Sparkles, Zap, Clock } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { ContentIdeasDialog } from "@/components/ContentIdeasDialog";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 // ---------- Types ----------
 export type ArchetypeId =
@@ -266,10 +269,61 @@ interface ArchetypeCardProps {
   time?: TimeBucket;
   extras?: string[]; // e.g., from gear or audience bias
   highlight?: boolean;
+  quizResponseId?: string;
+  selectedTopics?: string[];
+  targetAudience?: string;
 }
 
-const ArchetypeCard: React.FC<ArchetypeCardProps> = ({ profile, time, extras, highlight }) => {
+const ArchetypeCard: React.FC<ArchetypeCardProps> = ({ 
+  profile, 
+  time, 
+  extras, 
+  highlight,
+  quizResponseId,
+  selectedTopics,
+  targetAudience
+}) => {
   const recPlatforms = pickPlatforms(profile.platforms, time, extras);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [ideas, setIdeas] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+  const { toast } = useToast();
+
+  const generateIdeas = async () => {
+    setLoading(true);
+    setDialogOpen(true);
+    
+    try {
+      const { data, error } = await supabase.functions.invoke('generate-content-ideas', {
+        body: {
+          archetype: profile.id,
+          topics: selectedTopics || [],
+          timeBucket: time,
+          gear: extras || [],
+          targetAudience: targetAudience || 'general audience',
+          quizResponseId
+        }
+      });
+
+      if (error) throw error;
+
+      if (data?.ideas) {
+        setIdeas(data.ideas);
+      } else {
+        throw new Error('No ideas returned');
+      }
+    } catch (err: any) {
+      console.error('Error generating ideas:', err);
+      toast({
+        title: "Generation failed",
+        description: err.message || "Failed to generate content ideas. Please try again.",
+        variant: "destructive"
+      });
+      setDialogOpen(false);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <motion.div
@@ -337,12 +391,27 @@ const ArchetypeCard: React.FC<ArchetypeCardProps> = ({ profile, time, extras, hi
             </div>
 
             <div className="flex gap-2">
-              <Button className="rounded-2xl">Get 3 Starter Prompts</Button>
+              <Button 
+                className="rounded-2xl gap-2" 
+                onClick={generateIdeas}
+                disabled={loading}
+              >
+                <Sparkles className="h-4 w-4" />
+                Get 3 Starter Prompts
+              </Button>
               <Button variant="outline" className="rounded-2xl">Make 7‑Day Plan</Button>
             </div>
           </div>
         </CardContent>
       </Card>
+      
+      <ContentIdeasDialog
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        ideas={ideas}
+        loading={loading}
+        onRegenerate={generateIdeas}
+      />
     </motion.div>
   );
 };
@@ -354,6 +423,9 @@ interface ResultsProps {
   secondary?: ArchetypeId;
   time?: TimeBucket; // from quiz Q6
   extras?: string[]; // from gear or audience bias
+  quizResponseId?: string;
+  selectedTopics?: string[];
+  targetAudience?: string;
 }
 
 const orderedIds: ArchetypeId[] = [
@@ -370,6 +442,9 @@ export default function ArchetypeResults(
     secondary = "journey",
     time = "5_to_10",
     extras = [],
+    quizResponseId,
+    selectedTopics,
+    targetAudience
   }: ResultsProps
 ) {
   const primaryProfile = PROFILES[primary];
@@ -396,7 +471,15 @@ export default function ArchetypeResults(
         </header>
 
         <div className="grid grid-cols-1 gap-6">
-          <ArchetypeCard profile={primaryProfile} time={time} extras={extras} highlight />
+          <ArchetypeCard 
+            profile={primaryProfile} 
+            time={time} 
+            extras={extras} 
+            highlight 
+            quizResponseId={quizResponseId}
+            selectedTopics={selectedTopics}
+            targetAudience={targetAudience}
+          />
         </div>
 
         <footer className="mx-auto mt-10 max-w-3xl text-center text-sm text-neutral-500">
