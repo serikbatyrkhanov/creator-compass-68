@@ -47,6 +47,7 @@ const ContentCalendar = () => {
   const [editedTitle, setEditedTitle] = useState("");
   const [editedNotes, setEditedNotes] = useState("");
   const [expandedNotes, setExpandedNotes] = useState<string | null>(null);
+  const [generatingPlan, setGeneratingPlan] = useState(false);
 
   useEffect(() => {
     fetchPlans();
@@ -217,30 +218,84 @@ const ContentCalendar = () => {
 
       if (error) throw error;
 
-      // Update local state
-      const updateTask = (task: PlanTask) =>
-        task.id === taskId ? { ...task, notes } : task;
+      setPlans(plans.map(plan => ({
+        ...plan,
+        tasks: plan.tasks.map(task =>
+          task.id === taskId ? { ...task, notes } : task
+        )
+      })));
 
-      setPlans(prevPlans =>
-        prevPlans.map(plan => ({
-          ...plan,
-          tasks: plan.tasks.map(updateTask)
-        }))
-      );
-
-      if (selectedPlan) {
-        setSelectedPlan(prev => prev ? ({
-          ...prev,
-          tasks: prev.tasks.map(updateTask)
-        }) : null);
-      }
-    } catch (error) {
-      console.error("Error updating notes:", error);
       toast({
-        title: "Error",
-        description: "Failed to update notes",
+        title: "Notes updated",
+        description: "Task notes saved successfully"
+      });
+    } catch (error) {
+      console.error("Error updating task notes:", error);
+      toast({
+        title: "Error updating notes",
+        description: "Failed to update task notes",
         variant: "destructive"
       });
+    }
+  };
+
+  const generateNewPlan = async () => {
+    setGeneratingPlan(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Not authenticated");
+
+      const { data: quizResponse, error: quizError } = await supabase
+        .from("quiz_responses")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .single();
+
+      if (quizError || !quizResponse) {
+        toast({
+          title: "No quiz results found",
+          description: "Please take the quiz first",
+          variant: "destructive"
+        });
+        navigate("/quiz");
+        return;
+      }
+
+      const { data: { session } } = await supabase.auth.getSession();
+      const { data, error } = await supabase.functions.invoke("generate-content-plan", {
+        body: {
+          primary: quizResponse.primary_archetype,
+          secondary: quizResponse.secondary_archetype,
+          time: quizResponse.time_bucket,
+          extras: quizResponse.gear || [],
+          quizResponseId: quizResponse.id,
+          selectedTopics: quizResponse.selected_topics || [],
+          targetAudience: quizResponse.target_audience || ""
+        },
+        headers: {
+          Authorization: `Bearer ${session?.access_token}`
+        }
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Plan generated!",
+        description: "Your new 7-day content plan is ready"
+      });
+
+      await fetchPlans();
+    } catch (error) {
+      console.error("Error generating plan:", error);
+      toast({
+        title: "Error generating plan",
+        description: "Failed to create new plan. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setGeneratingPlan(false);
     }
   };
 
@@ -278,9 +333,9 @@ const ContentCalendar = () => {
                 <p className="text-muted-foreground">Track your 7-day content plans</p>
               </div>
             </div>
-            <Button onClick={() => navigate("/quiz")}>
+            <Button onClick={generateNewPlan} disabled={generatingPlan}>
               <Sparkles className="h-4 w-4 mr-2" />
-              Generate New Plan
+              {generatingPlan ? "Generating..." : "Generate New Plan"}
             </Button>
           </div>
 
