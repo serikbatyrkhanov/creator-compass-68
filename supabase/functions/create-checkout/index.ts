@@ -33,38 +33,52 @@ serve(async (req) => {
       apiVersion: "2025-08-27.basil" 
     });
 
-    // Check if customer exists
+    // Check if customer exists, create if not
     const customers = await stripe.customers.list({ email, limit: 1 });
-    let customerId;
+    let customer;
     
     if (customers.data.length > 0) {
-      customerId = customers.data[0].id;
-      logStep("Existing customer found", { customerId });
+      customer = customers.data[0];
+      logStep("Existing customer found", { customerId: customer.id });
     } else {
-      logStep("No existing customer, will create during checkout");
+      customer = await stripe.customers.create({ email });
+      logStep("New customer created", { customerId: customer.id });
     }
 
-    // Create checkout session with 7-day trial
-    const session = await stripe.checkout.sessions.create({
-      customer: customerId,
-      customer_email: customerId ? undefined : email,
-      line_items: [
+    // Create subscription with 7-day trial and incomplete payment
+    const subscription = await stripe.subscriptions.create({
+      customer: customer.id,
+      items: [
         {
           price: "price_1SEvmHRzLvTDNnZmJm0o3nKV",
-          quantity: 1,
         },
       ],
-      mode: "subscription",
-      success_url: `${req.headers.get("origin")}/checkout-success`,
-      cancel_url: `${req.headers.get("origin")}/auth`,
-      subscription_data: {
-        trial_period_days: 7,
+      trial_period_days: 7,
+      payment_behavior: "default_incomplete",
+      payment_settings: {
+        payment_method_types: ["card"],
+        save_default_payment_method: "on_subscription",
       },
+      expand: ["latest_invoice.payment_intent"],
     });
 
-    logStep("Checkout session created", { sessionId: session.id, url: session.url });
+    logStep("Subscription created", { subscriptionId: subscription.id });
 
-    return new Response(JSON.stringify({ url: session.url }), {
+    // Get the client secret from the payment intent
+    const invoice = subscription.latest_invoice as Stripe.Invoice;
+    const paymentIntent = invoice.payment_intent as Stripe.PaymentIntent;
+
+    if (!paymentIntent?.client_secret) {
+      throw new Error("Failed to create payment intent");
+    }
+
+    logStep("Payment intent created", { clientSecret: paymentIntent.client_secret.substring(0, 20) + "..." });
+
+    return new Response(JSON.stringify({ 
+      clientSecret: paymentIntent.client_secret,
+      customerId: customer.id,
+      subscriptionId: subscription.id
+    }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
     });

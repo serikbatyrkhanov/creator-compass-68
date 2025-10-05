@@ -5,16 +5,18 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Sparkles, Loader2, ExternalLink } from "lucide-react";
+import { Sparkles, Loader2 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { Elements } from "@stripe/react-stripe-js";
+import { stripePromise } from "@/lib/stripe";
+import { StripePaymentForm } from "@/components/StripePaymentForm";
 
 const Auth = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [checkoutUrl, setCheckoutUrl] = useState<string | null>(null);
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [showCheckoutModal, setShowCheckoutModal] = useState(false);
-  const [isIframeLoading, setIsIframeLoading] = useState(true);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -38,21 +40,6 @@ const Auth = () => {
     return () => subscription.unsubscribe();
   }, [navigate]);
 
-  // Fallback: if Stripe blocks iframe embedding, auto-open in a new tab after a short timeout
-  useEffect(() => {
-    if (!showCheckoutModal || !checkoutUrl) return;
-    const t = setTimeout(() => {
-      if (isIframeLoading && checkoutUrl) {
-        toast({
-          title: "Opening secure checkout",
-          description: "Your browser blocked embedded checkout; opened in a new tab.",
-        });
-        window.open(checkoutUrl, "_blank");
-      }
-    }, 3000);
-    return () => clearTimeout(t);
-  }, [showCheckoutModal, checkoutUrl, isIframeLoading, toast]);
-
   const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
@@ -69,11 +56,11 @@ const Auth = () => {
       sessionStorage.setItem('pendingSignup', JSON.stringify({ email, password, name }));
 
       toast({
-        title: "Loading checkout...",
-        description: "Please wait while we prepare your checkout",
+        title: "Preparing checkout...",
+        description: "Setting up your secure payment form",
       });
 
-      // Create checkout session without authentication
+      // Create payment intent for subscription
       const response = await supabase.functions.invoke('create-checkout', {
         body: { email }
       });
@@ -82,14 +69,13 @@ const Auth = () => {
         throw response.error;
       }
 
-      // Show checkout in modal
-      if (response.data?.url) {
-        setCheckoutUrl(response.data.url);
+      // Show checkout modal with payment form
+      if (response.data?.clientSecret) {
+        setClientSecret(response.data.clientSecret);
         setShowCheckoutModal(true);
-        setIsIframeLoading(true);
         setIsLoading(false);
       } else {
-        throw new Error("No checkout URL received");
+        throw new Error("Failed to create payment session");
       }
     } catch (error: any) {
       console.error("Signup error:", error);
@@ -188,54 +174,54 @@ const Auth = () => {
   return (
     <>
       <Dialog open={showCheckoutModal} onOpenChange={setShowCheckoutModal}>
-        <DialogContent className="max-w-4xl h-[90vh] flex flex-col">
+        <DialogContent className="max-w-2xl">
           <DialogHeader>
             <DialogTitle>Complete Your Subscription</DialogTitle>
             <DialogDescription>
-              Complete your payment securely with Stripe to start your 7-day free trial
+              Enter your payment details to start your 7-day free trial
             </DialogDescription>
           </DialogHeader>
-          <div className="flex-1 relative overflow-hidden rounded-md border">
-            {isIframeLoading && (
-              <div className="absolute inset-0 flex flex-col items-center justify-center bg-background/80 backdrop-blur-sm z-10">
+          <div className="py-4">
+            {clientSecret ? (
+              <Elements stripe={stripePromise} options={{ clientSecret }}>
+                <StripePaymentForm 
+                  onSuccess={async () => {
+                    // Get stored signup data
+                    const pendingData = sessionStorage.getItem('pendingSignup');
+                    if (pendingData) {
+                      const { email, password, name } = JSON.parse(pendingData);
+                      
+                      // Create the user account
+                      const { error } = await supabase.auth.signUp({
+                        email,
+                        password,
+                        options: {
+                          data: { name },
+                          emailRedirectTo: `${window.location.origin}/dashboard`,
+                        },
+                      });
+
+                      if (error) {
+                        toast({
+                          title: "Account creation failed",
+                          description: error.message,
+                          variant: "destructive",
+                        });
+                      } else {
+                        sessionStorage.removeItem('pendingSignup');
+                        setShowCheckoutModal(false);
+                        navigate("/dashboard");
+                      }
+                    }
+                  }}
+                />
+              </Elements>
+            ) : (
+              <div className="flex flex-col items-center justify-center py-8">
                 <Loader2 className="h-8 w-8 animate-spin text-primary mb-4" />
-                <p className="text-sm text-muted-foreground">Loading secure checkout...</p>
+                <p className="text-sm text-muted-foreground">Loading payment form...</p>
               </div>
             )}
-            {checkoutUrl && (
-              <iframe
-                src={checkoutUrl}
-                className="w-full h-full border-0"
-                title="Stripe Checkout"
-                allow="payment *; fullscreen; accelerometer; autoplay; camera; gyroscope; magnetometer; microphone; midi; geolocation; clipboard-write"
-                onLoad={() => setIsIframeLoading(false)}
-                onError={() => {
-                  setIsIframeLoading(false);
-                  toast({
-                    title: "Checkout loading issue",
-                    description: "Please try opening in a new tab",
-                    variant: "destructive",
-                  });
-                  if (checkoutUrl) {
-                    window.open(checkoutUrl, '_blank');
-                  }
-                }}
-              />
-            )}
-          </div>
-          <div className="flex justify-center pt-4">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                if (checkoutUrl) {
-                  window.open(checkoutUrl, '_blank');
-                }
-              }}
-            >
-              <ExternalLink className="h-4 w-4 mr-2" />
-              Open in New Tab
-            </Button>
           </div>
         </DialogContent>
       </Dialog>
