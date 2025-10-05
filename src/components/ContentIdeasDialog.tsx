@@ -8,7 +8,8 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Sparkles, Clock, RefreshCw } from "lucide-react";
+import { Clock, RefreshCw } from "lucide-react";
+import logo from "@/assets/climbley-logo.png";
 
 interface ContentIdea {
   title: string;
@@ -37,7 +38,7 @@ export function ContentIdeasDialog({
       <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-2xl">
-            <Sparkles className="h-6 w-6 text-emerald-500" />
+            <img src={logo} alt="" className="h-6 w-6" />
             Your Content Ideas
           </DialogTitle>
           <DialogDescription>

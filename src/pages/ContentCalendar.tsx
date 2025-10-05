@@ -3,8 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar, ArrowLeft, CheckCircle2, Circle, Sparkles, RefreshCw, Edit2, Save, X, StickyNote, Trash2 } from "lucide-react";
+import { Calendar, ArrowLeft, CheckCircle2, Circle, RefreshCw, Edit2, Save, X, StickyNote, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import logo from "@/assets/climbley-logo.png";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -566,20 +567,33 @@ const ContentCalendar = () => {
             </div>
             <div className="flex items-center gap-4">
               <Button onClick={generateNewPlan} disabled={generatingPlan}>
-                <Sparkles className="h-4 w-4 mr-2" />
+                <img src={logo} alt="" className="h-4 w-4 mr-2" />
                 {generatingPlan ? "Generating..." : "Generate New Plan"}
               </Button>
             </div>
           </div>
 
-           {/* Posting Frequency Selector */}
+          {/* Posting Schedule Filter */}
           {currentUserId && (
-            <PostingFrequencySelector 
-              userId={currentUserId}
-              onUpdate={(newDays) => {
-                setPostingDays(newDays);
-              }}
-            />
+            <Card className="border-2 border-primary/20 bg-primary/5">
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Calendar className="h-5 w-5 text-primary" />
+                  Posting Schedule Filter
+                </CardTitle>
+                <CardDescription>
+                  Select which days to show in your content calendar
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <PostingFrequencySelector 
+                  userId={currentUserId}
+                  onUpdate={(newDays) => {
+                    setPostingDays(newDays);
+                  }}
+                />
+              </CardContent>
+            </Card>
           )}
 
           {plans.length === 0 ? (

@@ -3,8 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Sparkles } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
+import logo from "@/assets/climbley-logo.png";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -85,7 +85,7 @@ const ResetPassword = () => {
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center gap-2 mb-4 group">
             <div className="p-2 rounded-xl bg-gradient-to-br from-primary to-secondary shadow-[var(--shadow-vibrant)] group-hover:scale-110 transition-transform">
-              <Sparkles className="h-6 w-6 text-white" />
+              <img src={logo} alt="Climbley" className="h-6 w-6" />
             </div>
             <span className="text-3xl font-bold bg-[var(--gradient-hero)] bg-clip-text text-transparent">
               Climbley

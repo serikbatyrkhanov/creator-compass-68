@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Check, TrendingUp, BookOpen, VideoIcon, Sparkles, Zap, Clock, MessageCircle, Calendar } from "lucide-react";
+import { Check, TrendingUp, BookOpen, VideoIcon, Zap, Clock, MessageCircle, Calendar } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import logo from "@/assets/climbley-logo.png";
 import { Button } from "@/components/ui/button";
 import { ContentIdeasDialog } from "@/components/ContentIdeasDialog";
 import { ContentPlanDialog } from "@/components/ContentPlanDialog";
@@ -396,7 +397,7 @@ const ArchetypeCard: React.FC<ArchetypeCardProps> = ({
 
           <div className="mt-5 grid grid-cols-1 gap-6 md:grid-cols-2">
             <div>
-              <SectionTitle icon={<Sparkles className="h-4 w-4" />}>Strengths</SectionTitle>
+              <SectionTitle icon={<img src={logo} alt="" className="h-4 w-4" />}>Strengths</SectionTitle>
               <FeatureList items={profile.strengths} />
             </div>
             <div>
@@ -440,7 +441,7 @@ const ArchetypeCard: React.FC<ArchetypeCardProps> = ({
                 onClick={generateIdeas}
                 disabled={loading}
               >
-                <Sparkles className="h-4 w-4" />
+                <img src={logo} alt="" className="h-4 w-4" />
                 Get 3 Starter Prompts
               </Button>
               <Button 

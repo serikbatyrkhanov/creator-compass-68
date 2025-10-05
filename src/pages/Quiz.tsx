@@ -6,8 +6,9 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
-import { ChevronLeft, ChevronRight, Sparkles, Home } from "lucide-react";
+import { ChevronLeft, ChevronRight, Home } from "lucide-react";
 import { quizQuestions, archetypes } from "@/data/quizData";
+import logo from "@/assets/climbley-logo.png";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -199,7 +200,7 @@ const Quiz = () => {
               Home
             </Button>
             <div className="inline-flex items-center gap-2 bg-primary/10 px-4 py-2 rounded-full mb-4">
-              <Sparkles className="w-4 h-4 text-primary" />
+              <img src={logo} alt="Climbley" className="w-4 h-4" />
               <span className="text-sm font-medium">Find Your Creator Niche</span>
             </div>
             <h1 className="text-4xl font-bold mb-2">

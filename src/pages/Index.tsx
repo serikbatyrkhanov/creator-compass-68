@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowRight, Sparkles, Target, TrendingUp, Calendar } from "lucide-react";
+import { ArrowRight, Target, TrendingUp, Calendar } from "lucide-react";
 import { Link } from "react-router-dom";
+import logo from "@/assets/climbley-logo.png";
 
 const Index = () => {
   return (
@@ -9,7 +10,7 @@ const Index = () => {
       {/* Navigation */}
       <nav className="container mx-auto px-4 py-6 flex justify-between items-center">
         <div className="flex items-center gap-2">
-          <Sparkles className="h-6 w-6 text-primary" />
+          <img src={logo} alt="Climbley" className="h-6 w-6" />
           <span className="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
             Climbley
           </span>
@@ -107,8 +108,8 @@ const Index = () => {
         <div className="max-w-md mx-auto">
           <Card className="border-2 border-primary shadow-xl">
             <CardHeader className="text-center pb-8">
-              <div className="mx-auto w-16 h-16 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center mb-4">
-                <Sparkles className="h-8 w-8 text-white" />
+              <div className="mx-auto w-16 h-16 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center mb-4 p-3">
+                <img src={logo} alt="Climbley" className="h-full w-full object-contain" />
               </div>
               <CardTitle className="text-2xl mb-2">Climbley Premium</CardTitle>
               <div className="flex items-baseline justify-center gap-2">
@@ -171,7 +172,7 @@ const Index = () => {
       <footer className="container mx-auto px-4 py-8 border-t border-border mt-20">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
           <div className="flex items-center gap-2">
-            <Sparkles className="h-4 w-4 text-primary" />
+            <img src={logo} alt="Climbley" className="h-4 w-4" />
             <span>Climbley © 2025</span>
           </div>
           <div className="flex gap-6">
