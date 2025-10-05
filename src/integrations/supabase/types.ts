@@ -177,8 +177,10 @@ export type Database = {
           created_at: string
           day_number: number
           id: string
+          notes: string | null
           plan_id: string
           task_title: string
+          updated_at: string | null
           user_id: string | null
         }
         Insert: {
@@ -187,8 +189,10 @@ export type Database = {
           created_at?: string
           day_number: number
           id?: string
+          notes?: string | null
           plan_id: string
           task_title: string
+          updated_at?: string | null
           user_id?: string | null
         }
         Update: {
@@ -197,8 +201,10 @@ export type Database = {
           created_at?: string
           day_number?: number
           id?: string
+          notes?: string | null
           plan_id?: string
           task_title?: string
+          updated_at?: string | null
           user_id?: string | null
         }
         Relationships: [
