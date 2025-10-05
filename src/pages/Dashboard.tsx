@@ -3,7 +3,15 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar, TrendingUp, Target, LogOut, FileCheck, MessageCircle, CheckCircle2 } from "lucide-react";
+import { 
+  Calendar, 
+  TrendingUp, 
+  Target, 
+  LogOut, 
+  FileCheck, 
+  MessageCircle, 
+  CheckCircle2 
+} from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { AIChatCoach } from "@/components/AIChatCoach";
 import ladderLogo from "@/assets/ladder-logo-transparent.png";
