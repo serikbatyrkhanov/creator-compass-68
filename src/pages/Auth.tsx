@@ -4,8 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Sparkles } from "lucide-react";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Sparkles, Loader2, ExternalLink } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -14,6 +14,7 @@ const Auth = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [checkoutUrl, setCheckoutUrl] = useState<string | null>(null);
   const [showCheckoutModal, setShowCheckoutModal] = useState(false);
+  const [isIframeLoading, setIsIframeLoading] = useState(true);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -70,6 +71,7 @@ const Auth = () => {
       if (response.data?.url) {
         setCheckoutUrl(response.data.url);
         setShowCheckoutModal(true);
+        setIsIframeLoading(true);
         setIsLoading(false);
       } else {
         throw new Error("No checkout URL received");
@@ -171,18 +173,50 @@ const Auth = () => {
   return (
     <>
       <Dialog open={showCheckoutModal} onOpenChange={setShowCheckoutModal}>
-        <DialogContent className="max-w-4xl h-[90vh] p-0">
-          <DialogHeader className="p-4 pb-0">
+        <DialogContent className="max-w-4xl h-[90vh] flex flex-col">
+          <DialogHeader>
             <DialogTitle>Complete Your Subscription</DialogTitle>
+            <DialogDescription>
+              Complete your payment securely with Stripe to start your 7-day free trial
+            </DialogDescription>
           </DialogHeader>
-          <div className="flex-1 overflow-hidden">
+          <div className="flex-1 relative overflow-hidden rounded-md border">
+            {isIframeLoading && (
+              <div className="absolute inset-0 flex flex-col items-center justify-center bg-background/80 backdrop-blur-sm z-10">
+                <Loader2 className="h-8 w-8 animate-spin text-primary mb-4" />
+                <p className="text-sm text-muted-foreground">Loading secure checkout...</p>
+              </div>
+            )}
             {checkoutUrl && (
               <iframe
                 src={checkoutUrl}
                 className="w-full h-full border-0"
                 title="Stripe Checkout"
+                onLoad={() => setIsIframeLoading(false)}
+                onError={() => {
+                  setIsIframeLoading(false);
+                  toast({
+                    title: "Checkout loading issue",
+                    description: "Please try opening in a new tab",
+                    variant: "destructive",
+                  });
+                }}
               />
             )}
+          </div>
+          <div className="flex justify-center pt-4">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                if (checkoutUrl) {
+                  window.open(checkoutUrl, '_blank');
+                }
+              }}
+            >
+              <ExternalLink className="h-4 w-4 mr-2" />
+              Open in New Tab
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
