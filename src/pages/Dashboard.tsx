@@ -163,7 +163,7 @@ const Dashboard = () => {
               </CardContent>
             </Card>
 
-            <Card className="border-2 hover:shadow-lg transition-all cursor-pointer">
+            <Card className="border-2 hover:shadow-lg transition-all cursor-pointer" onClick={() => navigate("/content-calendar")}>
               <CardHeader>
                 <div className="h-12 w-12 rounded-lg bg-secondary/10 flex items-center justify-center mb-4">
                   <Calendar className="h-6 w-6 text-secondary" />
@@ -178,7 +178,7 @@ const Dashboard = () => {
               </CardContent>
             </Card>
 
-            <Card className="border-2 hover:shadow-lg transition-all cursor-pointer">
+            <Card className="border-2 hover:shadow-lg transition-all cursor-pointer" onClick={() => navigate("/progress")}>
               <CardHeader>
                 <div className="h-12 w-12 rounded-lg bg-accent/10 flex items-center justify-center mb-4">
                   <TrendingUp className="h-6 w-6 text-accent" />
