@@ -13,8 +13,9 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { format, addDays, parseISO } from "date-fns";
+import { format, addDays, parseISO, startOfWeek, getWeek, getMonth, getYear } from "date-fns";
 import { PostingFrequencySelector } from "@/components/PostingFrequencySelector";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface PlanTask {
   id: string;
@@ -65,6 +66,7 @@ const ContentCalendar = () => {
   const [currentUserId, setCurrentUserId] = useState<string>("");
   const [deletingPlanId, setDeletingPlanId] = useState<string | null>(null);
   const [planToDelete, setPlanToDelete] = useState<string | null>(null);
+  const [planDuration, setPlanDuration] = useState<"weekly" | "monthly">("weekly");
 
   useEffect(() => {
     fetchPlans();
@@ -338,7 +340,8 @@ const ContentCalendar = () => {
           quizResponseId: quizResponse.id,
           selectedTopics: quizResponse.selected_topics || [],
           targetAudience: quizResponse.target_audience || "",
-          postingDays: quizResponse.posting_days || ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
+          postingDays: quizResponse.posting_days || ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'],
+          duration: planDuration === "weekly" ? 7 : 30
         },
         headers: {
           Authorization: `Bearer ${session?.access_token}`
@@ -349,7 +352,7 @@ const ContentCalendar = () => {
 
       toast({
         title: "Plan generated!",
-        description: "Your new 7-day content plan is ready"
+        description: `Your new ${planDuration} content plan is ready`
       });
 
       await fetchPlans();
@@ -466,6 +469,26 @@ const ContentCalendar = () => {
     return plan.posting_days?.includes(dayOfWeek) ?? true;
   };
 
+  const getPlanWeekInfo = (plan: ContentPlan) => {
+    const startDate = parseISO(plan.start_date);
+    const weekNumber = getWeek(startDate);
+    const month = format(startDate, 'MMMM yyyy');
+    const year = getYear(startDate);
+    return { weekNumber, month, year };
+  };
+
+  const groupPlansByMonth = (plans: ContentPlan[]) => {
+    const grouped: { [key: string]: ContentPlan[] } = {};
+    plans.forEach(plan => {
+      const { month } = getPlanWeekInfo(plan);
+      if (!grouped[month]) {
+        grouped[month] = [];
+      }
+      grouped[month].push(plan);
+    });
+    return grouped;
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -511,13 +534,24 @@ const ContentCalendar = () => {
                   <Calendar className="h-8 w-8 text-primary" />
                   Content Calendar
                 </h1>
-                <p className="text-muted-foreground">Track your 7-day content plans</p>
+                <p className="text-muted-foreground">Track your content plans</p>
               </div>
             </div>
-            <Button onClick={generateNewPlan} disabled={generatingPlan}>
-              <Sparkles className="h-4 w-4 mr-2" />
-              {generatingPlan ? "Generating..." : "Generate New Plan"}
-            </Button>
+            <div className="flex items-center gap-4">
+              <Button onClick={generateNewPlan} disabled={generatingPlan}>
+                <Sparkles className="h-4 w-4 mr-2" />
+                {generatingPlan ? "Generating..." : "Generate New Plan"}
+              </Button>
+              <Select value={planDuration} onValueChange={(value: "weekly" | "monthly") => setPlanDuration(value)}>
+                <SelectTrigger className="w-[140px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="weekly">Weekly (7d)</SelectItem>
+                  <SelectItem value="monthly">Monthly (30d)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
           {/* Posting Frequency Selector */}
@@ -550,47 +584,58 @@ const ContentCalendar = () => {
                   <CardDescription>Select a plan to view</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-2">
-                  {plans.map((plan, idx) => {
-                    const visibleTasks = plan.tasks.filter(t => shouldShowDay(plan, t.day_number));
-                    const planCompleted = visibleTasks.filter(t => t.completed).length;
-                    const planTotal = visibleTasks.length;
-                    const isSelected = selectedPlan?.id === plan.id;
-                    const isDeleting = deletingPlanId === plan.id;
-                    
-                    return (
-                      <div key={plan.id} className="relative group">
-                        <Button
-                          variant={isSelected ? "default" : "outline"}
-                          className="w-full justify-start pr-10"
-                          onClick={() => setSelectedPlan(plan)}
-                          disabled={isDeleting}
-                        >
-                          <div className="flex flex-col items-start w-full">
-                            <span className="font-semibold">Plan #{plans.length - idx}</span>
-                            <span className="text-xs opacity-75">
-                              {planCompleted}/{planTotal} completed
-                            </span>
+                  {Object.entries(groupPlansByMonth(plans)).map(([month, monthPlans]) => (
+                    <div key={month} className="space-y-2">
+                      <h3 className="text-sm font-semibold text-muted-foreground px-2 pt-2">{month}</h3>
+                      {monthPlans.map((plan) => {
+                        const visibleTasks = plan.tasks.filter(t => shouldShowDay(plan, t.day_number));
+                        const planCompleted = visibleTasks.filter(t => t.completed).length;
+                        const planTotal = visibleTasks.length;
+                        const isSelected = selectedPlan?.id === plan.id;
+                        const isDeleting = deletingPlanId === plan.id;
+                        const { weekNumber } = getPlanWeekInfo(plan);
+                        const startDate = parseISO(plan.start_date);
+                        const endDate = addDays(startDate, plan.plan.length - 1);
+                        
+                        return (
+                          <div key={plan.id} className="relative group">
+                            <Button
+                              variant={isSelected ? "default" : "outline"}
+                              className="w-full justify-start pr-10"
+                              onClick={() => setSelectedPlan(plan)}
+                              disabled={isDeleting}
+                            >
+                              <div className="flex flex-col items-start w-full">
+                                <span className="font-semibold">Week {weekNumber}</span>
+                                <span className="text-xs opacity-75">
+                                  {format(startDate, 'MMM d')} - {format(endDate, 'MMM d')}
+                                </span>
+                                <span className="text-xs opacity-75">
+                                  {planCompleted}/{planTotal} completed
+                                </span>
+                              </div>
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setPlanToDelete(plan.id);
+                              }}
+                              disabled={isDeleting}
+                            >
+                              {isDeleting ? (
+                                <RefreshCw className="h-4 w-4 animate-spin" />
+                              ) : (
+                                <Trash2 className="h-4 w-4 text-destructive" />
+                              )}
+                            </Button>
                           </div>
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setPlanToDelete(plan.id);
-                          }}
-                          disabled={isDeleting}
-                        >
-                          {isDeleting ? (
-                            <RefreshCw className="h-4 w-4 animate-spin" />
-                          ) : (
-                            <Trash2 className="h-4 w-4 text-destructive" />
-                          )}
-                        </Button>
-                      </div>
-                    );
-                  })}
+                        );
+                      })}
+                    </div>
+                  ))}
                 </CardContent>
               </Card>
 
