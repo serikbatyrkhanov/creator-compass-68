@@ -3,10 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar, ArrowLeft, CheckCircle2, Circle, Sparkles, RefreshCw } from "lucide-react";
+import { Calendar, ArrowLeft, CheckCircle2, Circle, Sparkles, RefreshCw, Edit2, Save, X, StickyNote } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 
 interface PlanTask {
   id: string;
@@ -14,6 +18,8 @@ interface PlanTask {
   task_title: string;
   completed: boolean;
   completed_at: string | null;
+  notes: string;
+  updated_at?: string;
 }
 
 interface ContentPlan {
@@ -36,6 +42,11 @@ const ContentCalendar = () => {
   const [plans, setPlans] = useState<ContentPlan[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedPlan, setSelectedPlan] = useState<ContentPlan | null>(null);
+  const [editingTask, setEditingTask] = useState<PlanTask | null>(null);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [editedTitle, setEditedTitle] = useState("");
+  const [editedNotes, setEditedNotes] = useState("");
+  const [expandedNotes, setExpandedNotes] = useState<string | null>(null);
 
   useEffect(() => {
     fetchPlans();
@@ -140,6 +151,99 @@ const ContentCalendar = () => {
     }
   };
 
+  const openEditDialog = (task: PlanTask) => {
+    setEditingTask(task);
+    setEditedTitle(task.task_title);
+    setEditedNotes(task.notes || "");
+    setEditDialogOpen(true);
+  };
+
+  const saveTaskEdit = async () => {
+    if (!editingTask) return;
+
+    try {
+      const { error } = await supabase
+        .from("plan_tasks")
+        .update({
+          task_title: editedTitle,
+          notes: editedNotes
+        })
+        .eq("id", editingTask.id);
+
+      if (error) throw error;
+
+      // Update local state
+      const updateTask = (task: PlanTask) =>
+        task.id === editingTask.id
+          ? { ...task, task_title: editedTitle, notes: editedNotes }
+          : task;
+
+      setPlans(prevPlans =>
+        prevPlans.map(plan => ({
+          ...plan,
+          tasks: plan.tasks.map(updateTask)
+        }))
+      );
+
+      if (selectedPlan) {
+        setSelectedPlan(prev => prev ? ({
+          ...prev,
+          tasks: prev.tasks.map(updateTask)
+        }) : null);
+      }
+
+      toast({
+        title: "Task updated",
+        description: "Your changes have been saved successfully"
+      });
+
+      setEditDialogOpen(false);
+    } catch (error) {
+      console.error("Error updating task:", error);
+      toast({
+        title: "Error",
+        description: "Failed to update task",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const updateTaskNotes = async (taskId: string, notes: string) => {
+    try {
+      const { error } = await supabase
+        .from("plan_tasks")
+        .update({ notes })
+        .eq("id", taskId);
+
+      if (error) throw error;
+
+      // Update local state
+      const updateTask = (task: PlanTask) =>
+        task.id === taskId ? { ...task, notes } : task;
+
+      setPlans(prevPlans =>
+        prevPlans.map(plan => ({
+          ...plan,
+          tasks: plan.tasks.map(updateTask)
+        }))
+      );
+
+      if (selectedPlan) {
+        setSelectedPlan(prev => prev ? ({
+          ...prev,
+          tasks: prev.tasks.map(updateTask)
+        }) : null);
+      }
+    } catch (error) {
+      console.error("Error updating notes:", error);
+      toast({
+        title: "Error",
+        description: "Failed to update notes",
+        variant: "destructive"
+      });
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -174,7 +278,7 @@ const ContentCalendar = () => {
                 <p className="text-muted-foreground">Track your 7-day content plans</p>
               </div>
             </div>
-            <Button onClick={() => navigate("/quiz-results/" + plans[0]?.id)}>
+            <Button onClick={() => navigate("/quiz")}>
               <Sparkles className="h-4 w-4 mr-2" />
               Generate New Plan
             </Button>
@@ -287,25 +391,54 @@ const ContentCalendar = () => {
                           <div className="pt-2 border-t">
                             <p className="text-xs text-muted-foreground italic">💡 {day.tip}</p>
                           </div>
+
+                          {/* Quick Notes Section */}
                           {dayTask && (
-                            <Button
-                              size="sm"
-                              variant={isCompleted ? "default" : "outline"}
-                              className="w-full gap-2"
-                              onClick={() => toggleTaskCompletion(dayTask.id, isCompleted)}
-                            >
-                              {isCompleted ? (
-                                <>
-                                  <CheckCircle2 className="h-4 w-4" />
-                                  Completed
-                                </>
-                              ) : (
-                                <>
-                                  <Circle className="h-4 w-4" />
-                                  Mark Complete
-                                </>
-                              )}
-                            </Button>
+                            <div className="pt-2 border-t space-y-2">
+                              <div className="flex items-center gap-2">
+                                <StickyNote className="h-4 w-4 text-amber-500" />
+                                <Label className="text-xs font-medium">Quick Notes</Label>
+                              </div>
+                              <Textarea
+                                value={dayTask.notes || ""}
+                                onChange={(e) => updateTaskNotes(dayTask.id, e.target.value)}
+                                placeholder="Add notes, ideas, or reminders..."
+                                className="text-xs min-h-[60px] resize-none"
+                              />
+                            </div>
+                          )}
+
+                          {/* Action Buttons */}
+                          {dayTask && (
+                            <div className="flex gap-2 pt-2">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="flex-1 gap-2"
+                                onClick={() => openEditDialog(dayTask)}
+                              >
+                                <Edit2 className="h-3 w-3" />
+                                Edit
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant={isCompleted ? "default" : "outline"}
+                                className="flex-1 gap-2"
+                                onClick={() => toggleTaskCompletion(dayTask.id, isCompleted)}
+                              >
+                                {isCompleted ? (
+                                  <>
+                                    <CheckCircle2 className="h-4 w-4" />
+                                    Done
+                                  </>
+                                ) : (
+                                  <>
+                                    <Circle className="h-4 w-4" />
+                                    Complete
+                                  </>
+                                )}
+                              </Button>
+                            </div>
                           )}
                         </CardContent>
                       </Card>
@@ -316,6 +449,49 @@ const ContentCalendar = () => {
             </div>
           )}
         </div>
+
+        {/* Edit Task Dialog */}
+        <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+          <DialogContent className="sm:max-w-[500px]">
+            <DialogHeader>
+              <DialogTitle>Edit Task</DialogTitle>
+              <DialogDescription>
+                Customize your task title and add notes to help you stay on track
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <Label htmlFor="task-title">Task Title</Label>
+                <Input
+                  id="task-title"
+                  value={editedTitle}
+                  onChange={(e) => setEditedTitle(e.target.value)}
+                  placeholder="Enter task title..."
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="task-notes">Notes</Label>
+                <Textarea
+                  id="task-notes"
+                  value={editedNotes}
+                  onChange={(e) => setEditedNotes(e.target.value)}
+                  placeholder="Add notes, ideas, or reminders..."
+                  className="min-h-[120px]"
+                />
+              </div>
+            </div>
+            <div className="flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setEditDialogOpen(false)}>
+                <X className="h-4 w-4 mr-2" />
+                Cancel
+              </Button>
+              <Button onClick={saveTaskEdit}>
+                <Save className="h-4 w-4 mr-2" />
+                Save Changes
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
