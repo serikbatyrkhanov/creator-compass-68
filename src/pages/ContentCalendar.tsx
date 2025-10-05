@@ -66,6 +66,7 @@ const ContentCalendar = () => {
   const [currentUserId, setCurrentUserId] = useState<string>("");
   const [deletingPlanId, setDeletingPlanId] = useState<string | null>(null);
   const [planToDelete, setPlanToDelete] = useState<string | null>(null);
+  const [postingDays, setPostingDays] = useState<string[]>(['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']);
 
   useEffect(() => {
     fetchPlans();
@@ -80,6 +81,19 @@ const ContentCalendar = () => {
       }
       
       setCurrentUserId(user.id);
+
+      // Fetch latest quiz response to get posting days
+      const { data: quizResponse } = await supabase
+        .from("quiz_responses")
+        .select("posting_days")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .single();
+
+      if (quizResponse?.posting_days) {
+        setPostingDays(quizResponse.posting_days);
+      }
 
       // Fetch plans with their tasks
       const { data: plansData, error: plansError } = await supabase
@@ -339,7 +353,7 @@ const ContentCalendar = () => {
           quizResponseId: quizResponse.id,
           selectedTopics: quizResponse.selected_topics || [],
           targetAudience: quizResponse.target_audience || "",
-          postingDays: quizResponse.posting_days || ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'],
+          postingDays: postingDays,
           duration: 7
         },
         headers: {
@@ -555,12 +569,12 @@ const ContentCalendar = () => {
             </div>
           </div>
 
-          {/* Posting Frequency Selector */}
+           {/* Posting Frequency Selector */}
           {currentUserId && (
             <PostingFrequencySelector 
               userId={currentUserId}
               onUpdate={(newDays) => {
-                updatePlanForPostingDays(newDays);
+                setPostingDays(newDays);
               }}
             />
           )}
