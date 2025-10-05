@@ -1,0 +1,194 @@
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.58.0";
+
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+};
+
+serve(async (req) => {
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { headers: corsHeaders });
+  }
+
+  try {
+    const { archetype, topics, timeBucket, gear, selectedIdeas, quizResponseId } = await req.json();
+    
+    console.log('[GENERATE-PLAN] Starting generation', { archetype, timeBucket, ideasCount: selectedIdeas?.length });
+
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    if (!LOVABLE_API_KEY) {
+      throw new Error("LOVABLE_API_KEY not configured");
+    }
+
+    // Build context for AI
+    const topicsText = topics?.join(', ') || 'general content';
+    const gearText = gear?.join(', ') || 'basic equipment';
+    const timeText = timeBucket || '1-5 hours per week';
+    const ideasText = selectedIdeas?.map((idea: any) => `- ${idea.title}`).join('\n') || 'general content ideas';
+    
+    const systemPrompt = `You are an expert content planning coach. Create a realistic 7-day content creation schedule for a ${archetype} creator.
+The plan should be achievable within ${timeText} total per week.
+Available gear: ${gearText}
+Topics: ${topicsText}`;
+
+    const userPrompt = `Create a 7-day content plan based on these ideas:
+${ideasText}
+
+For each day (Monday-Sunday), provide:
+1. Main task for the day (specific action)
+2. Time estimate (in hours)
+3. Platform to post on (if applicable)
+4. Key tip or note
+
+The total time across all 7 days should fit within ${timeText}.
+Some days can be lighter (research, planning) and some heavier (filming, editing).
+Include at least 1 rest/planning day.`;
+
+    // Call Lovable AI with structured output
+    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "google/gemini-2.5-flash",
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: userPrompt }
+        ],
+        tools: [{
+          type: "function",
+          function: {
+            name: "generate_content_plan",
+            description: "Generate a 7-day content creation plan",
+            parameters: {
+              type: "object",
+              properties: {
+                days: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    properties: {
+                      day: { type: "string" },
+                      dayNumber: { type: "number" },
+                      task: { type: "string" },
+                      timeEstimate: { type: "string" },
+                      platform: { type: "string" },
+                      tip: { type: "string" }
+                    },
+                    required: ["day", "dayNumber", "task", "timeEstimate", "tip"],
+                    additionalProperties: false
+                  }
+                }
+              },
+              required: ["days"],
+              additionalProperties: false
+            }
+          }
+        }],
+        tool_choice: { type: "function", function: { name: "generate_content_plan" } }
+      }),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('[GENERATE-PLAN] AI API error:', response.status, errorText);
+      
+      if (response.status === 429) {
+        return new Response(
+          JSON.stringify({ error: "Rate limit exceeded. Please try again in a moment." }),
+          { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+      if (response.status === 402) {
+        return new Response(
+          JSON.stringify({ error: "AI credits exhausted. Please add credits to continue." }),
+          { status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+      
+      throw new Error(`AI API error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log('[GENERATE-PLAN] AI response received');
+
+    // Extract structured data from tool call
+    const toolCall = data.choices?.[0]?.message?.tool_calls?.[0];
+    if (!toolCall?.function?.arguments) {
+      throw new Error("No structured output from AI");
+    }
+
+    const generatedPlan = JSON.parse(toolCall.function.arguments);
+    console.log('[GENERATE-PLAN] Plan generated with', generatedPlan.days.length, 'days');
+
+    // Get user from auth header
+    const authHeader = req.headers.get('authorization');
+    let userId = null;
+    
+    if (authHeader) {
+      const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+      const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+      const supabase = createClient(supabaseUrl, supabaseKey);
+      
+      const token = authHeader.replace('Bearer ', '');
+      const { data: { user } } = await supabase.auth.getUser(token);
+      userId = user?.id;
+    }
+
+    // Save to database if user is authenticated
+    if (userId && quizResponseId) {
+      const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+      const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+      const supabase = createClient(supabaseUrl, supabaseKey);
+      
+      const { data: planData, error: dbError } = await supabase
+        .from('content_plans')
+        .insert({
+          user_id: userId,
+          quiz_response_id: quizResponseId,
+          plan: generatedPlan.days
+        })
+        .select()
+        .single();
+      
+      if (dbError) {
+        console.error('[GENERATE-PLAN] Error saving to DB:', dbError);
+      } else {
+        console.log('[GENERATE-PLAN] Saved to database with ID:', planData.id);
+        
+        // Create task entries for tracking
+        const tasks = generatedPlan.days.map((day: any) => ({
+          plan_id: planData.id,
+          user_id: userId,
+          day_number: day.dayNumber,
+          task_title: day.task,
+          completed: false
+        }));
+        
+        const { error: tasksError } = await supabase
+          .from('plan_tasks')
+          .insert(tasks);
+        
+        if (tasksError) {
+          console.error('[GENERATE-PLAN] Error creating tasks:', tasksError);
+        }
+      }
+    }
+
+    return new Response(
+      JSON.stringify({ plan: generatedPlan.days }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+
+  } catch (error) {
+    console.error('[GENERATE-PLAN] Error:', error);
+    const errorMessage = error instanceof Error ? error.message : "Failed to generate plan";
+    return new Response(
+      JSON.stringify({ error: errorMessage }),
+      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  }
+});

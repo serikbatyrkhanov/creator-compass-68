@@ -3,8 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar, TrendingUp, Target, LogOut, FileCheck } from "lucide-react";
+import { Calendar, TrendingUp, Target, LogOut, FileCheck, MessageCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { AIChatCoach } from "@/components/AIChatCoach";
 import ladderLogo from "@/assets/ladder-logo-transparent.png";
 
 const Dashboard = () => {
@@ -12,6 +13,7 @@ const Dashboard = () => {
   const { toast } = useToast();
   const [user, setUser] = useState<any>(null);
   const [lastQuizResult, setLastQuizResult] = useState<any>(null);
+  const [chatOpen, setChatOpen] = useState(false);
 
   useEffect(() => {
     // Check if user is authenticated
@@ -126,7 +128,7 @@ const Dashboard = () => {
           )}
 
           {/* Quick Actions */}
-          <div className={`grid gap-6 animate-slide-up ${lastQuizResult ? 'md:grid-cols-3' : 'md:grid-cols-3'}`}>
+          <div className={`grid gap-6 animate-slide-up ${lastQuizResult ? 'md:grid-cols-4' : 'md:grid-cols-4'}`}>
             <Card className="border-2 hover:shadow-lg transition-all cursor-pointer">
               <CardHeader>
                 <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
@@ -140,6 +142,23 @@ const Dashboard = () => {
               <CardContent>
                 <Button className="w-full" onClick={() => navigate("/quiz")}>
                   {lastQuizResult ? 'Retake Quiz' : 'Start Quiz'}
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card className="border-2 hover:shadow-lg transition-all cursor-pointer" onClick={() => setChatOpen(true)}>
+              <CardHeader>
+                <div className="h-12 w-12 rounded-lg bg-emerald-500/10 flex items-center justify-center mb-4">
+                  <MessageCircle className="h-6 w-6 text-emerald-600" />
+                </div>
+                <CardTitle>AI Content Coach</CardTitle>
+                <CardDescription>
+                  Get personalized advice and overcome creative blocks
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button className="w-full bg-emerald-600 hover:bg-emerald-700">
+                  Chat Now
                 </Button>
               </CardContent>
             </Card>
@@ -234,6 +253,8 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
+      
+      <AIChatCoach open={chatOpen} onOpenChange={setChatOpen} />
     </div>
   );
 };

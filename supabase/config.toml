@@ -5,3 +5,9 @@ verify_jwt = false
 
 [functions.generate-content-ideas]
 verify_jwt = false
+
+[functions.generate-content-plan]
+verify_jwt = false
+
+[functions.ai-coach-chat]
+verify_jwt = false

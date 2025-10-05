@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Check, TrendingUp, BookOpen, VideoIcon, Sparkles, Zap, Clock } from "lucide-react";
+import { Check, TrendingUp, BookOpen, VideoIcon, Sparkles, Zap, Clock, MessageCircle, Calendar } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ContentIdeasDialog } from "@/components/ContentIdeasDialog";
+import { ContentPlanDialog } from "@/components/ContentPlanDialog";
+import { AIChatCoach } from "@/components/AIChatCoach";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -285,8 +287,11 @@ const ArchetypeCard: React.FC<ArchetypeCardProps> = ({
 }) => {
   const recPlatforms = pickPlatforms(profile.platforms, time, extras);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [planDialogOpen, setPlanDialogOpen] = useState(false);
   const [ideas, setIdeas] = useState<any[]>([]);
+  const [plan, setPlan] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const [planLoading, setPlanLoading] = useState(false);
   const { toast } = useToast();
 
   const generateIdeas = async () => {
@@ -322,6 +327,45 @@ const ArchetypeCard: React.FC<ArchetypeCardProps> = ({
       setDialogOpen(false);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const generatePlan = async () => {
+    setPlanLoading(true);
+    setPlanDialogOpen(true);
+    
+    try {
+      // Use generated ideas if available, otherwise use example ideas
+      const selectedIdeas = ideas.length > 0 ? ideas : profile.ideas.map(idea => ({ title: idea }));
+
+      const { data, error } = await supabase.functions.invoke('generate-content-plan', {
+        body: {
+          archetype: profile.id,
+          topics: selectedTopics || [],
+          timeBucket: time,
+          gear: extras || [],
+          selectedIdeas,
+          quizResponseId
+        }
+      });
+
+      if (error) throw error;
+
+      if (data?.plan) {
+        setPlan(data.plan);
+      } else {
+        throw new Error('No plan returned');
+      }
+    } catch (err: any) {
+      console.error('Error generating plan:', err);
+      toast({
+        title: "Generation failed",
+        description: err.message || "Failed to generate content plan. Please try again.",
+        variant: "destructive"
+      });
+      setPlanDialogOpen(false);
+    } finally {
+      setPlanLoading(false);
     }
   };
 
@@ -399,7 +443,15 @@ const ArchetypeCard: React.FC<ArchetypeCardProps> = ({
                 <Sparkles className="h-4 w-4" />
                 Get 3 Starter Prompts
               </Button>
-              <Button variant="outline" className="rounded-2xl">Make 7‑Day Plan</Button>
+              <Button 
+                variant="outline" 
+                className="rounded-2xl gap-2"
+                onClick={generatePlan}
+                disabled={planLoading}
+              >
+                <Calendar className="h-4 w-4" />
+                Make 7‑Day Plan
+              </Button>
             </div>
           </div>
         </CardContent>
@@ -411,6 +463,14 @@ const ArchetypeCard: React.FC<ArchetypeCardProps> = ({
         ideas={ideas}
         loading={loading}
         onRegenerate={generateIdeas}
+      />
+      
+      <ContentPlanDialog
+        open={planDialogOpen}
+        onOpenChange={setPlanDialogOpen}
+        plan={plan}
+        loading={planLoading}
+        onRegenerate={generatePlan}
       />
     </motion.div>
   );
@@ -449,6 +509,7 @@ export default function ArchetypeResults(
 ) {
   const primaryProfile = PROFILES[primary];
   const secondaryProfile = PROFILES[secondary];
+  const [chatOpen, setChatOpen] = useState(false);
 
   // Build a display list with primary first, then secondary, then others (collapsed)
   const rest = orderedIds.filter((id) => id !== primary && id !== secondary);
@@ -463,10 +524,21 @@ export default function ArchetypeResults(
               Based on your quiz, here's your primary archetype and tailored platform recommendations.
             </p>
           </div>
-          <div className="flex items-center gap-2 rounded-2xl border bg-white/70 px-3 py-1 text-sm">
-            <Clock className="h-4 w-4" />
-            <span>Weekly time: </span>
-            <strong className="ml-1 capitalize">{time.replace(/_/g, " ")}</strong>
+          <div className="flex items-center gap-3">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setChatOpen(true)}
+              className="gap-2"
+            >
+              <MessageCircle className="h-4 w-4" />
+              AI Coach
+            </Button>
+            <div className="flex items-center gap-2 rounded-2xl border bg-white/70 px-3 py-1 text-sm">
+              <Clock className="h-4 w-4" />
+              <span>Weekly time: </span>
+              <strong className="ml-1 capitalize">{time.replace(/_/g, " ")}</strong>
+            </div>
           </div>
         </header>
 
@@ -484,10 +556,12 @@ export default function ArchetypeResults(
 
         <footer className="mx-auto mt-10 max-w-3xl text-center text-sm text-neutral-500">
           <p>
-            Tip: Click "Get 3 Starter Prompts" to generate ideas tuned to your archetype, topic, and time budget.
+            Tip: Use the "Get 3 Starter Prompts" button to generate personalized ideas, create a 7-day plan, or chat with the AI Coach for help anytime.
           </p>
         </footer>
       </div>
+      
+      <AIChatCoach open={chatOpen} onOpenChange={setChatOpen} />
     </div>
   );
 }
