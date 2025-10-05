@@ -343,6 +343,9 @@ const ContentCalendar = () => {
         return;
       }
 
+      // Use the latest posting days from the database
+      const latestPostingDays = quizResponse.posting_days || ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+
       const { data: { session } } = await supabase.auth.getSession();
       const { data, error } = await supabase.functions.invoke("generate-content-plan", {
         body: {
@@ -353,7 +356,7 @@ const ContentCalendar = () => {
           quizResponseId: quizResponse.id,
           selectedTopics: quizResponse.selected_topics || [],
           targetAudience: quizResponse.target_audience || "",
-          postingDays: postingDays,
+          postingDays: latestPostingDays,
           duration: 7
         },
         headers: {
