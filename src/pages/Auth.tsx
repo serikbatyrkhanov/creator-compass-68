@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Sparkles } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,6 +12,8 @@ import { useToast } from "@/hooks/use-toast";
 
 const Auth = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [checkoutUrl, setCheckoutUrl] = useState<string | null>(null);
+  const [showCheckoutModal, setShowCheckoutModal] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -49,12 +52,9 @@ const Auth = () => {
       // Store signup credentials for account creation after checkout
       sessionStorage.setItem('pendingSignup', JSON.stringify({ email, password, name }));
 
-      // Open a new tab immediately (before async call to prevent popup blockers)
-      const stripeTab = window.open('', '_blank');
-
       toast({
-        title: "Opening checkout...",
-        description: "Opening secure checkout in a new tab",
+        title: "Loading checkout...",
+        description: "Please wait while we prepare your checkout",
       });
 
       // Create checkout session without authentication
@@ -63,19 +63,15 @@ const Auth = () => {
       });
 
       if (response.error) {
-        if (stripeTab) stripeTab.close();
         throw response.error;
       }
 
-      // Redirect to Stripe checkout
+      // Show checkout in modal
       if (response.data?.url) {
-        if (stripeTab) {
-          stripeTab.location.href = response.data.url;
-        } else {
-          window.location.assign(response.data.url);
-        }
+        setCheckoutUrl(response.data.url);
+        setShowCheckoutModal(true);
+        setIsLoading(false);
       } else {
-        if (stripeTab) stripeTab.close();
         throw new Error("No checkout URL received");
       }
     } catch (error: any) {
@@ -173,7 +169,25 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden p-4">
+    <>
+      <Dialog open={showCheckoutModal} onOpenChange={setShowCheckoutModal}>
+        <DialogContent className="max-w-4xl h-[90vh] p-0">
+          <DialogHeader className="p-4 pb-0">
+            <DialogTitle>Complete Your Subscription</DialogTitle>
+          </DialogHeader>
+          <div className="flex-1 overflow-hidden">
+            {checkoutUrl && (
+              <iframe
+                src={checkoutUrl}
+                className="w-full h-full border-0"
+                title="Stripe Checkout"
+              />
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <div className="min-h-screen flex items-center justify-center relative overflow-hidden p-4">
       {/* Animated gradient background */}
       <div className="absolute inset-0 bg-[var(--gradient-hero)] opacity-20"></div>
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,hsl(var(--primary)/0.15),transparent_50%)]"></div>
@@ -340,6 +354,7 @@ const Auth = () => {
         </Card>
       </div>
     </div>
+    </>
   );
 };
 
