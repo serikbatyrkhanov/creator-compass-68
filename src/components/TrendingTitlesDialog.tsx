@@ -4,9 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { TrendingUp, RefreshCw, Copy, Check } from "lucide-react";
+import { TrendingUp, RefreshCw, Copy, Check, Calendar } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 import logo from "@/assets/climbley-logo.png";
 
 interface TrendingTitlesDialogProps {
@@ -18,8 +19,10 @@ export const TrendingTitlesDialog = ({ open, onOpenChange }: TrendingTitlesDialo
   const [prompt, setPrompt] = useState("");
   const [titles, setTitles] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
+  const [generatingPlans, setGeneratingPlans] = useState(false);
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const generateTitles = async () => {
     if (!prompt.trim()) {
@@ -97,6 +100,60 @@ export const TrendingTitlesDialog = ({ open, onOpenChange }: TrendingTitlesDialo
     }
   };
 
+  const generatePlansFromTitles = async () => {
+    if (titles.length === 0) {
+      toast({
+        title: "No titles available",
+        description: "Generate titles first before creating plans",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setGeneratingPlans(true);
+
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        throw new Error("User not authenticated");
+      }
+
+      const { data, error } = await supabase.functions.invoke("generate-plans-from-titles", {
+        body: { 
+          titles,
+          userId: user.id 
+        },
+      });
+
+      if (error) throw error;
+
+      if (data?.success) {
+        toast({
+          title: "Plans created!",
+          description: `Successfully created ${data.plansCreated} content plans from ${data.titlesUsed} titles`,
+        });
+        
+        // Close dialog and navigate to content calendar
+        onOpenChange(false);
+        setTimeout(() => {
+          navigate("/content-calendar");
+        }, 500);
+      } else {
+        throw new Error("Failed to create plans");
+      }
+    } catch (error: any) {
+      console.error("Error generating plans:", error);
+      toast({
+        title: "Plan generation failed",
+        description: error.message || "Failed to create content plans. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setGeneratingPlans(false);
+    }
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-4xl max-h-[90vh] flex flex-col">
@@ -143,20 +200,40 @@ export const TrendingTitlesDialog = ({ open, onOpenChange }: TrendingTitlesDialo
           {/* Results Section */}
           {titles.length > 0 && (
             <div className="space-y-3 flex-1 flex flex-col min-h-0">
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between flex-wrap gap-2">
                 <div className="flex items-center gap-2">
                   <h3 className="text-sm font-semibold">Generated Titles</h3>
                   <Badge variant="secondary">{titles.length} titles</Badge>
                 </div>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={copyAllTitles}
-                  className="gap-2"
-                >
-                  <Copy className="h-3 w-3" />
-                  Copy All
-                </Button>
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={copyAllTitles}
+                    className="gap-2"
+                  >
+                    <Copy className="h-3 w-3" />
+                    Copy All
+                  </Button>
+                  <Button
+                    size="sm"
+                    onClick={generatePlansFromTitles}
+                    disabled={generatingPlans}
+                    className="gap-2 bg-gradient-to-r from-primary to-secondary"
+                  >
+                    {generatingPlans ? (
+                      <>
+                        <RefreshCw className="h-3 w-3 animate-spin" />
+                        Creating Plans...
+                      </>
+                    ) : (
+                      <>
+                        <Calendar className="h-3 w-3" />
+                        Generate Plans
+                      </>
+                    )}
+                  </Button>
+                </div>
               </div>
 
               <ScrollArea className="flex-1 rounded-lg border bg-muted/30 p-4">
