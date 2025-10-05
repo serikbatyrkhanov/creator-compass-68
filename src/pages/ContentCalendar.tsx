@@ -583,57 +583,59 @@ const ContentCalendar = () => {
                   <CardTitle className="text-lg">Your Plans</CardTitle>
                   <CardDescription>Select a plan to view</CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-2">
+                <CardContent className="space-y-4">
                   {Object.entries(groupPlansByMonth(plans)).map(([month, monthPlans]) => (
-                    <div key={month} className="space-y-2">
-                      <h3 className="text-sm font-semibold text-muted-foreground px-2 pt-2">{month}</h3>
-                      {monthPlans.map((plan) => {
-                        const visibleTasks = plan.tasks.filter(t => shouldShowDay(plan, t.day_number));
-                        const planCompleted = visibleTasks.filter(t => t.completed).length;
-                        const planTotal = visibleTasks.length;
-                        const isSelected = selectedPlan?.id === plan.id;
-                        const isDeleting = deletingPlanId === plan.id;
-                        const { weekNumber } = getPlanWeekInfo(plan);
-                        const startDate = parseISO(plan.start_date);
-                        const endDate = addDays(startDate, plan.plan.length - 1);
-                        
-                        return (
-                          <div key={plan.id} className="relative group">
-                            <Button
-                              variant={isSelected ? "default" : "outline"}
-                              className="w-full justify-start pr-10"
-                              onClick={() => setSelectedPlan(plan)}
-                              disabled={isDeleting}
-                            >
-                              <div className="flex flex-col items-start w-full">
-                                <span className="font-semibold">Week {weekNumber}</span>
-                                <span className="text-xs opacity-75">
-                                  {format(startDate, 'MMM d')} - {format(endDate, 'MMM d')}
-                                </span>
-                                <span className="text-xs opacity-75">
-                                  {planCompleted}/{planTotal} completed
-                                </span>
-                              </div>
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setPlanToDelete(plan.id);
-                              }}
-                              disabled={isDeleting}
-                            >
-                              {isDeleting ? (
-                                <RefreshCw className="h-4 w-4 animate-spin" />
-                              ) : (
-                                <Trash2 className="h-4 w-4 text-destructive" />
-                              )}
-                            </Button>
-                          </div>
-                        );
-                      })}
+                    <div key={month} className="space-y-2 border rounded-lg p-3 bg-muted/30">
+                      <h3 className="text-sm font-semibold text-foreground px-1 pb-1 border-b">{month}</h3>
+                      <div className="space-y-2">
+                        {monthPlans.map((plan) => {
+                          const visibleTasks = plan.tasks.filter(t => shouldShowDay(plan, t.day_number));
+                          const planCompleted = visibleTasks.filter(t => t.completed).length;
+                          const planTotal = visibleTasks.length;
+                          const isSelected = selectedPlan?.id === plan.id;
+                          const isDeleting = deletingPlanId === plan.id;
+                          const { weekNumber } = getPlanWeekInfo(plan);
+                          const startDate = parseISO(plan.start_date);
+                          const endDate = addDays(startDate, plan.plan.length - 1);
+                          
+                          return (
+                            <div key={plan.id} className="relative group">
+                              <Button
+                                variant={isSelected ? "default" : "outline"}
+                                className="w-full justify-start pr-10 h-auto py-2"
+                                onClick={() => setSelectedPlan(plan)}
+                                disabled={isDeleting}
+                              >
+                                <div className="flex flex-col items-start w-full gap-0.5 overflow-hidden">
+                                  <span className="font-semibold text-sm truncate w-full">Week {weekNumber}</span>
+                                  <span className="text-xs opacity-75 truncate w-full">
+                                    {format(startDate, 'MMM d')} - {format(endDate, 'MMM d')}
+                                  </span>
+                                  <span className="text-xs opacity-75 truncate w-full">
+                                    {planCompleted}/{planTotal} done
+                                  </span>
+                                </div>
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setPlanToDelete(plan.id);
+                                }}
+                                disabled={isDeleting}
+                              >
+                                {isDeleting ? (
+                                  <RefreshCw className="h-4 w-4 animate-spin" />
+                                ) : (
+                                  <Trash2 className="h-4 w-4 text-destructive" />
+                                )}
+                              </Button>
+                            </div>
+                          );
+                        })}
+                      </div>
                     </div>
                   ))}
                 </CardContent>
