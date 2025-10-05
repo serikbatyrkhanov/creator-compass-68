@@ -3,11 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar, ArrowLeft, CheckCircle2, Circle, Sparkles, RefreshCw, Edit2, Save, X, StickyNote } from "lucide-react";
+import { Calendar, ArrowLeft, CheckCircle2, Circle, Sparkles, RefreshCw, Edit2, Save, X, StickyNote, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -62,6 +63,8 @@ const ContentCalendar = () => {
   const [expandedNotes, setExpandedNotes] = useState<string | null>(null);
   const [generatingPlan, setGeneratingPlan] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string>("");
+  const [deletingPlanId, setDeletingPlanId] = useState<string | null>(null);
+  const [planToDelete, setPlanToDelete] = useState<string | null>(null);
 
   useEffect(() => {
     fetchPlans();
@@ -371,6 +374,98 @@ const ContentCalendar = () => {
     return format(date, 'EEE, MMM d');
   };
 
+  const deletePlan = async (planId: string) => {
+    setDeletingPlanId(planId);
+    setPlanToDelete(null);
+    try {
+      // Delete tasks first
+      const { error: tasksError } = await supabase
+        .from("plan_tasks")
+        .delete()
+        .eq("plan_id", planId);
+
+      if (tasksError) throw tasksError;
+
+      // Delete the plan
+      const { error: planError } = await supabase
+        .from("content_plans")
+        .delete()
+        .eq("id", planId);
+
+      if (planError) throw planError;
+
+      // Update local state
+      const updatedPlans = plans.filter(p => p.id !== planId);
+      setPlans(updatedPlans);
+      
+      // Select the first remaining plan or null
+      if (selectedPlan?.id === planId) {
+        setSelectedPlan(updatedPlans[0] || null);
+      }
+
+      toast({
+        title: "Plan deleted",
+        description: "Your content plan has been removed"
+      });
+    } catch (error) {
+      console.error("Error deleting plan:", error);
+      toast({
+        title: "Error deleting plan",
+        description: "Failed to delete the plan",
+        variant: "destructive"
+      });
+    } finally {
+      setDeletingPlanId(null);
+    }
+  };
+
+  const updatePlanForPostingDays = async (newPostingDays: string[]) => {
+    if (!selectedPlan) return;
+
+    try {
+      // Update the plan's posting days
+      const { error } = await supabase
+        .from("content_plans")
+        .update({ posting_days: newPostingDays })
+        .eq("id", selectedPlan.id);
+
+      if (error) throw error;
+
+      // Update local state
+      setPlans(plans.map(p => 
+        p.id === selectedPlan.id 
+          ? { ...p, posting_days: newPostingDays }
+          : p
+      ));
+
+      if (selectedPlan) {
+        setSelectedPlan({ ...selectedPlan, posting_days: newPostingDays });
+      }
+
+      toast({
+        title: "Plan updated",
+        description: "Your posting schedule has been applied to this plan"
+      });
+    } catch (error) {
+      console.error("Error updating plan:", error);
+      toast({
+        title: "Error",
+        description: "Failed to update plan posting schedule",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const getDayOfWeek = (date: Date): string => {
+    return format(date, 'EEEE').toLowerCase();
+  };
+
+  const shouldShowDay = (plan: ContentPlan, dayNumber: number): boolean => {
+    const actualDate = getActualDate(plan, dayNumber);
+    const dayOfWeek = getDayOfWeek(actualDate);
+    return plan.posting_days?.includes(dayOfWeek) ?? true;
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -382,8 +477,22 @@ const ContentCalendar = () => {
     );
   }
 
-  const completedTasks = selectedPlan?.tasks.filter(t => t.completed).length || 0;
-  const totalTasks = selectedPlan?.tasks.length || 0;
+  const completedTasks = selectedPlan?.tasks.filter(t => {
+    // Only count tasks for days that should be shown
+    if (selectedPlan && !shouldShowDay(selectedPlan, t.day_number)) {
+      return false;
+    }
+    return t.completed;
+  }).length || 0;
+  
+  const totalTasks = selectedPlan?.tasks.filter(t => {
+    // Only count tasks for days that should be shown
+    if (selectedPlan && !shouldShowDay(selectedPlan, t.day_number)) {
+      return false;
+    }
+    return true;
+  }).length || 0;
+  
   const progressPercentage = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 
   return (
@@ -415,11 +524,8 @@ const ContentCalendar = () => {
           {currentUserId && (
             <PostingFrequencySelector 
               userId={currentUserId}
-              onUpdate={() => {
-                toast({
-                  title: "Schedule updated",
-                  description: "Generate a new plan to apply your posting schedule"
-                });
+              onUpdate={(newDays) => {
+                updatePlanForPostingDays(newDays);
               }}
             />
           )}
@@ -445,24 +551,44 @@ const ContentCalendar = () => {
                 </CardHeader>
                 <CardContent className="space-y-2">
                   {plans.map((plan, idx) => {
-                    const planCompleted = plan.tasks.filter(t => t.completed).length;
-                    const planTotal = plan.tasks.length;
+                    const visibleTasks = plan.tasks.filter(t => shouldShowDay(plan, t.day_number));
+                    const planCompleted = visibleTasks.filter(t => t.completed).length;
+                    const planTotal = visibleTasks.length;
                     const isSelected = selectedPlan?.id === plan.id;
+                    const isDeleting = deletingPlanId === plan.id;
                     
                     return (
-                      <Button
-                        key={plan.id}
-                        variant={isSelected ? "default" : "outline"}
-                        className="w-full justify-start"
-                        onClick={() => setSelectedPlan(plan)}
-                      >
-                        <div className="flex flex-col items-start w-full">
-                          <span className="font-semibold">Plan #{plans.length - idx}</span>
-                          <span className="text-xs opacity-75">
-                            {planCompleted}/{planTotal} completed
-                          </span>
-                        </div>
-                      </Button>
+                      <div key={plan.id} className="relative group">
+                        <Button
+                          variant={isSelected ? "default" : "outline"}
+                          className="w-full justify-start pr-10"
+                          onClick={() => setSelectedPlan(plan)}
+                          disabled={isDeleting}
+                        >
+                          <div className="flex flex-col items-start w-full">
+                            <span className="font-semibold">Plan #{plans.length - idx}</span>
+                            <span className="text-xs opacity-75">
+                              {planCompleted}/{planTotal} completed
+                            </span>
+                          </div>
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setPlanToDelete(plan.id);
+                          }}
+                          disabled={isDeleting}
+                        >
+                          {isDeleting ? (
+                            <RefreshCw className="h-4 w-4 animate-spin" />
+                          ) : (
+                            <Trash2 className="h-4 w-4 text-destructive" />
+                          )}
+                        </Button>
+                      </div>
                     );
                   })}
                 </CardContent>
@@ -505,6 +631,11 @@ const ContentCalendar = () => {
                     const isCompleted = dayTask?.completed || false;
                     const actualDate = getActualDate(selectedPlan, day.dayNumber);
                     const dateDisplay = formatDateDisplay(actualDate);
+                    
+                    // Check if this day should be shown based on posting schedule
+                    if (!shouldShowDay(selectedPlan, day.dayNumber)) {
+                      return null;
+                    }
 
                     return (
                       <Card
@@ -814,6 +945,31 @@ const ContentCalendar = () => {
             </div>
           </DialogContent>
         </Dialog>
+
+        {/* Delete Plan Confirmation Dialog */}
+        <AlertDialog open={!!planToDelete} onOpenChange={() => setPlanToDelete(null)}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Delete Content Plan?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This will permanently delete this content plan and all its tasks. This action cannot be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={() => {
+                  if (planToDelete) {
+                    deletePlan(planToDelete);
+                  }
+                }}
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              >
+                Delete Plan
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </div>
   );
