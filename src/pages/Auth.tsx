@@ -47,6 +47,10 @@ const Auth = () => {
     console.log("Starting signup process for:", email);
 
     try {
+      // Sign out any existing session to prevent auto-redirect interference
+      console.log("Signing out any existing session...");
+      await supabase.auth.signOut();
+      
       // Store signup credentials for account creation after checkout
       sessionStorage.setItem('pendingSignup', JSON.stringify({ email, password, name }));
 
@@ -56,6 +60,7 @@ const Auth = () => {
       });
 
       // Create checkout session
+      console.log("Creating checkout session...");
       const response = await supabase.functions.invoke('create-checkout', {
         body: { email }
       });
@@ -63,6 +68,8 @@ const Auth = () => {
       if (response.error) {
         throw response.error;
       }
+
+      console.log("Checkout session created, redirecting to:", response.data?.url);
 
       // Redirect to Stripe Checkout
       if (response.data?.url) {
