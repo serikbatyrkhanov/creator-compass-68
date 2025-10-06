@@ -45,39 +45,31 @@ serve(async (req) => {
       logStep("New customer created", { customerId: customer.id });
     }
 
-    // Create subscription with 7-day trial and incomplete payment
-    const subscription = await stripe.subscriptions.create({
+    // Get origin for redirect URLs
+    const origin = req.headers.get("origin") || "http://localhost:8080";
+
+    // Create Checkout Session with trial period
+    const session = await stripe.checkout.sessions.create({
       customer: customer.id,
-      items: [
+      mode: "subscription",
+      line_items: [
         {
           price: "price_1SEvmHRzLvTDNnZmJm0o3nKV",
+          quantity: 1,
         },
       ],
-      trial_period_days: 7,
-      payment_behavior: "default_incomplete",
-      payment_settings: {
-        payment_method_types: ["card"],
-        save_default_payment_method: "on_subscription",
+      subscription_data: {
+        trial_period_days: 7,
       },
-      expand: ["latest_invoice.payment_intent"],
+      success_url: `${origin}/checkout-success`,
+      cancel_url: `${origin}/auth`,
     });
 
-    logStep("Subscription created", { subscriptionId: subscription.id });
-
-    // Get the client secret from the payment intent
-    const invoice = subscription.latest_invoice as Stripe.Invoice;
-    const paymentIntent = invoice.payment_intent as Stripe.PaymentIntent;
-
-    if (!paymentIntent?.client_secret) {
-      throw new Error("Failed to create payment intent");
-    }
-
-    logStep("Payment intent created", { clientSecret: paymentIntent.client_secret.substring(0, 20) + "..." });
+    logStep("Checkout session created", { sessionId: session.id, url: session.url });
 
     return new Response(JSON.stringify({ 
-      clientSecret: paymentIntent.client_secret,
+      url: session.url,
       customerId: customer.id,
-      subscriptionId: subscription.id
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,

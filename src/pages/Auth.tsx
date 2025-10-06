@@ -4,20 +4,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Loader2 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "@/assets/climbley-logo.png";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Elements } from "@stripe/react-stripe-js";
-import { stripePromise } from "@/lib/stripe";
-import { StripePaymentForm } from "@/components/StripePaymentForm";
 
 const Auth = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [clientSecret, setClientSecret] = useState<string | null>(null);
-  const [showCheckoutModal, setShowCheckoutModal] = useState(false);
   const [showResetForm, setShowResetForm] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -58,11 +51,11 @@ const Auth = () => {
       sessionStorage.setItem('pendingSignup', JSON.stringify({ email, password, name }));
 
       toast({
-        title: "Preparing checkout...",
-        description: "Setting up your secure payment form",
+        title: "Redirecting to checkout...",
+        description: "Taking you to secure payment page",
       });
 
-      // Create payment intent for subscription
+      // Create checkout session
       const response = await supabase.functions.invoke('create-checkout', {
         body: { email }
       });
@@ -71,13 +64,11 @@ const Auth = () => {
         throw response.error;
       }
 
-      // Show checkout modal with payment form
-      if (response.data?.clientSecret) {
-        setClientSecret(response.data.clientSecret);
-        setShowCheckoutModal(true);
-        setIsLoading(false);
+      // Redirect to Stripe Checkout
+      if (response.data?.url) {
+        window.location.href = response.data.url;
       } else {
-        throw new Error("Failed to create payment session");
+        throw new Error("Failed to create checkout session");
       }
     } catch (error: any) {
       console.error("Signup error:", error);
@@ -174,61 +165,7 @@ const Auth = () => {
   };
 
   return (
-    <>
-      <Dialog open={showCheckoutModal} onOpenChange={setShowCheckoutModal}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>Complete Your Subscription</DialogTitle>
-            <DialogDescription>
-              Enter your payment details to start your 7-day free trial
-            </DialogDescription>
-          </DialogHeader>
-          <div className="py-4">
-            {clientSecret ? (
-              <Elements stripe={stripePromise} options={{ clientSecret }}>
-                <StripePaymentForm 
-                  onSuccess={async () => {
-                    // Get stored signup data
-                    const pendingData = sessionStorage.getItem('pendingSignup');
-                    if (pendingData) {
-                      const { email, password, name } = JSON.parse(pendingData);
-                      
-                      // Create the user account
-                      const { error } = await supabase.auth.signUp({
-                        email,
-                        password,
-                        options: {
-                          data: { name },
-                          emailRedirectTo: `${window.location.origin}/dashboard`,
-                        },
-                      });
-
-                      if (error) {
-                        toast({
-                          title: "Account creation failed",
-                          description: error.message,
-                          variant: "destructive",
-                        });
-                      } else {
-                        sessionStorage.removeItem('pendingSignup');
-                        setShowCheckoutModal(false);
-                        navigate("/dashboard");
-                      }
-                    }
-                  }}
-                />
-              </Elements>
-            ) : (
-              <div className="flex flex-col items-center justify-center py-8">
-                <Loader2 className="h-8 w-8 animate-spin text-primary mb-4" />
-                <p className="text-sm text-muted-foreground">Loading payment form...</p>
-              </div>
-            )}
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      <div className="min-h-screen flex items-center justify-center relative overflow-hidden p-4">
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden p-4">
       {/* Animated gradient background */}
       <div className="absolute inset-0 bg-[var(--gradient-hero)] opacity-20"></div>
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,hsl(var(--primary)/0.15),transparent_50%)]"></div>
@@ -411,7 +348,6 @@ const Auth = () => {
         </Card>
       </div>
     </div>
-    </>
   );
 };
 
