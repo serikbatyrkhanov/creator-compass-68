@@ -18,18 +18,34 @@ serve(async (req) => {
   }
 
   try {
-    logStep("Function started");
+    logStep("Function started - create-checkout invoked");
+    logStep("Request method", { method: req.method });
+    logStep("Request headers", { 
+      origin: req.headers.get("origin"),
+      contentType: req.headers.get("content-type")
+    });
 
     // Get email from request body for non-authenticated signups
-    const { email } = await req.json();
+    const body = await req.json();
+    logStep("Request body received", { body });
+    
+    const { email } = body;
     
     if (!email) {
+      logStep("ERROR: Email is missing from request");
       throw new Error("Email is required");
     }
 
     logStep("Processing checkout for email", { email });
 
-    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", { 
+    const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
+    if (!stripeKey) {
+      logStep("ERROR: STRIPE_SECRET_KEY not found in environment");
+      throw new Error("Stripe configuration error");
+    }
+    logStep("Stripe key found, initializing Stripe client");
+
+    const stripe = new Stripe(stripeKey, { 
       apiVersion: "2025-08-27.basil" 
     });
 
@@ -76,8 +92,16 @@ serve(async (req) => {
     });
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
-    logStep("ERROR in create-checkout", { message: errorMessage });
-    return new Response(JSON.stringify({ error: errorMessage }), {
+    const errorStack = error instanceof Error ? error.stack : undefined;
+    logStep("ERROR in create-checkout", { 
+      message: errorMessage,
+      stack: errorStack,
+      error: error
+    });
+    return new Response(JSON.stringify({ 
+      error: errorMessage,
+      details: "Check edge function logs for more information"
+    }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,
     });

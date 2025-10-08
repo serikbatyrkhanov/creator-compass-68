@@ -60,16 +60,27 @@ const Auth = () => {
       });
 
       // Create checkout session
-      console.log("Creating checkout session...");
+      console.log("Creating checkout session for email:", email);
+      console.log("Calling create-checkout edge function...");
+      
       const response = await supabase.functions.invoke('create-checkout', {
         body: { email }
       });
 
+      console.log("Full response from create-checkout:", JSON.stringify(response, null, 2));
+
       if (response.error) {
-        throw response.error;
+        console.error("Edge function returned error:", response.error);
+        throw new Error(response.error.message || "Failed to create checkout session");
       }
 
-      console.log("Checkout session created, redirecting to:", response.data?.url);
+      if (!response.data) {
+        console.error("No data returned from edge function");
+        throw new Error("No checkout session data returned");
+      }
+
+      console.log("Checkout session created successfully");
+      console.log("Checkout URL:", response.data.url);
 
       // Redirect to Stripe Checkout
       if (response.data?.url) {
@@ -78,10 +89,17 @@ const Auth = () => {
         throw new Error("Failed to create checkout session");
       }
     } catch (error: any) {
-      console.error("Signup error:", error);
+      console.error("Signup error details:", {
+        message: error.message,
+        error: error,
+        stack: error.stack
+      });
+      
+      const errorMessage = error.message || error.msg || "Failed to start checkout. Please try again.";
+      
       toast({
-        title: "Error",
-        description: error.message || "Failed to start checkout",
+        title: "Checkout Error",
+        description: errorMessage,
         variant: "destructive",
       });
       setIsLoading(false);
