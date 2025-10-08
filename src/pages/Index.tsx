@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowRight, Target, TrendingUp, Calendar, Star } from "lucide-react";
 import { Link } from "react-router-dom";
-import logo from "@/assets/climbley-logo.png";
+import logo from "@/assets/climbley-logo-new.png";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import slider1 from "@/assets/slider/1.jpg";
