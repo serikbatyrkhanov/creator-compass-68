@@ -262,10 +262,6 @@ Posting days should have actual content creation and publishing tasks.`;
             console.error('[GENERATE-PLAN] Error creating tasks:', tasksError);
           }
         }
-        
-        if (tasksError) {
-          console.error('[GENERATE-PLAN] Error creating tasks:', tasksError);
-        }
       }
     }
 
