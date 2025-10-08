@@ -1,0 +1,148 @@
+{
+  "common": {
+    "loading": "Cargando...",
+    "error": "Error",
+    "success": "Éxito",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "continue": "Continuar",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "submit": "Enviar",
+    "close": "Cerrar"
+  },
+  "nav": {
+    "home": "Inicio",
+    "dashboard": "Panel",
+    "quiz": "Test",
+    "calendar": "Calendario",
+    "progress": "Progreso",
+    "contact": "Contacto",
+    "signOut": "Cerrar Sesión",
+    "signIn": "Iniciar Sesión",
+    "signUp": "Registrarse"
+  },
+  "index": {
+    "hero": {
+      "title": "Haz Crecer tu Canal de YouTube con",
+      "subtitle": "Crecimiento Impulsado por IA",
+      "description": "Transforma tu viaje en YouTube con estrategias de contenido personalizadas, coaching de IA y análisis basados en datos.",
+      "cta": "Comenzar Test Gratis",
+      "learnMore": "Saber Más"
+    },
+    "features": {
+      "title": "Todo lo que Necesitas para Tener Éxito",
+      "quiz": {
+        "title": "Test Personalizado",
+        "description": "Descubre tu arquetipo único de creador y obtén estrategias personalizadas"
+      },
+      "ai": {
+        "title": "Coach de IA",
+        "description": "Obtén orientación 24/7 y respuestas a tus preguntas sobre crecimiento en YouTube"
+      },
+      "calendar": {
+        "title": "Calendario de Contenido",
+        "description": "Planifica y organiza tu contenido con herramientas de programación inteligentes"
+      },
+      "analytics": {
+        "title": "Seguimiento de Progreso",
+        "description": "Monitorea tu crecimiento con análisis detallados e insights"
+      }
+    },
+    "pricing": {
+      "title": "Precios Simples",
+      "monthly": "Mensual",
+      "price": "$29",
+      "perMonth": "/mes",
+      "features": {
+        "quiz": "Test de personalidad completo",
+        "coaching": "Coaching con IA",
+        "calendar": "Calendario de contenido",
+        "tracking": "Seguimiento de progreso",
+        "ideas": "Ideas de contenido ilimitadas",
+        "support": "Soporte prioritario"
+      },
+      "cta": "Comenzar"
+    }
+  },
+  "auth": {
+    "signIn": "Iniciar Sesión",
+    "signUp": "Registrarse",
+    "email": "Correo Electrónico",
+    "password": "Contraseña",
+    "name": "Nombre Completo",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "noAccount": "¿No tienes cuenta?",
+    "hasAccount": "¿Ya tienes una cuenta?",
+    "resetPassword": "Restablecer Contraseña",
+    "sendReset": "Enviar Enlace",
+    "backToSignIn": "Volver a Iniciar Sesión"
+  },
+  "dashboard": {
+    "welcome": "Bienvenido de nuevo",
+    "subtitle": "Tu Panel de Crecimiento en YouTube",
+    "quickActions": {
+      "title": "Acciones Rápidas",
+      "retakeQuiz": "Repetir Test",
+      "aiCoach": "Coach de IA",
+      "planContent": "Planificar Contenido",
+      "viewProgress": "Ver Progreso"
+    },
+    "journey": {
+      "title": "Tu Viaje de Crecimiento",
+      "takeQuiz": {
+        "title": "Hacer el Test",
+        "description": "Descubre tu arquetipo de creador"
+      },
+      "getResults": {
+        "title": "Obtén tus Resultados",
+        "description": "Insights personalizados y estrategia"
+      },
+      "planContent": {
+        "title": "Planifica tu Contenido",
+        "description": "Crea tu calendario de contenido"
+      },
+      "trackProgress": {
+        "title": "Seguir Progreso",
+        "description": "Monitorea tus métricas de crecimiento"
+      }
+    }
+  },
+  "quiz": {
+    "title": "Descubre tu Arquetipo de Creador",
+    "description": "Responde estas preguntas para recibir estrategias personalizadas de crecimiento en YouTube",
+    "question": "Pregunta",
+    "of": "de",
+    "finish": "Finalizar Test"
+  },
+  "calendar": {
+    "title": "Calendario de Contenido",
+    "addTask": "Añadir Tarea",
+    "taskName": "Nombre de Tarea",
+    "dueDate": "Fecha de Vencimiento",
+    "priority": "Prioridad",
+    "category": "Categoría",
+    "low": "Baja",
+    "medium": "Media",
+    "high": "Alta",
+    "ideas": "Ideas de Contenido",
+    "trending": "Títulos en Tendencia",
+    "plan": "Plan de Contenido"
+  },
+  "coach": {
+    "title": "Coach de IA",
+    "placeholder": "Pregúntame cualquier cosa sobre cómo hacer crecer tu canal de YouTube...",
+    "send": "Enviar",
+    "greeting": "¡Hola! Soy tu coach de IA para crecimiento en YouTube. ¿Cómo puedo ayudarte hoy?"
+  },
+  "checkout": {
+    "success": "¡Pago Exitoso!",
+    "creating": "Creando tu cuenta...",
+    "almostThere": "¡Casi listo! Completa la configuración de tu cuenta",
+    "email": "Correo Electrónico",
+    "name": "Tu Nombre",
+    "password": "Elige una Contraseña",
+    "createAccount": "Crear Cuenta",
+    "error": "Error al crear cuenta"
+  }
+}

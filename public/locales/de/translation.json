@@ -1,0 +1,148 @@
+{
+  "common": {
+    "loading": "Laden...",
+    "error": "Fehler",
+    "success": "Erfolg",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "continue": "Weiter",
+    "back": "Zurück",
+    "next": "Weiter",
+    "submit": "Absenden",
+    "close": "Schließen"
+  },
+  "nav": {
+    "home": "Startseite",
+    "dashboard": "Dashboard",
+    "quiz": "Quiz",
+    "calendar": "Kalender",
+    "progress": "Fortschritt",
+    "contact": "Kontakt",
+    "signOut": "Abmelden",
+    "signIn": "Anmelden",
+    "signUp": "Registrieren"
+  },
+  "index": {
+    "hero": {
+      "title": "Lassen Sie Ihren YouTube-Kanal wachsen mit",
+      "subtitle": "KI-gesteuertem Wachstum",
+      "description": "Transformieren Sie Ihre YouTube-Reise mit personalisierten Content-Strategien, KI-Coaching und datengesteuerten Insights.",
+      "cta": "Kostenloses Quiz starten",
+      "learnMore": "Mehr erfahren"
+    },
+    "features": {
+      "title": "Alles, was Sie zum Erfolg brauchen",
+      "quiz": {
+        "title": "Personalisiertes Quiz",
+        "description": "Entdecken Sie Ihren einzigartigen Creator-Archetyp und erhalten Sie maßgeschneiderte Strategien"
+      },
+      "ai": {
+        "title": "KI-Coach",
+        "description": "Erhalten Sie 24/7 Beratung und Antworten auf Ihre YouTube-Wachstumsfragen"
+      },
+      "calendar": {
+        "title": "Content-Kalender",
+        "description": "Planen und organisieren Sie Ihren Content mit intelligenten Planungstools"
+      },
+      "analytics": {
+        "title": "Fortschrittsverfolgung",
+        "description": "Überwachen Sie Ihr Wachstum mit detaillierten Analysen und Insights"
+      }
+    },
+    "pricing": {
+      "title": "Einfache Preisgestaltung",
+      "monthly": "Monatlich",
+      "price": "$29",
+      "perMonth": "/Monat",
+      "features": {
+        "quiz": "Vollständiges Persönlichkeitsquiz",
+        "coaching": "KI-gestütztes Coaching",
+        "calendar": "Content-Kalender",
+        "tracking": "Fortschrittsverfolgung",
+        "ideas": "Unbegrenzte Content-Ideen",
+        "support": "Prioritäts-Support"
+      },
+      "cta": "Loslegen"
+    }
+  },
+  "auth": {
+    "signIn": "Anmelden",
+    "signUp": "Registrieren",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "name": "Vollständiger Name",
+    "forgotPassword": "Passwort vergessen?",
+    "noAccount": "Noch kein Konto?",
+    "hasAccount": "Bereits ein Konto?",
+    "resetPassword": "Passwort zurücksetzen",
+    "sendReset": "Link senden",
+    "backToSignIn": "Zurück zur Anmeldung"
+  },
+  "dashboard": {
+    "welcome": "Willkommen zurück",
+    "subtitle": "Ihr YouTube-Wachstums-Dashboard",
+    "quickActions": {
+      "title": "Schnellaktionen",
+      "retakeQuiz": "Quiz wiederholen",
+      "aiCoach": "KI-Coach",
+      "planContent": "Content planen",
+      "viewProgress": "Fortschritt anzeigen"
+    },
+    "journey": {
+      "title": "Ihre Wachstumsreise",
+      "takeQuiz": {
+        "title": "Quiz machen",
+        "description": "Entdecken Sie Ihren Creator-Archetyp"
+      },
+      "getResults": {
+        "title": "Ergebnisse erhalten",
+        "description": "Personalisierte Insights und Strategie"
+      },
+      "planContent": {
+        "title": "Content planen",
+        "description": "Erstellen Sie Ihren Content-Kalender"
+      },
+      "trackProgress": {
+        "title": "Fortschritt verfolgen",
+        "description": "Überwachen Sie Ihre Wachstumsmetriken"
+      }
+    }
+  },
+  "quiz": {
+    "title": "Entdecken Sie Ihren Creator-Archetyp",
+    "description": "Beantworten Sie diese Fragen, um personalisierte YouTube-Wachstumsstrategien zu erhalten",
+    "question": "Frage",
+    "of": "von",
+    "finish": "Quiz beenden"
+  },
+  "calendar": {
+    "title": "Content-Kalender",
+    "addTask": "Aufgabe hinzufügen",
+    "taskName": "Aufgabenname",
+    "dueDate": "Fälligkeitsdatum",
+    "priority": "Priorität",
+    "category": "Kategorie",
+    "low": "Niedrig",
+    "medium": "Mittel",
+    "high": "Hoch",
+    "ideas": "Content-Ideen",
+    "trending": "Trending-Titel",
+    "plan": "Content-Plan"
+  },
+  "coach": {
+    "title": "KI-Coach",
+    "placeholder": "Fragen Sie mich alles über das Wachstum Ihres YouTube-Kanals...",
+    "send": "Senden",
+    "greeting": "Hallo! Ich bin Ihr KI-Coach für YouTube-Wachstum. Wie kann ich Ihnen heute helfen?"
+  },
+  "checkout": {
+    "success": "Zahlung Erfolgreich!",
+    "creating": "Ihr Konto wird erstellt...",
+    "almostThere": "Fast fertig! Schließen Sie die Kontoeinrichtung ab",
+    "email": "E-Mail",
+    "name": "Ihr Name",
+    "password": "Passwort wählen",
+    "createAccount": "Konto erstellen",
+    "error": "Fehler beim Erstellen des Kontos"
+  }
+}

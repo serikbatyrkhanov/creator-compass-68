@@ -5,6 +5,8 @@ import { Link } from "react-router-dom";
 import logo from "@/assets/climbley-logo-new.png";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslation } from "react-i18next";
+import { LanguageSelector } from "@/components/LanguageSelector";
 import slider1 from "@/assets/slider/1.jpg";
 import slider2 from "@/assets/slider/2.jpg";
 import slider4 from "@/assets/slider/4.jpg";
@@ -47,6 +49,7 @@ const sliderImages = [{
   alt: "Lifestyle vlog couple"
 }];
 const Index = () => {
+  const { t } = useTranslation();
   const [currentSlide, setCurrentSlide] = useState(0);
   useEffect(() => {
     const timer = setInterval(() => {
@@ -60,11 +63,14 @@ const Index = () => {
         <div className="flex items-center gap-2">
           <img src={logo} alt="Climbley" className="h-24 w-auto" />
         </div>
-        <Link to="/auth">
-          <Button variant="outline" className="rounded-full">
-            Get Started
-          </Button>
-        </Link>
+        <div className="flex items-center gap-4">
+          <LanguageSelector />
+          <Link to="/auth">
+            <Button variant="outline" className="rounded-full">
+              {t('nav.signUp')}
+            </Button>
+          </Link>
+        </div>
       </nav>
 
       {/* Hero Section with Image Slider */}
@@ -106,7 +112,7 @@ const Index = () => {
           }} transition={{
             delay: 0.2
           }} className="inline-block px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-sm font-medium text-white mb-4">
-              Your Content Journey Starts Here
+              {t('index.hero.title')}
             </motion.div>
             
             <motion.h1 initial={{
@@ -140,7 +146,7 @@ const Index = () => {
           }} transition={{
             delay: 0.5
           }} className="text-lg lg:text-xl max-w-2xl text-zinc-50">
-              Climbley helps you identify your niche, create content plans, stay consistent, and track your progress
+              {t('index.hero.description')}
             </motion.p>
 
             <motion.p initial={{
@@ -166,12 +172,12 @@ const Index = () => {
           }} className="flex flex-col sm:flex-row gap-4 pt-4">
               <Link to="/auth">
                 <Button size="lg" className="rounded-full gap-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:opacity-90 transition-opacity text-white shadow-lg shadow-purple-500/50">
-                  Start Free • 7-Day Trial
+                  {t('index.hero.cta')}
                   <ArrowRight className="h-4 w-4" />
                 </Button>
               </Link>
               <Button size="lg" variant="outline" className="rounded-full bg-white/10 backdrop-blur-sm border-white/30 text-white hover:bg-white/20">
-                Watch 60-sec Demo
+                {t('index.hero.learnMore')}
               </Button>
             </motion.div>
           </div>
@@ -190,9 +196,9 @@ const Index = () => {
             <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-6">
               <Target className="h-6 w-6 text-primary" />
             </div>
-            <h3 className="text-xl font-semibold mb-3">Find Your Niche</h3>
+            <h3 className="text-xl font-semibold mb-3">{t('index.features.quiz.title')}</h3>
             <p className="text-muted-foreground">
-              Discover your perfect content niche with our smart questionnaire that analyzes your skills, passions, and market demand.
+              {t('index.features.quiz.description')}
             </p>
           </div>
 
@@ -200,9 +206,9 @@ const Index = () => {
             <div className="h-12 w-12 rounded-lg bg-secondary/10 flex items-center justify-center mb-6">
               <Calendar className="h-6 w-6 text-secondary" />
             </div>
-            <h3 className="text-xl font-semibold mb-3">Plan Content</h3>
+            <h3 className="text-xl font-semibold mb-3">{t('index.features.calendar.title')}</h3>
             <p className="text-muted-foreground">
-              Stay consistent with AI-powered content ideas, scheduling tools, and reminders to keep your audience engaged.
+              {t('index.features.calendar.description')}
             </p>
           </div>
 
@@ -210,9 +216,9 @@ const Index = () => {
             <div className="h-12 w-12 rounded-lg bg-accent/10 flex items-center justify-center mb-6">
               <TrendingUp className="h-6 w-6 text-accent" />
             </div>
-            <h3 className="text-xl font-semibold mb-3">Track Growth</h3>
+            <h3 className="text-xl font-semibold mb-3">{t('index.features.analytics.title')}</h3>
             <p className="text-muted-foreground">
-              Monitor your progress with beautiful charts, celebrate milestones, and get insights to optimize your strategy.
+              {t('index.features.analytics.description')}
             </p>
           </div>
         </div>

@@ -17,8 +17,11 @@ import { useToast } from "@/hooks/use-toast";
 import { AIChatCoach } from "@/components/AIChatCoach";
 import { TrendingTitlesDialog } from "@/components/TrendingTitlesDialog";
 import logo from "@/assets/climbley-logo.png";
+import { useTranslation } from "react-i18next";
+import { LanguageSelector } from "@/components/LanguageSelector";
 
 const Dashboard = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [user, setUser] = useState<any>(null);
@@ -133,12 +136,13 @@ const Dashboard = () => {
             <img src={logo} alt="Climbley Logo" className="h-8 w-auto" />
           </div>
           <div className="flex items-center gap-4">
+            <LanguageSelector />
             <span className="text-sm text-muted-foreground">
               {user.email}
             </span>
             <Button variant="ghost" size="sm" onClick={handleSignOut}>
               <LogOut className="h-4 w-4 mr-2" />
-              Sign Out
+              {t('nav.signOut')}
             </Button>
           </div>
         </div>
@@ -150,10 +154,10 @@ const Dashboard = () => {
           {/* Welcome Section */}
           <div className="animate-fade-in">
             <h1 className="text-4xl font-bold mb-2">
-              Welcome back, {user.user_metadata?.name || "Creator"}! 👋
+              {t('dashboard.welcome')}, {user.user_metadata?.name || "Creator"}! 👋
             </h1>
             <p className="text-muted-foreground text-lg">
-              Let's continue building your creator empire
+              {t('dashboard.subtitle')}
             </p>
           </div>
 
@@ -191,14 +195,14 @@ const Dashboard = () => {
                 <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
                   <Target className="h-6 w-6 text-primary" />
                 </div>
-                <CardTitle>Find Your Niche</CardTitle>
+                <CardTitle>{t('dashboard.quickActions.retakeQuiz')}</CardTitle>
                 <CardDescription>
-                  {lastQuizResult ? 'Retake the quiz to update your niche' : 'Take our questionnaire to discover your perfect content niche'}
+                  {lastQuizResult ? t('dashboard.journey.takeQuiz.description') : t('dashboard.journey.takeQuiz.description')}
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <Button className="w-full" onClick={() => navigate("/quiz")}>
-                  {lastQuizResult ? 'Retake Quiz' : 'Start Quiz'}
+                  {lastQuizResult ? t('dashboard.quickActions.retakeQuiz') : t('quiz.title')}
                 </Button>
               </CardContent>
             </Card>
@@ -208,14 +212,14 @@ const Dashboard = () => {
                 <div className="h-12 w-12 rounded-lg bg-emerald-500/10 flex items-center justify-center mb-4">
                   <MessageCircle className="h-6 w-6 text-emerald-600" />
                 </div>
-                <CardTitle>AI Content Coach</CardTitle>
+                <CardTitle>{t('dashboard.quickActions.aiCoach')}</CardTitle>
                 <CardDescription>
-                  Get personalized advice and overcome creative blocks
+                  {t('coach.greeting')}
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <Button className="w-full bg-emerald-600 hover:bg-emerald-700">
-                  Chat Now
+                  {t('coach.send')}
                 </Button>
               </CardContent>
             </Card>
@@ -225,14 +229,14 @@ const Dashboard = () => {
                 <div className="h-12 w-12 rounded-lg bg-purple-500/10 flex items-center justify-center mb-4">
                   <Sparkles className="h-6 w-6 text-purple-600" />
                 </div>
-                <CardTitle>Trending Titles</CardTitle>
+                <CardTitle>{t('calendar.trending')}</CardTitle>
                 <CardDescription>
-                  Generate 50 viral content titles with AI
+                  {t('calendar.plan')}
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <Button className="w-full bg-purple-600 hover:bg-purple-700">
-                  Generate Titles
+                  {t('calendar.trending')}
                 </Button>
               </CardContent>
             </Card>
@@ -242,13 +246,13 @@ const Dashboard = () => {
                 <div className="h-12 w-12 rounded-lg bg-secondary/10 flex items-center justify-center mb-4">
                   <Calendar className="h-6 w-6 text-secondary" />
                 </div>
-                <CardTitle>Content Calendar</CardTitle>
+                <CardTitle>{t('calendar.title')}</CardTitle>
                 <CardDescription>
-                  Plan and schedule your upcoming content
+                  {t('dashboard.journey.planContent.description')}
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <Button variant="outline" className="w-full">View Calendar</Button>
+                <Button variant="outline" className="w-full">{t('nav.calendar')}</Button>
               </CardContent>
             </Card>
 
@@ -257,13 +261,13 @@ const Dashboard = () => {
                 <div className="h-12 w-12 rounded-lg bg-accent/10 flex items-center justify-center mb-4">
                   <TrendingUp className="h-6 w-6 text-accent" />
                 </div>
-                <CardTitle>Track Progress</CardTitle>
+                <CardTitle>{t('dashboard.journey.trackProgress.title')}</CardTitle>
                 <CardDescription>
-                  Monitor your growth and celebrate milestones
+                  {t('dashboard.journey.trackProgress.description')}
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <Button variant="outline" className="w-full">View Stats</Button>
+                <Button variant="outline" className="w-full">{t('nav.progress')}</Button>
               </CardContent>
             </Card>
           </div>

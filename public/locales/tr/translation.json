@@ -1,0 +1,148 @@
+{
+  "common": {
+    "loading": "Yükleniyor...",
+    "error": "Hata",
+    "success": "Başarılı",
+    "save": "Kaydet",
+    "cancel": "İptal",
+    "continue": "Devam Et",
+    "back": "Geri",
+    "next": "İleri",
+    "submit": "Gönder",
+    "close": "Kapat"
+  },
+  "nav": {
+    "home": "Ana Sayfa",
+    "dashboard": "Panel",
+    "quiz": "Test",
+    "calendar": "Takvim",
+    "progress": "İlerleme",
+    "contact": "İletişim",
+    "signOut": "Çıkış Yap",
+    "signIn": "Giriş Yap",
+    "signUp": "Kayıt Ol"
+  },
+  "index": {
+    "hero": {
+      "title": "YouTube Kanalınızı Büyütün",
+      "subtitle": "AI Destekli Büyüme ile",
+      "description": "Kişiselleştirilmiş içerik stratejileri, AI koçluğu ve veriye dayalı içgörülerle YouTube yolculuğunuzu dönüştürün.",
+      "cta": "Ücretsiz Teste Başla",
+      "learnMore": "Daha Fazla Bilgi"
+    },
+    "features": {
+      "title": "Başarılı Olmak İçin İhtiyacınız Olan Her Şey",
+      "quiz": {
+        "title": "Kişiselleştirilmiş Test",
+        "description": "Benzersiz içerik üreticisi arketipinizi keşfedin ve özel stratejiler alın"
+      },
+      "ai": {
+        "title": "AI Koç",
+        "description": "YouTube büyüme sorularınıza 7/24 rehberlik ve cevaplar alın"
+      },
+      "calendar": {
+        "title": "İçerik Takvimi",
+        "description": "Akıllı planlama araçlarıyla içeriğinizi planlayın ve organize edin"
+      },
+      "analytics": {
+        "title": "İlerleme Takibi",
+        "description": "Detaylı analitik ve içgörülerle büyümenizi izleyin"
+      }
+    },
+    "pricing": {
+      "title": "Basit Fiyatlandırma",
+      "monthly": "Aylık",
+      "price": "$29",
+      "perMonth": "/ay",
+      "features": {
+        "quiz": "Tam kişilik testi",
+        "coaching": "AI destekli koçluk",
+        "calendar": "İçerik takvimi",
+        "tracking": "İlerleme takibi",
+        "ideas": "Sınırsız içerik fikirleri",
+        "support": "Öncelikli destek"
+      },
+      "cta": "Başlayın"
+    }
+  },
+  "auth": {
+    "signIn": "Giriş Yap",
+    "signUp": "Kayıt Ol",
+    "email": "E-posta",
+    "password": "Şifre",
+    "name": "Ad Soyad",
+    "forgotPassword": "Şifrenizi mi unuttunuz?",
+    "noAccount": "Hesabınız yok mu?",
+    "hasAccount": "Zaten hesabınız var mı?",
+    "resetPassword": "Şifreyi Sıfırla",
+    "sendReset": "Sıfırlama Bağlantısı Gönder",
+    "backToSignIn": "Girişe Dön"
+  },
+  "dashboard": {
+    "welcome": "Tekrar hoş geldiniz",
+    "subtitle": "YouTube Büyüme Paneliniz",
+    "quickActions": {
+      "title": "Hızlı İşlemler",
+      "retakeQuiz": "Testi Tekrarla",
+      "aiCoach": "AI Koç",
+      "planContent": "İçerik Planla",
+      "viewProgress": "İlerlemeyi Görüntüle"
+    },
+    "journey": {
+      "title": "Büyüme Yolculuğunuz",
+      "takeQuiz": {
+        "title": "Testi Al",
+        "description": "İçerik üreticisi arketipinizi keşfedin"
+      },
+      "getResults": {
+        "title": "Sonuçlarınızı Alın",
+        "description": "Kişiselleştirilmiş içgörüler ve strateji"
+      },
+      "planContent": {
+        "title": "İçeriğinizi Planlayın",
+        "description": "İçerik takviminizi oluşturun"
+      },
+      "trackProgress": {
+        "title": "İlerlemeyi Takip Edin",
+        "description": "Büyüme metriklerinizi izleyin"
+      }
+    }
+  },
+  "quiz": {
+    "title": "İçerik Üreticisi Arketipinizi Keşfedin",
+    "description": "Kişiselleştirilmiş YouTube büyüme stratejileri almak için bu soruları cevaplayın",
+    "question": "Soru",
+    "of": "/",
+    "finish": "Testi Bitir"
+  },
+  "calendar": {
+    "title": "İçerik Takvimi",
+    "addTask": "Görev Ekle",
+    "taskName": "Görev Adı",
+    "dueDate": "Son Tarih",
+    "priority": "Öncelik",
+    "category": "Kategori",
+    "low": "Düşük",
+    "medium": "Orta",
+    "high": "Yüksek",
+    "ideas": "İçerik Fikirleri",
+    "trending": "Trend Başlıklar",
+    "plan": "İçerik Planı"
+  },
+  "coach": {
+    "title": "AI Koç",
+    "placeholder": "YouTube kanalınızı büyütme hakkında bana bir şey sorun...",
+    "send": "Gönder",
+    "greeting": "Merhaba! Ben YouTube büyüme AI koçunuzum. Bugün size nasıl yardımcı olabilirim?"
+  },
+  "checkout": {
+    "success": "Ödeme Başarılı!",
+    "creating": "Hesabınız oluşturuluyor...",
+    "almostThere": "Neredeyse tamam! Hesap kurulumunu tamamlayın",
+    "email": "E-posta",
+    "name": "Adınız",
+    "password": "Şifre Seçin",
+    "createAccount": "Hesap Oluştur",
+    "error": "Hesap oluşturma hatası"
+  }
+}

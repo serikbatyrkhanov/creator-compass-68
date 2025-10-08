@@ -1,0 +1,148 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "save": "Save",
+    "cancel": "Cancel",
+    "continue": "Continue",
+    "back": "Back",
+    "next": "Next",
+    "submit": "Submit",
+    "close": "Close"
+  },
+  "nav": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "quiz": "Quiz",
+    "calendar": "Calendar",
+    "progress": "Progress",
+    "contact": "Contact Us",
+    "signOut": "Sign Out",
+    "signIn": "Sign In",
+    "signUp": "Sign Up"
+  },
+  "index": {
+    "hero": {
+      "title": "Grow Your YouTube Channel with",
+      "subtitle": "AI-Powered Growth",
+      "description": "Transform your YouTube journey with personalized content strategies, AI coaching, and data-driven insights.",
+      "cta": "Start Free Quiz",
+      "learnMore": "Learn More"
+    },
+    "features": {
+      "title": "Everything You Need to Succeed",
+      "quiz": {
+        "title": "Personalized Quiz",
+        "description": "Discover your unique creator archetype and get tailored strategies"
+      },
+      "ai": {
+        "title": "AI Coach",
+        "description": "Get 24/7 guidance and answers to your YouTube growth questions"
+      },
+      "calendar": {
+        "title": "Content Calendar",
+        "description": "Plan and organize your content with smart scheduling tools"
+      },
+      "analytics": {
+        "title": "Progress Tracking",
+        "description": "Monitor your growth with detailed analytics and insights"
+      }
+    },
+    "pricing": {
+      "title": "Simple Pricing",
+      "monthly": "Monthly",
+      "price": "$29",
+      "perMonth": "/month",
+      "features": {
+        "quiz": "Complete personality quiz",
+        "coaching": "AI-powered coaching",
+        "calendar": "Content calendar",
+        "tracking": "Progress tracking",
+        "ideas": "Unlimited content ideas",
+        "support": "Priority support"
+      },
+      "cta": "Get Started"
+    }
+  },
+  "auth": {
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "email": "Email",
+    "password": "Password",
+    "name": "Full Name",
+    "forgotPassword": "Forgot password?",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "resetPassword": "Reset Password",
+    "sendReset": "Send Reset Link",
+    "backToSignIn": "Back to Sign In"
+  },
+  "dashboard": {
+    "welcome": "Welcome back",
+    "subtitle": "Your YouTube Growth Dashboard",
+    "quickActions": {
+      "title": "Quick Actions",
+      "retakeQuiz": "Retake Quiz",
+      "aiCoach": "AI Coach",
+      "planContent": "Plan Content",
+      "viewProgress": "View Progress"
+    },
+    "journey": {
+      "title": "Your Growth Journey",
+      "takeQuiz": {
+        "title": "Take the Quiz",
+        "description": "Discover your creator archetype"
+      },
+      "getResults": {
+        "title": "Get Your Results",
+        "description": "Personalized insights and strategy"
+      },
+      "planContent": {
+        "title": "Plan Your Content",
+        "description": "Create your content calendar"
+      },
+      "trackProgress": {
+        "title": "Track Progress",
+        "description": "Monitor your growth metrics"
+      }
+    }
+  },
+  "quiz": {
+    "title": "Discover Your Creator Archetype",
+    "description": "Answer these questions to receive personalized YouTube growth strategies",
+    "question": "Question",
+    "of": "of",
+    "finish": "Finish Quiz"
+  },
+  "calendar": {
+    "title": "Content Calendar",
+    "addTask": "Add Task",
+    "taskName": "Task Name",
+    "dueDate": "Due Date",
+    "priority": "Priority",
+    "category": "Category",
+    "low": "Low",
+    "medium": "Medium",
+    "high": "High",
+    "ideas": "Content Ideas",
+    "trending": "Trending Titles",
+    "plan": "Content Plan"
+  },
+  "coach": {
+    "title": "AI Coach",
+    "placeholder": "Ask me anything about growing your YouTube channel...",
+    "send": "Send",
+    "greeting": "Hi! I'm your AI YouTube growth coach. How can I help you today?"
+  },
+  "checkout": {
+    "success": "Payment Successful!",
+    "creating": "Creating your account...",
+    "almostThere": "Almost there! Complete your account setup",
+    "email": "Email",
+    "name": "Your Name",
+    "password": "Choose a Password",
+    "createAccount": "Create Account",
+    "error": "Error creating account"
+  }
+}
