@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import ladderLogo from "@/assets/ladder-logo-transparent.png";
+import logo from "@/assets/climbley-logo.png";
 
 const ContactUs = () => {
   const navigate = useNavigate();
@@ -98,10 +98,7 @@ const ContactUs = () => {
       <nav className="border-b bg-card/50 backdrop-blur-sm">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center gap-2">
-            <img src={ladderLogo} alt="Climbley Logo" className="h-7 w-7" />
-            <span className="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-              Climbley
-            </span>
+            <img src={logo} alt="Climbley Logo" className="h-8 w-auto" />
           </div>
           <Button variant="ghost" size="sm" onClick={() => navigate("/dashboard")}>
             <ArrowLeft className="h-4 w-4 mr-2" />

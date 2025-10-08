@@ -16,7 +16,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { AIChatCoach } from "@/components/AIChatCoach";
 import { TrendingTitlesDialog } from "@/components/TrendingTitlesDialog";
-import ladderLogo from "@/assets/ladder-logo-transparent.png";
+import logo from "@/assets/climbley-logo.png";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -130,10 +130,7 @@ const Dashboard = () => {
       <nav className="border-b bg-card/50 backdrop-blur-sm">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center gap-2">
-            <img src={ladderLogo} alt="Climbley Logo" className="h-7 w-7" />
-            <span className="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-              Climbley
-            </span>
+            <img src={logo} alt="Climbley Logo" className="h-8 w-auto" />
           </div>
           <div className="flex items-center gap-4">
             <span className="text-sm text-muted-foreground">

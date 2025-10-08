@@ -185,13 +185,8 @@ const Auth = () => {
       
       <div className="w-full max-w-md animate-scale-in relative z-10">
         <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center gap-2 mb-4 group">
-            <div className="p-2 rounded-xl bg-gradient-to-br from-primary to-secondary shadow-[var(--shadow-vibrant)] group-hover:scale-110 transition-transform">
-              <img src={logo} alt="Climbley" className="h-6 w-6" />
-            </div>
-            <span className="text-3xl font-bold bg-[var(--gradient-hero)] bg-clip-text text-transparent">
-              Climbley
-            </span>
+          <Link to="/" className="inline-flex items-center mb-4">
+            <img src={logo} alt="Climbley" className="h-12 w-auto" />
           </Link>
           <p className="text-muted-foreground text-lg">Empower your creator journey</p>
         </div>
