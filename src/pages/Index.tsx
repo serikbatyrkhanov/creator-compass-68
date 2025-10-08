@@ -15,33 +15,46 @@ import slider11 from "@/assets/slider/11.jpg";
 import slider13 from "@/assets/slider/13.jpg";
 import slider14 from "@/assets/slider/14.jpg";
 import slider15 from "@/assets/slider/15.jpg";
-
-const sliderImages = [
-  { src: slider1, alt: "Food content creator with ring light" },
-  { src: slider2, alt: "Podcast creator with microphone" },
-  { src: slider4, alt: "Beauty content creator" },
-  { src: slider5, alt: "Fitness lifestyle creator" },
-  { src: slider8, alt: "Tech tutorial creator" },
-  { src: slider10, alt: "Outdoor videography creator" },
-  { src: slider11, alt: "Educational content creator" },
-  { src: slider13, alt: "Fashion content creator" },
-  { src: slider14, alt: "Gaming streaming creator" },
-  { src: slider15, alt: "Lifestyle vlog couple" },
-];
-
+const sliderImages = [{
+  src: slider1,
+  alt: "Food content creator with ring light"
+}, {
+  src: slider2,
+  alt: "Podcast creator with microphone"
+}, {
+  src: slider4,
+  alt: "Beauty content creator"
+}, {
+  src: slider5,
+  alt: "Fitness lifestyle creator"
+}, {
+  src: slider8,
+  alt: "Tech tutorial creator"
+}, {
+  src: slider10,
+  alt: "Outdoor videography creator"
+}, {
+  src: slider11,
+  alt: "Educational content creator"
+}, {
+  src: slider13,
+  alt: "Fashion content creator"
+}, {
+  src: slider14,
+  alt: "Gaming streaming creator"
+}, {
+  src: slider15,
+  alt: "Lifestyle vlog couple"
+}];
 const Index = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
-
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % sliderImages.length);
+      setCurrentSlide(prev => (prev + 1) % sliderImages.length);
     }, 5000);
-
     return () => clearInterval(timer);
   }, []);
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted">
+  return <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted">
       {/* Navigation */}
       <nav className="container mx-auto px-4 py-6 flex justify-between items-center relative z-20">
         <div className="flex items-center gap-2">
@@ -59,20 +72,22 @@ const Index = () => {
         {/* Image Slider */}
         <div className="absolute inset-0">
           <AnimatePresence>
-            <motion.div
-              key={currentSlide}
-              initial={{ x: "100%", opacity: 1 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: "-100%", opacity: 1 }}
-              transition={{ duration: 0.6, ease: "easeInOut" }}
-              className="absolute inset-0"
-              style={{ willChange: "transform" }}
-            >
-              <img
-                src={sliderImages[currentSlide].src}
-                alt={sliderImages[currentSlide].alt}
-                className="w-full h-full object-cover brightness-110"
-              />
+            <motion.div key={currentSlide} initial={{
+            x: "100%",
+            opacity: 1
+          }} animate={{
+            x: 0,
+            opacity: 1
+          }} exit={{
+            x: "-100%",
+            opacity: 1
+          }} transition={{
+            duration: 0.6,
+            ease: "easeInOut"
+          }} className="absolute inset-0" style={{
+            willChange: "transform"
+          }}>
+              <img src={sliderImages[currentSlide].src} alt={sliderImages[currentSlide].alt} className="w-full h-full object-cover brightness-110" />
               {/* Lighter gradient overlay for text readability */}
               <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-transparent" />
             </motion.div>
@@ -82,71 +97,80 @@ const Index = () => {
         {/* Hero Content - Left Aligned */}
         <div className="relative z-10 container mx-auto px-4 h-full flex items-center">
           <div className="max-w-3xl text-left space-y-8">
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.2 }}
-              className="inline-block px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-sm font-medium text-white mb-4"
-            >
+            <motion.div initial={{
+            opacity: 0,
+            x: -20
+          }} animate={{
+            opacity: 1,
+            x: 0
+          }} transition={{
+            delay: 0.2
+          }} className="inline-block px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-sm font-medium text-white mb-4">
               Your Content Journey Starts Here
             </motion.div>
             
-            <motion.h1
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.3 }}
-              className="text-4xl lg:text-6xl font-bold tracking-tight text-white"
-            >
+            <motion.h1 initial={{
+            opacity: 0,
+            x: -20
+          }} animate={{
+            opacity: 1,
+            x: 0
+          }} transition={{
+            delay: 0.3
+          }} className="text-4xl lg:text-6xl font-bold tracking-tight text-white">
               You've Always Wanted to Create Content...
             </motion.h1>
 
-            <motion.p
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.4 }}
-              className="text-2xl lg:text-3xl font-semibold text-white/90"
-            >
-              ...but didn't have a plan
-            </motion.p>
+            <motion.p initial={{
+            opacity: 0,
+            x: -20
+          }} animate={{
+            opacity: 1,
+            x: 0
+          }} transition={{
+            delay: 0.4
+          }} className="text-2xl lg:text-3xl font-semibold text-white/90">...but didn't have a plan?</motion.p>
             
-            <motion.p
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.5 }}
-              className="text-lg lg:text-xl text-white/80 max-w-2xl"
-            >
+            <motion.p initial={{
+            opacity: 0,
+            x: -20
+          }} animate={{
+            opacity: 1,
+            x: 0
+          }} transition={{
+            delay: 0.5
+          }} className="text-lg lg:text-xl max-w-2xl text-zinc-50">
               Climbley helps you identify your niche, create content plans, stay consistent, and track your progress
             </motion.p>
 
-            <motion.p
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.6 }}
-              className="text-xl lg:text-2xl font-medium bg-gradient-to-r from-purple-300 via-pink-300 to-purple-300 bg-clip-text text-transparent"
-            >
+            <motion.p initial={{
+            opacity: 0,
+            x: -20
+          }} animate={{
+            opacity: 1,
+            x: 0
+          }} transition={{
+            delay: 0.6
+          }} className="text-xl font-medium bg-gradient-to-r from-purple-300 via-pink-300 to-purple-300 bg-clip-text lg:text-xl text-zinc-50">
               Your personal Coach, Trainer, and Producer — all in one
             </motion.p>
             
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.7 }}
-              className="flex flex-col sm:flex-row gap-4 pt-4"
-            >
+            <motion.div initial={{
+            opacity: 0,
+            x: -20
+          }} animate={{
+            opacity: 1,
+            x: 0
+          }} transition={{
+            delay: 0.7
+          }} className="flex flex-col sm:flex-row gap-4 pt-4">
               <Link to="/auth">
-                <Button 
-                  size="lg" 
-                  className="rounded-full gap-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:opacity-90 transition-opacity text-white shadow-lg shadow-purple-500/50"
-                >
+                <Button size="lg" className="rounded-full gap-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:opacity-90 transition-opacity text-white shadow-lg shadow-purple-500/50">
                   Start Free • 7-Day Trial
                   <ArrowRight className="h-4 w-4" />
                 </Button>
               </Link>
-              <Button 
-                size="lg" 
-                variant="outline" 
-                className="rounded-full bg-white/10 backdrop-blur-sm border-white/30 text-white hover:bg-white/20"
-              >
+              <Button size="lg" variant="outline" className="rounded-full bg-white/10 backdrop-blur-sm border-white/30 text-white hover:bg-white/20">
                 Watch 60-sec Demo
               </Button>
             </motion.div>
@@ -155,18 +179,7 @@ const Index = () => {
 
         {/* Slide indicators */}
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex gap-2">
-          {sliderImages.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentSlide(index)}
-              className={`w-2 h-2 rounded-full transition-all ${
-                index === currentSlide
-                  ? "bg-white w-8"
-                  : "bg-white/50 hover:bg-white/75"
-              }`}
-              aria-label={`Go to slide ${index + 1}`}
-            />
-          ))}
+          {sliderImages.map((_, index) => <button key={index} onClick={() => setCurrentSlide(index)} className={`w-2 h-2 rounded-full transition-all ${index === currentSlide ? "bg-white w-8" : "bg-white/50 hover:bg-white/75"}`} aria-label={`Go to slide ${index + 1}`} />)}
         </div>
       </section>
 
@@ -243,10 +256,7 @@ const Index = () => {
                 </li>
               </ul>
               <Link to="/auth">
-                <Button 
-                  size="lg" 
-                  className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90"
-                >
+                <Button size="lg" className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90">
                   Start Free Trial
                   <ArrowRight className="h-4 w-4 ml-2" />
                 </Button>
@@ -280,9 +290,7 @@ const Index = () => {
                   </div>
                 </div>
                 <div className="flex gap-1 mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                  ))}
+                  {[...Array(5)].map((_, i) => <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />)}
                 </div>
                 <p className="text-muted-foreground italic">
                   "Climbley helped me finally get consistent with my content. I went from posting randomly to having a clear plan every week!"
@@ -303,9 +311,7 @@ const Index = () => {
                   </div>
                 </div>
                 <div className="flex gap-1 mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                  ))}
+                  {[...Array(5)].map((_, i) => <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />)}
                 </div>
                 <p className="text-muted-foreground italic">
                   "The niche finder was eye-opening. I discovered a content angle I never considered, and my engagement tripled!"
@@ -326,9 +332,7 @@ const Index = () => {
                   </div>
                 </div>
                 <div className="flex gap-1 mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                  ))}
+                  {[...Array(5)].map((_, i) => <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />)}
                 </div>
                 <p className="text-muted-foreground italic">
                   "As a coach, trainer, and producer all in one? That's exactly what Climbley is. It's like having a content team in your pocket."
@@ -349,10 +353,7 @@ const Index = () => {
             Join thousands of creators building their audience and monetizing their passion.
           </p>
           <Link to="/auth">
-            <Button 
-              size="lg" 
-              className="rounded-full gap-2 bg-gradient-to-r from-primary to-secondary hover:opacity-90"
-            >
+            <Button size="lg" className="rounded-full gap-2 bg-gradient-to-r from-primary to-secondary hover:opacity-90">
               Get Started Free
               <ArrowRight className="h-4 w-4" />
             </Button>
@@ -367,8 +368,6 @@ const Index = () => {
           <span>Climbley © 2025</span>
         </div>
       </footer>
-    </div>
-  );
+    </div>;
 };
-
 export default Index;
