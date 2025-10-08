@@ -53,7 +53,7 @@ export const PostingFrequencySelector = ({ userId, onUpdate }: PostingFrequencyS
     }
   };
 
-  const toggleDay = async (day: string) => {
+  const toggleDay = (day: string) => {
     const newDays = selectedDays.includes(day)
       ? selectedDays.filter(d => d !== day)
       : [...selectedDays, day];
@@ -68,39 +68,7 @@ export const PostingFrequencySelector = ({ userId, onUpdate }: PostingFrequencyS
     }
 
     setSelectedDays(newDays);
-
-    try {
-      const { data: latestQuiz } = await supabase
-        .from('quiz_responses')
-        .select('id')
-        .eq('user_id', userId)
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .single();
-
-      if (latestQuiz) {
-        const { error } = await supabase
-          .from('quiz_responses')
-          .update({ posting_days: newDays })
-          .eq('id', latestQuiz.id);
-
-        if (error) throw error;
-
-        toast({
-          title: "Posting schedule updated",
-          description: `You'll post on ${newDays.length} day${newDays.length > 1 ? 's' : ''} per week`
-        });
-
-        onUpdate?.(newDays);
-      }
-    } catch (error) {
-      console.error('Error updating posting days:', error);
-      toast({
-        title: "Error",
-        description: "Failed to update posting schedule",
-        variant: "destructive"
-      });
-    }
+    onUpdate?.(newDays);
   };
 
   if (loading) return null;
