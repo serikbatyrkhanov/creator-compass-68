@@ -491,12 +491,19 @@ const ContentCalendar = () => {
 
       if (plansUpdateError) throw plansUpdateError;
 
-      // 3. For each plan, create tasks for newly selected days
+      // 3. For each plan, handle adding and removing tasks
       for (const plan of plans) {
         const oldPostingDays = plan.posting_days || [];
-        const newDays = newPostingDays.filter(day => !oldPostingDays.includes(day));
+        const oldPostingDaysSet = new Set(oldPostingDays);
+        const newPostingDaysSet = new Set(newPostingDays);
         
-        if (newDays.length > 0) {
+        // Find newly added days
+        const daysToAdd = newPostingDays.filter(day => !oldPostingDaysSet.has(day));
+        // Find removed days
+        const daysToRemove = oldPostingDays.filter(day => !newPostingDaysSet.has(day));
+        
+        // Create tasks for newly selected days
+        if (daysToAdd.length > 0) {
           const planDays = plan.plan;
           const tasksToCreate = [];
           
@@ -505,7 +512,7 @@ const ContentCalendar = () => {
             const dayOfWeek = getDayOfWeek(actualDate);
             
             // If this is a newly selected day and no task exists
-            if (newDays.includes(dayOfWeek) && !plan.tasks.find(t => t.day_number === planDay.dayNumber)) {
+            if (daysToAdd.includes(dayOfWeek) && !plan.tasks.find(t => t.day_number === planDay.dayNumber)) {
               tasksToCreate.push({
                 plan_id: plan.id,
                 user_id: user.id,
@@ -527,6 +534,29 @@ const ContentCalendar = () => {
               .insert(tasksToCreate);
             
             if (tasksError) throw tasksError;
+          }
+        }
+        
+        // Delete tasks for unselected days
+        if (daysToRemove.length > 0) {
+          const taskIdsToDelete = [];
+          
+          for (const task of plan.tasks) {
+            const actualDate = getActualDate(plan, task.day_number);
+            const dayOfWeek = getDayOfWeek(actualDate);
+            
+            if (daysToRemove.includes(dayOfWeek)) {
+              taskIdsToDelete.push(task.id);
+            }
+          }
+          
+          if (taskIdsToDelete.length > 0) {
+            const { error: deleteError } = await supabase
+              .from("plan_tasks")
+              .delete()
+              .in('id', taskIdsToDelete);
+            
+            if (deleteError) throw deleteError;
           }
         }
       }

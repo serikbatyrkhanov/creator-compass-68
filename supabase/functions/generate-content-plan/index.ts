@@ -230,18 +230,38 @@ Posting days should have actual content creation and publishing tasks.`;
       } else {
         console.log('[GENERATE-PLAN] Saved to database with ID:', planData.id);
         
-        // Create task entries for tracking
-        const tasks = generatedPlan.days.map((day: any) => ({
-          plan_id: planData.id,
-          user_id: userId,
-          day_number: day.dayNumber,
-          task_title: day.task,
-          completed: false
-        }));
+        // Helper to get day of week from day number and start date
+        const getDayOfWeek = (dayNum: number, startDateStr: string): string => {
+          const date = new Date(startDateStr);
+          date.setDate(date.getDate() + (dayNum - 1));
+          const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+          return days[date.getDay()];
+        };
         
-        const { error: tasksError } = await supabase
-          .from('plan_tasks')
-          .insert(tasks);
+        // Create task entries only for selected posting days
+        const selectedPostingDaysSet = new Set(postingDays || ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']);
+        const tasks = generatedPlan.days
+          .filter((day: any) => {
+            const dayOfWeek = getDayOfWeek(day.dayNumber, startDate);
+            return selectedPostingDaysSet.has(dayOfWeek);
+          })
+          .map((day: any) => ({
+            plan_id: planData.id,
+            user_id: userId,
+            day_number: day.dayNumber,
+            task_title: day.task,
+            completed: false
+          }));
+        
+        if (tasks.length > 0) {
+          const { error: tasksError } = await supabase
+            .from('plan_tasks')
+            .insert(tasks);
+          
+          if (tasksError) {
+            console.error('[GENERATE-PLAN] Error creating tasks:', tasksError);
+          }
+        }
         
         if (tasksError) {
           console.error('[GENERATE-PLAN] Error creating tasks:', tasksError);
