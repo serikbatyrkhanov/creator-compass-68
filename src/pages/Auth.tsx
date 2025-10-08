@@ -45,8 +45,8 @@ const Auth = () => {
     const name = formData.get("name") as string;
 
     try {
-      // Store signup credentials for account creation after checkout
-      sessionStorage.setItem('pendingSignup', JSON.stringify({ email, password, name }));
+      // Store signup credentials for account creation after checkout (using localStorage for cross-tab access)
+      localStorage.setItem('pendingSignup', JSON.stringify({ email, password, name }));
 
       // Create checkout session
       const response = await supabase.functions.invoke('create-checkout', {

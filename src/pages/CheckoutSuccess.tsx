@@ -14,11 +14,11 @@ const CheckoutSuccess = () => {
       try {
         console.log("Starting account creation after successful payment");
         
-        // Get stored signup credentials
-        const pendingSignup = sessionStorage.getItem('pendingSignup');
+        // Get stored signup credentials from localStorage (shared across tabs)
+        const pendingSignup = localStorage.getItem('pendingSignup');
         
         if (!pendingSignup) {
-          console.error("No pending signup found in sessionStorage");
+          console.error("No pending signup found in localStorage");
           throw new Error("No pending signup information found. Please sign up again.");
         }
 
@@ -61,8 +61,8 @@ const CheckoutSuccess = () => {
         console.log("Signed in successfully");
 
         // Clear stored credentials
-        sessionStorage.removeItem('pendingSignup');
-        console.log("Cleared sessionStorage");
+        localStorage.removeItem('pendingSignup');
+        console.log("Cleared localStorage");
 
         setStatus("success");
         
