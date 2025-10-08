@@ -469,76 +469,77 @@ const ContentCalendar = () => {
   };
 
   const updatePlanForPostingDays = async (newPostingDays: string[]) => {
-    if (!selectedPlan) return;
-
     try {
-      // Update the plan's posting days in the database
-      const { error } = await supabase
+      // 1. Update global user preference in quiz_responses
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { error: quizError } = await supabase
+        .from("quiz_responses")
+        .update({ posting_days: newPostingDays })
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(1);
+
+      if (quizError) throw quizError;
+
+      // 2. Update ALL content plans with the new posting schedule
+      const { error: plansUpdateError } = await supabase
         .from("content_plans")
         .update({ posting_days: newPostingDays })
-        .eq("id", selectedPlan.id);
+        .eq("user_id", user.id);
 
-      if (error) throw error;
+      if (plansUpdateError) throw plansUpdateError;
 
-      // Check if we need to create new tasks for newly selected days
-      const oldPostingDays = selectedPlan.posting_days || [];
-      const newDays = newPostingDays.filter(day => !oldPostingDays.includes(day));
-      
-      if (newDays.length > 0) {
-        // Find which day numbers need new tasks
-        const planDays = selectedPlan.plan;
-        const tasksToCreate = [];
+      // 3. For each plan, create tasks for newly selected days
+      for (const plan of plans) {
+        const oldPostingDays = plan.posting_days || [];
+        const newDays = newPostingDays.filter(day => !oldPostingDays.includes(day));
         
-        for (const planDay of planDays) {
-          const actualDate = getActualDate(selectedPlan, planDay.dayNumber);
-          const dayOfWeek = getDayOfWeek(actualDate);
+        if (newDays.length > 0) {
+          const planDays = plan.plan;
+          const tasksToCreate = [];
           
-          // If this is a newly selected day and no task exists
-          if (newDays.includes(dayOfWeek) && !selectedPlan.tasks.find(t => t.day_number === planDay.dayNumber)) {
-            tasksToCreate.push({
-              plan_id: selectedPlan.id,
-              user_id: currentUserId,
-              day_number: planDay.dayNumber,
-              task_title: planDay.task,
-              completed: false,
-              script_completed: false,
-              content_created: false,
-              content_edited: false,
-              content_published: false,
-              notes: ''
-            });
+          for (const planDay of planDays) {
+            const actualDate = getActualDate(plan, planDay.dayNumber);
+            const dayOfWeek = getDayOfWeek(actualDate);
+            
+            // If this is a newly selected day and no task exists
+            if (newDays.includes(dayOfWeek) && !plan.tasks.find(t => t.day_number === planDay.dayNumber)) {
+              tasksToCreate.push({
+                plan_id: plan.id,
+                user_id: user.id,
+                day_number: planDay.dayNumber,
+                task_title: planDay.task,
+                completed: false,
+                script_completed: false,
+                content_created: false,
+                content_edited: false,
+                content_published: false,
+                notes: ''
+              });
+            }
+          }
+          
+          if (tasksToCreate.length > 0) {
+            const { error: tasksError } = await supabase
+              .from("plan_tasks")
+              .insert(tasksToCreate);
+            
+            if (tasksError) throw tasksError;
           }
         }
-        
-        if (tasksToCreate.length > 0) {
-          const { error: tasksError } = await supabase
-            .from("plan_tasks")
-            .insert(tasksToCreate);
-          
-          if (tasksError) throw tasksError;
-        }
       }
 
-      // Update local state
-      setPlans(plans.map(p => 
-        p.id === selectedPlan.id 
-          ? { ...p, posting_days: newPostingDays }
-          : p
-      ));
-
-      if (selectedPlan) {
-        setSelectedPlan({ ...selectedPlan, posting_days: newPostingDays });
-      }
-
-      // Refresh plans to get new tasks
+      // 4. Refresh all plans to show updated schedule
       await fetchPlans();
 
       toast({
         title: "Posting schedule updated",
-        description: "Your calendar has been updated with the new schedule"
+        description: "Your calendar has been updated across all plans"
       });
     } catch (error) {
-      console.error("Error updating plan:", error);
+      console.error("Error updating posting schedule:", error);
       toast({
         title: "Error",
         description: "Failed to update posting schedule",
@@ -554,7 +555,8 @@ const ContentCalendar = () => {
   const shouldShowDay = (plan: ContentPlan, dayNumber: number): boolean => {
     const actualDate = getActualDate(plan, dayNumber);
     const dayOfWeek = getDayOfWeek(actualDate);
-    return plan.posting_days?.includes(dayOfWeek) ?? true;
+    // Use global postingDays state as primary filter
+    return postingDays.includes(dayOfWeek);
   };
 
   const getPlanWeekInfo = (plan: ContentPlan) => {
