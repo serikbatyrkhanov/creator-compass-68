@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar, ArrowLeft, CheckCircle2, Circle, RefreshCw, Edit2, Save, X, StickyNote, Trash2 } from "lucide-react";
+import { Calendar, ArrowLeft, CheckCircle2, Circle, RefreshCw, Edit2, Save, X, StickyNote, Trash2, Check } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import logo from "@/assets/climbley-logo.png";
 import { Badge } from "@/components/ui/badge";
@@ -68,6 +68,9 @@ const ContentCalendar = () => {
   const [deletingPlanId, setDeletingPlanId] = useState<string | null>(null);
   const [planToDelete, setPlanToDelete] = useState<string | null>(null);
   const [postingDays, setPostingDays] = useState<string[]>(['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']);
+  const [notesSaving, setNotesSaving] = useState<{ [key: string]: boolean }>({});
+  const [notesSaved, setNotesSaved] = useState<{ [key: string]: boolean }>({});
+  const notesTimeouts = useRef<{ [key: string]: NodeJS.Timeout }>({});
 
   useEffect(() => {
     fetchPlans();
@@ -254,35 +257,61 @@ const ContentCalendar = () => {
     }
   };
 
-  const updateTaskNotes = async (taskId: string, notes: string) => {
-    try {
-      const { error } = await supabase
-        .from("plan_tasks")
-        .update({ notes })
-        .eq("id", taskId);
+  const updateTaskNotes = useCallback(async (taskId: string, notes: string) => {
+    // Update local state immediately
+    setPlans(prevPlans => prevPlans.map(plan => ({
+      ...plan,
+      tasks: plan.tasks.map(task =>
+        task.id === taskId ? { ...task, notes } : task
+      )
+    })));
 
-      if (error) throw error;
-
-      setPlans(plans.map(plan => ({
-        ...plan,
-        tasks: plan.tasks.map(task =>
+    if (selectedPlan) {
+      setSelectedPlan(prev => prev ? ({
+        ...prev,
+        tasks: prev.tasks.map(task =>
           task.id === taskId ? { ...task, notes } : task
         )
-      })));
-
-      toast({
-        title: "Notes updated",
-        description: "Task notes saved successfully"
-      });
-    } catch (error) {
-      console.error("Error updating task notes:", error);
-      toast({
-        title: "Error updating notes",
-        description: "Failed to update task notes",
-        variant: "destructive"
-      });
+      }) : null);
     }
-  };
+
+    // Clear existing timeout for this task
+    if (notesTimeouts.current[taskId]) {
+      clearTimeout(notesTimeouts.current[taskId]);
+    }
+
+    // Set saving state
+    setNotesSaving(prev => ({ ...prev, [taskId]: true }));
+    setNotesSaved(prev => ({ ...prev, [taskId]: false }));
+
+    // Debounce the save operation
+    notesTimeouts.current[taskId] = setTimeout(async () => {
+      try {
+        const { error } = await supabase
+          .from("plan_tasks")
+          .update({ notes })
+          .eq("id", taskId);
+
+        if (error) throw error;
+
+        setNotesSaving(prev => ({ ...prev, [taskId]: false }));
+        setNotesSaved(prev => ({ ...prev, [taskId]: true }));
+
+        // Hide saved indicator after 2 seconds
+        setTimeout(() => {
+          setNotesSaved(prev => ({ ...prev, [taskId]: false }));
+        }, 2000);
+      } catch (error) {
+        console.error("Error updating task notes:", error);
+        setNotesSaving(prev => ({ ...prev, [taskId]: false }));
+        toast({
+          title: "Error updating notes",
+          description: "Failed to update task notes",
+          variant: "destructive"
+        });
+      }
+    }, 1000);
+  }, [plans, selectedPlan, toast]);
 
   const toggleProgressCheckbox = async (taskId: string, field: 'script_completed' | 'content_created' | 'content_edited' | 'content_published', currentValue: boolean) => {
     try {
@@ -344,8 +373,8 @@ const ContentCalendar = () => {
         return;
       }
 
-      // Use the latest posting days from the database
-      const latestPostingDays = quizResponse.posting_days || ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+      // Use the current posting days state from the selector
+      const currentPostingDays = postingDays.length > 0 ? postingDays : ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 
       const { data: { session } } = await supabase.auth.getSession();
       const { data, error } = await supabase.functions.invoke("generate-content-plan", {
@@ -357,7 +386,7 @@ const ContentCalendar = () => {
           quizResponseId: quizResponse.id,
           selectedTopics: quizResponse.selected_topics || [],
           targetAudience: quizResponse.target_audience || "",
-          postingDays: latestPostingDays,
+          postingDays: currentPostingDays,
           duration: 7
         },
         headers: {
@@ -443,13 +472,52 @@ const ContentCalendar = () => {
     if (!selectedPlan) return;
 
     try {
-      // Update the plan's posting days
+      // Update the plan's posting days in the database
       const { error } = await supabase
         .from("content_plans")
         .update({ posting_days: newPostingDays })
         .eq("id", selectedPlan.id);
 
       if (error) throw error;
+
+      // Check if we need to create new tasks for newly selected days
+      const oldPostingDays = selectedPlan.posting_days || [];
+      const newDays = newPostingDays.filter(day => !oldPostingDays.includes(day));
+      
+      if (newDays.length > 0) {
+        // Find which day numbers need new tasks
+        const planDays = selectedPlan.plan;
+        const tasksToCreate = [];
+        
+        for (const planDay of planDays) {
+          const actualDate = getActualDate(selectedPlan, planDay.dayNumber);
+          const dayOfWeek = getDayOfWeek(actualDate);
+          
+          // If this is a newly selected day and no task exists
+          if (newDays.includes(dayOfWeek) && !selectedPlan.tasks.find(t => t.day_number === planDay.dayNumber)) {
+            tasksToCreate.push({
+              plan_id: selectedPlan.id,
+              user_id: currentUserId,
+              day_number: planDay.dayNumber,
+              task_title: planDay.task,
+              completed: false,
+              script_completed: false,
+              content_created: false,
+              content_edited: false,
+              content_published: false,
+              notes: ''
+            });
+          }
+        }
+        
+        if (tasksToCreate.length > 0) {
+          const { error: tasksError } = await supabase
+            .from("plan_tasks")
+            .insert(tasksToCreate);
+          
+          if (tasksError) throw tasksError;
+        }
+      }
 
       // Update local state
       setPlans(plans.map(p => 
@@ -462,15 +530,18 @@ const ContentCalendar = () => {
         setSelectedPlan({ ...selectedPlan, posting_days: newPostingDays });
       }
 
+      // Refresh plans to get new tasks
+      await fetchPlans();
+
       toast({
-        title: "Plan updated",
-        description: "Your posting schedule has been applied to this plan"
+        title: "Posting schedule updated",
+        description: "Your calendar has been updated with the new schedule"
       });
     } catch (error) {
       console.error("Error updating plan:", error);
       toast({
         title: "Error",
-        description: "Failed to update plan posting schedule",
+        description: "Failed to update posting schedule",
         variant: "destructive"
       });
     }
@@ -590,6 +661,7 @@ const ContentCalendar = () => {
                   userId={currentUserId}
                   onUpdate={(newDays) => {
                     setPostingDays(newDays);
+                    updatePlanForPostingDays(newDays);
                   }}
                 />
               </CardContent>
@@ -866,9 +938,20 @@ const ContentCalendar = () => {
                           {/* Quick Notes Section */}
                           {dayTask && (
                             <div className="pt-2 border-t space-y-2">
-                              <div className="flex items-center gap-2">
-                                <StickyNote className="h-4 w-4 text-amber-500" />
-                                <Label className="text-xs font-medium">Quick Notes</Label>
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                  <StickyNote className="h-4 w-4 text-amber-500" />
+                                  <Label className="text-xs font-medium">Quick Notes</Label>
+                                </div>
+                                {notesSaving[dayTask.id] && (
+                                  <span className="text-xs text-muted-foreground italic">Saving...</span>
+                                )}
+                                {notesSaved[dayTask.id] && (
+                                  <span className="text-xs text-emerald-600 flex items-center gap-1">
+                                    <Check className="h-3 w-3" />
+                                    Saved
+                                  </span>
+                                )}
                               </div>
                               <Textarea
                                 value={dayTask.notes || ""}
