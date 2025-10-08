@@ -848,12 +848,32 @@ const ContentCalendar = () => {
                           {dayTask && (
                             <Select
                               value={dayTask.platform || day.platform || ""}
-                              onValueChange={(value) => {
-                                supabase.from("plan_tasks").update({ platform: value }).eq("id", dayTask.id);
-                                setPlans(plans.map(p => ({
-                                  ...p,
-                                  tasks: p.tasks.map(t => t.id === dayTask.id ? { ...t, platform: value } : t)
-                                })));
+                              onValueChange={async (value) => {
+                                try {
+                                  const { error } = await supabase
+                                    .from("plan_tasks")
+                                    .update({ platform: value })
+                                    .eq("id", dayTask.id);
+                                  
+                                  if (error) throw error;
+                                  
+                                  setPlans(plans.map(p => ({
+                                    ...p,
+                                    tasks: p.tasks.map(t => t.id === dayTask.id ? { ...t, platform: value } : t)
+                                  })));
+                                  
+                                  toast({
+                                    title: "Platform updated",
+                                    description: `Changed to ${value}`,
+                                  });
+                                } catch (error) {
+                                  console.error("Failed to update platform:", error);
+                                  toast({
+                                    title: "Failed to update platform",
+                                    description: "Please try again",
+                                    variant: "destructive",
+                                  });
+                                }
                               }}
                             >
                               <SelectTrigger className="w-fit h-7 text-xs">
