@@ -33,6 +33,7 @@ interface PlanTask {
   content_edited: boolean;
   content_published: boolean;
   platform?: string;
+  time_spent_estimated?: string;
 }
 
 interface ContentPlan {
@@ -838,12 +839,59 @@ const ContentCalendar = () => {
                       >
                         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-secondary" />
                         <CardHeader>
-                          <div className="flex items-center justify-between">
+                            <div className="flex items-center justify-between">
                             <div className="flex flex-col">
                               <CardTitle className="text-base">{dateDisplay}</CardTitle>
                               <p className="text-xs text-muted-foreground">{day.day}</p>
                             </div>
-                            <Badge variant="secondary">{day.timeEstimate}</Badge>
+                            {dayTask ? (
+                              <Input
+                                type="text"
+                                placeholder={day.timeEstimate}
+                                value={dayTask.time_spent_estimated || ''}
+                                onChange={async (e) => {
+                                  const value = e.target.value;
+                                  try {
+                                    const { error } = await supabase
+                                      .from("plan_tasks")
+                                      .update({ time_spent_estimated: value })
+                                      .eq("id", dayTask.id);
+                                    
+                                    if (error) throw error;
+                                    
+                                    const updatedPlans = plans.map(p => ({
+                                      ...p,
+                                      tasks: p.tasks.map(t => t.id === dayTask.id ? { ...t, time_spent_estimated: value } : t)
+                                    }));
+                                    
+                                    setPlans(updatedPlans);
+                                    
+                                    // Update selectedPlan if it matches the current plan
+                                    if (selectedPlan?.id) {
+                                      const updatedPlan = updatedPlans.find(p => p.id === selectedPlan.id);
+                                      if (updatedPlan) {
+                                        setSelectedPlan(updatedPlan);
+                                      }
+                                    }
+                                    
+                                    toast({
+                                      title: "Time estimate updated",
+                                      description: value ? `Set to ${value}` : "Reset to default",
+                                    });
+                                  } catch (error) {
+                                    console.error("Failed to update time estimate:", error);
+                                    toast({
+                                      title: "Failed to update time estimate",
+                                      description: "Please try again",
+                                      variant: "destructive",
+                                    });
+                                  }
+                                }}
+                                className="w-28 h-7 text-xs text-center"
+                              />
+                            ) : (
+                              <Badge variant="secondary">{day.timeEstimate}</Badge>
+                            )}
                           </div>
                           {dayTask && (
                             <Select

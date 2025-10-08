@@ -196,6 +196,7 @@ export type Database = {
           post_title: string | null
           script_completed: boolean
           task_title: string
+          time_spent_estimated: string | null
           updated_at: string | null
           user_id: string | null
         }
@@ -215,6 +216,7 @@ export type Database = {
           post_title?: string | null
           script_completed?: boolean
           task_title: string
+          time_spent_estimated?: string | null
           updated_at?: string | null
           user_id?: string | null
         }
@@ -234,6 +236,7 @@ export type Database = {
           post_title?: string | null
           script_completed?: boolean
           task_title?: string
+          time_spent_estimated?: string | null
           updated_at?: string | null
           user_id?: string | null
         }
