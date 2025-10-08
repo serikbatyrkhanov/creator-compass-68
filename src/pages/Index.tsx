@@ -71,20 +71,20 @@ const Index = () => {
               <img
                 src={sliderImages[currentSlide].src}
                 alt={sliderImages[currentSlide].alt}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover brightness-110"
               />
-              {/* Dark gradient overlay for text readability */}
-              <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/70" />
+              {/* Lighter gradient overlay for text readability */}
+              <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-transparent" />
             </motion.div>
           </AnimatePresence>
         </div>
 
-        {/* Hero Content */}
-        <div className="relative z-10 container mx-auto px-4 h-full flex items-center justify-center">
-          <div className="max-w-4xl mx-auto text-center space-y-8">
+        {/* Hero Content - Left Aligned */}
+        <div className="relative z-10 container mx-auto px-4 h-full flex items-center">
+          <div className="max-w-3xl text-left space-y-8">
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2 }}
               className="inline-block px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-sm font-medium text-white mb-4"
             >
@@ -92,8 +92,8 @@ const Index = () => {
             </motion.div>
             
             <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.3 }}
               className="text-4xl lg:text-6xl font-bold tracking-tight text-white"
             >
@@ -101,8 +101,8 @@ const Index = () => {
             </motion.h1>
 
             <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.4 }}
               className="text-2xl lg:text-3xl font-semibold text-white/90"
             >
@@ -110,17 +110,17 @@ const Index = () => {
             </motion.p>
             
             <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.5 }}
-              className="text-lg lg:text-xl text-white/80 max-w-2xl mx-auto"
+              className="text-lg lg:text-xl text-white/80 max-w-2xl"
             >
               Climbley helps you identify your niche, create content plans, stay consistent, and track your progress
             </motion.p>
 
             <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.6 }}
               className="text-xl lg:text-2xl font-medium bg-gradient-to-r from-purple-300 via-pink-300 to-purple-300 bg-clip-text text-transparent"
             >
@@ -128,10 +128,10 @@ const Index = () => {
             </motion.p>
             
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.7 }}
-              className="flex flex-col sm:flex-row gap-4 justify-center pt-4"
+              className="flex flex-col sm:flex-row gap-4 pt-4"
             >
               <Link to="/auth">
                 <Button 
