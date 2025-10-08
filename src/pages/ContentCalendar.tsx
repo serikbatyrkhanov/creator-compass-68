@@ -857,10 +857,20 @@ const ContentCalendar = () => {
                                   
                                   if (error) throw error;
                                   
-                                  setPlans(plans.map(p => ({
+                                  const updatedPlans = plans.map(p => ({
                                     ...p,
                                     tasks: p.tasks.map(t => t.id === dayTask.id ? { ...t, platform: value } : t)
-                                  })));
+                                  }));
+                                  
+                                  setPlans(updatedPlans);
+                                  
+                                  // Update selectedPlan if it matches the current plan
+                                  if (selectedPlan?.id) {
+                                    const updatedPlan = updatedPlans.find(p => p.id === selectedPlan.id);
+                                    if (updatedPlan) {
+                                      setSelectedPlan(updatedPlan);
+                                    }
+                                  }
                                   
                                   toast({
                                     title: "Platform updated",
