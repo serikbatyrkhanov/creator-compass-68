@@ -44,48 +44,54 @@ const Auth = () => {
     const password = formData.get("signup-password") as string;
     const name = formData.get("name") as string;
 
-    console.log("Starting signup process for:", email);
-
     try {
       // Store signup credentials for account creation after checkout
       sessionStorage.setItem('pendingSignup', JSON.stringify({ email, password, name }));
-      console.log("Stored credentials in sessionStorage");
-
-      toast({
-        title: "Redirecting to checkout...",
-        description: "Please complete payment to start your trial",
-      });
 
       // Create checkout session
-      console.log("Creating checkout session for email:", email);
-      
       const response = await supabase.functions.invoke('create-checkout', {
         body: { email }
       });
 
-      console.log("Response from create-checkout:", response);
-
       if (response.error) {
-        console.error("Edge function error:", response.error);
         throw new Error(response.error.message || "Failed to create checkout session");
       }
 
       if (!response.data?.url) {
-        console.error("No URL returned from edge function");
         throw new Error("No checkout URL returned");
       }
 
-      console.log("Redirecting to Stripe Checkout:", response.data.url);
-
-      // Use window.top to break out of iframe
-      if (window.top) {
-        window.top.location.href = response.data.url;
-      } else {
-        window.location.href = response.data.url;
-      }
-    } catch (error: any) {
-      console.error("Signup error:", error);
+      // Open in new tab
+      const newWindow = window.open(response.data.url, '_blank');
       
+      // Fallback if popup blocked
+      if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
+        toast({
+          title: "Checkout Ready",
+          description: "Please click the link below to complete your purchase",
+        });
+        
+        // Show clickable link
+        const link = document.createElement('a');
+        link.href = response.data.url;
+        link.target = '_blank';
+        link.textContent = 'Click here to complete checkout';
+        link.className = 'text-primary underline font-medium text-sm';
+        
+        const container = document.querySelector('[data-checkout-fallback]');
+        if (container) {
+          container.innerHTML = '';
+          container.appendChild(link);
+        }
+      } else {
+        toast({
+          title: "Checkout Opened",
+          description: "Complete your purchase in the new tab",
+        });
+      }
+      
+      setIsLoading(false);
+    } catch (error: any) {
       toast({
         title: "Error",
         description: error.message || "Failed to start checkout. Please try again.",
@@ -303,11 +309,12 @@ const Auth = () => {
                     />
                   </div>
                   <Button type="submit" className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90 transition-opacity shadow-[var(--shadow-glow)]" disabled={isLoading}>
-                    {isLoading ? "Redirecting to checkout..." : "Start 7-Day Free Trial"}
+                    {isLoading ? "Opening checkout..." : "Start 7-Day Free Trial"}
                   </Button>
                   <p className="text-xs text-center text-muted-foreground mt-2">
                     7-day free trial • $9.99/month after trial
                   </p>
+                  <div data-checkout-fallback className="text-center mt-2"></div>
                 </form>
               </TabsContent>
 
