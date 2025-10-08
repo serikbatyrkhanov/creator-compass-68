@@ -50,7 +50,7 @@ const Auth = () => {
 
       // Create checkout session
       const response = await supabase.functions.invoke('create-checkout', {
-        body: { email }
+        body: { email, name }
       });
 
       if (response.error) {

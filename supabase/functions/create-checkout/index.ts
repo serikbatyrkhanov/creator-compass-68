@@ -25,11 +25,11 @@ serve(async (req) => {
       contentType: req.headers.get("content-type")
     });
 
-    // Get email from request body for non-authenticated signups
+    // Get email and name from request body for non-authenticated signups
     const body = await req.json();
     logStep("Request body received", { body });
     
-    const { email } = body;
+    const { email, name } = body;
     
     if (!email) {
       logStep("ERROR: Email is missing from request");
@@ -77,7 +77,8 @@ serve(async (req) => {
       subscription_data: {
         trial_period_days: 7,
       },
-      success_url: `${origin}/checkout-success`,
+      metadata: name ? { name } : {},
+      success_url: `${origin}/checkout-success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/auth`,
     });
 

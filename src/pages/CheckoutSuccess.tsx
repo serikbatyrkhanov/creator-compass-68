@@ -1,80 +1,70 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, CheckCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 const CheckoutSuccess = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [status, setStatus] = useState<"processing" | "success" | "error">("processing");
+  const [searchParams] = useSearchParams();
+  const [status, setStatus] = useState<"processing" | "success" | "error" | "needs-info">("processing");
+  const [sessionEmail, setSessionEmail] = useState<string>("");
+  const [sessionName, setSessionName] = useState<string>("");
+  const [formData, setFormData] = useState({ name: "", password: "" });
 
   useEffect(() => {
     const createAccountAndSignIn = async () => {
       try {
         console.log("Starting account creation after successful payment");
         
-        // Get stored signup credentials from localStorage (shared across tabs)
+        // Try localStorage first (shared across tabs)
         const pendingSignup = localStorage.getItem('pendingSignup');
         
-        if (!pendingSignup) {
-          console.error("No pending signup found in localStorage");
-          throw new Error("No pending signup information found. Please sign up again.");
+        if (pendingSignup) {
+          // Path 1: localStorage available
+          const { email, password, name } = JSON.parse(pendingSignup);
+          console.log("Retrieved credentials from localStorage for email:", email);
+
+          await completeSignup(email, password, name);
+        } else {
+          // Path 2: Fallback to session_id from URL
+          console.log("No localStorage found, attempting session_id fallback");
+          const sessionId = searchParams.get('session_id');
+          
+          if (!sessionId) {
+            console.error("No session_id in URL and no localStorage");
+            throw new Error("Unable to complete account setup. Please sign up again.");
+          }
+
+          console.log("Retrieving checkout session details", { sessionId });
+          const { data: sessionData, error: sessionError } = await supabase.functions.invoke('get-checkout-session', {
+            body: { session_id: sessionId },
+          });
+
+          if (sessionError) {
+            console.error("Error retrieving session:", sessionError);
+            throw new Error("Failed to retrieve checkout session. Please contact support.");
+          }
+
+          console.log("Session data retrieved:", sessionData);
+          
+          if (!sessionData.email) {
+            throw new Error("No email found in checkout session. Please contact support.");
+          }
+
+          // Show form to collect name and password
+          setSessionEmail(sessionData.email);
+          setSessionName(sessionData.metadata?.name || "");
+          setFormData({ 
+            name: sessionData.metadata?.name || "", 
+            password: "" 
+          });
+          setStatus("needs-info");
         }
-
-        const { email, password, name } = JSON.parse(pendingSignup);
-        console.log("Retrieved credentials for email:", email);
-
-        // Create Supabase account
-        console.log("Creating Supabase account...");
-        const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            emailRedirectTo: `${window.location.origin}/dashboard`,
-            data: { 
-              name,
-              full_name: name 
-            },
-          },
-        });
-
-        if (signUpError) {
-          console.error("Sign up error:", signUpError);
-          throw signUpError;
-        }
-
-        console.log("Account created successfully:", signUpData.user?.id);
-
-        // Sign in immediately (auto-confirm is enabled)
-        console.log("Signing in...");
-        const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
-
-        if (signInError) {
-          console.error("Sign in error:", signInError);
-          throw signInError;
-        }
-
-        console.log("Signed in successfully");
-
-        // Clear stored credentials
-        localStorage.removeItem('pendingSignup');
-        console.log("Cleared localStorage");
-
-        setStatus("success");
-        
-        toast({
-          title: "Welcome to Climbley!",
-          description: "Your 7-day free trial has started. No charges for 7 days.",
-        });
-
-        // Redirect to dashboard
-        setTimeout(() => {
-          navigate("/dashboard");
-        }, 2000);
       } catch (error: any) {
         console.error("Error creating account:", error);
         setStatus("error");
@@ -95,11 +85,104 @@ const CheckoutSuccess = () => {
     };
 
     createAccountAndSignIn();
-  }, [navigate, toast]);
+  }, [navigate, toast, searchParams]);
+
+  const completeSignup = async (email: string, password: string, name: string) => {
+    console.log("Creating Supabase account...");
+    const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: `${window.location.origin}/dashboard`,
+        data: { 
+          name,
+          full_name: name 
+        },
+      },
+    });
+
+    if (signUpError) {
+      console.error("Sign up error:", signUpError);
+      throw signUpError;
+    }
+
+    console.log("Account created successfully:", signUpData.user?.id);
+
+    // Sign in immediately (auto-confirm is enabled)
+    console.log("Signing in...");
+    const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (signInError) {
+      console.error("Sign in error:", signInError);
+      throw signInError;
+    }
+
+    console.log("Signed in successfully");
+
+    // Clear stored credentials
+    localStorage.removeItem('pendingSignup');
+    console.log("Cleared localStorage");
+
+    setStatus("success");
+    
+    toast({
+      title: "Welcome to Climbley!",
+      description: "Your 7-day free trial has started. No charges for 7 days.",
+    });
+
+    // Redirect to dashboard
+    setTimeout(() => {
+      navigate("/dashboard");
+    }, 2000);
+  };
+
+  const handleFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!formData.name || !formData.password) {
+      toast({
+        title: "Missing Information",
+        description: "Please provide both name and password.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (formData.password.length < 6) {
+      toast({
+        title: "Invalid Password",
+        description: "Password must be at least 6 characters long.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setStatus("processing");
+    
+    try {
+      await completeSignup(sessionEmail, formData.password, formData.name);
+    } catch (error: any) {
+      console.error("Error in form submit:", error);
+      setStatus("error");
+      
+      toast({
+        title: "Account Creation Error",
+        description: error.message || "Failed to create account. Please try again.",
+        variant: "destructive",
+      });
+      
+      setTimeout(() => {
+        navigate("/auth");
+      }, 3000);
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-muted p-4">
-      <div className="text-center space-y-4">
+      <div className="text-center space-y-4 max-w-md w-full">
         {status === "processing" && (
           <>
             <Loader2 className="h-12 w-12 animate-spin mx-auto text-primary" />
@@ -113,6 +196,56 @@ const CheckoutSuccess = () => {
             <CheckCircle className="h-12 w-12 mx-auto text-green-500" />
             <h2 className="text-2xl font-bold">Welcome to Climbley!</h2>
             <p className="text-muted-foreground">Your 7-day free trial has started. Redirecting...</p>
+          </>
+        )}
+        
+        {status === "needs-info" && (
+          <>
+            <CheckCircle className="h-12 w-12 mx-auto text-green-500" />
+            <h2 className="text-2xl font-bold">Payment Successful!</h2>
+            <p className="text-muted-foreground">Complete your account setup to get started</p>
+            
+            <form onSubmit={handleFormSubmit} className="space-y-4 mt-6 text-left">
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input 
+                  id="email" 
+                  type="email" 
+                  value={sessionEmail} 
+                  disabled 
+                  className="bg-muted"
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="name">Name</Label>
+                <Input 
+                  id="name" 
+                  type="text" 
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  placeholder="Your name"
+                  required
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="password">Password</Label>
+                <Input 
+                  id="password" 
+                  type="password" 
+                  value={formData.password}
+                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  placeholder="Create a password (min 6 characters)"
+                  required
+                  minLength={6}
+                />
+              </div>
+              
+              <Button type="submit" className="w-full">
+                Complete Account Setup
+              </Button>
+            </form>
           </>
         )}
         
