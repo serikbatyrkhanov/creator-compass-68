@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import logo from "@/assets/climbley-logo.png";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
@@ -31,6 +32,7 @@ interface PlanTask {
   content_created: boolean;
   content_edited: boolean;
   content_published: boolean;
+  platform?: string;
 }
 
 interface ContentPlan {
@@ -843,10 +845,26 @@ const ContentCalendar = () => {
                             </div>
                             <Badge variant="secondary">{day.timeEstimate}</Badge>
                           </div>
-                          {day.platform && (
-                            <Badge variant="outline" className="w-fit">
-                              {day.platform}
-                            </Badge>
+                          {dayTask && (
+                            <Select
+                              value={dayTask.platform || day.platform || ""}
+                              onValueChange={(value) => {
+                                supabase.from("plan_tasks").update({ platform: value }).eq("id", dayTask.id);
+                                setPlans(plans.map(p => ({
+                                  ...p,
+                                  tasks: p.tasks.map(t => t.id === dayTask.id ? { ...t, platform: value } : t)
+                                })));
+                              }}
+                            >
+                              <SelectTrigger className="w-fit h-7 text-xs">
+                                <SelectValue placeholder="Select platform" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="TikTok">TikTok</SelectItem>
+                                <SelectItem value="Instagram Reels/Post">Instagram Reels/Post</SelectItem>
+                                <SelectItem value="YouTube video">YouTube video</SelectItem>
+                              </SelectContent>
+                            </Select>
                           )}
                         </CardHeader>
                         <CardContent className="space-y-3">

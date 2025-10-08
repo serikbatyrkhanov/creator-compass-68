@@ -191,6 +191,7 @@ export type Database = {
           id: string
           notes: string | null
           plan_id: string
+          platform: string | null
           post_description: string | null
           post_title: string | null
           script_completed: boolean
@@ -209,6 +210,7 @@ export type Database = {
           id?: string
           notes?: string | null
           plan_id: string
+          platform?: string | null
           post_description?: string | null
           post_title?: string | null
           script_completed?: boolean
@@ -227,6 +229,7 @@ export type Database = {
           id?: string
           notes?: string | null
           plan_id?: string
+          platform?: string | null
           post_description?: string | null
           post_title?: string | null
           script_completed?: boolean
