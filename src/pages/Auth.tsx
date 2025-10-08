@@ -47,59 +47,48 @@ const Auth = () => {
     console.log("Starting signup process for:", email);
 
     try {
-      // Sign out any existing session to prevent auto-redirect interference
-      console.log("Signing out any existing session...");
-      await supabase.auth.signOut();
-      
       // Store signup credentials for account creation after checkout
       sessionStorage.setItem('pendingSignup', JSON.stringify({ email, password, name }));
+      console.log("Stored credentials in sessionStorage");
 
       toast({
         title: "Redirecting to checkout...",
-        description: "Taking you to secure payment page",
+        description: "Please complete payment to start your trial",
       });
 
       // Create checkout session
       console.log("Creating checkout session for email:", email);
-      console.log("Calling create-checkout edge function...");
       
       const response = await supabase.functions.invoke('create-checkout', {
         body: { email }
       });
 
-      console.log("Full response from create-checkout:", JSON.stringify(response, null, 2));
+      console.log("Response from create-checkout:", response);
 
       if (response.error) {
-        console.error("Edge function returned error:", response.error);
+        console.error("Edge function error:", response.error);
         throw new Error(response.error.message || "Failed to create checkout session");
       }
 
-      if (!response.data) {
-        console.error("No data returned from edge function");
-        throw new Error("No checkout session data returned");
+      if (!response.data?.url) {
+        console.error("No URL returned from edge function");
+        throw new Error("No checkout URL returned");
       }
 
-      console.log("Checkout session created successfully");
-      console.log("Checkout URL:", response.data.url);
+      console.log("Redirecting to Stripe Checkout:", response.data.url);
 
-      // Redirect to Stripe Checkout
-      if (response.data?.url) {
-        window.location.href = response.data.url;
+      // Use window.top to break out of iframe
+      if (window.top) {
+        window.top.location.href = response.data.url;
       } else {
-        throw new Error("Failed to create checkout session");
+        window.location.href = response.data.url;
       }
     } catch (error: any) {
-      console.error("Signup error details:", {
-        message: error.message,
-        error: error,
-        stack: error.stack
-      });
-      
-      const errorMessage = error.message || error.msg || "Failed to start checkout. Please try again.";
+      console.error("Signup error:", error);
       
       toast({
-        title: "Checkout Error",
-        description: errorMessage,
+        title: "Error",
+        description: error.message || "Failed to start checkout. Please try again.",
         variant: "destructive",
       });
       setIsLoading(false);
@@ -314,10 +303,10 @@ const Auth = () => {
                     />
                   </div>
                   <Button type="submit" className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90 transition-opacity shadow-[var(--shadow-glow)]" disabled={isLoading}>
-                    {isLoading ? "Creating account..." : "Start 7-Day Free Trial"}
+                    {isLoading ? "Redirecting to checkout..." : "Start 7-Day Free Trial"}
                   </Button>
                   <p className="text-xs text-center text-muted-foreground mt-2">
-                    No credit card required for trial
+                    7-day free trial • $9.99/month after trial
                   </p>
                 </form>
               </TabsContent>
