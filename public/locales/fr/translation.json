@@ -54,18 +54,50 @@
     },
     "pricing": {
       "title": "Tarification Simple",
+      "subtitle": "Commencez avec un essai gratuit de 7 jours, puis seulement 9,99$/mois",
       "monthly": "Mensuel",
       "price": "29$",
       "perMonth": "/mois",
+      "cardTitle": "Climbley Premium",
+      "trial": "Essai gratuit de 7 jours • Paiement sans friction",
       "features": {
         "quiz": "Quiz de personnalité complet",
         "coaching": "Coaching par IA",
         "calendar": "Calendrier de contenu",
         "tracking": "Suivi des progrès",
         "ideas": "Idées de contenu illimitées",
-        "support": "Support prioritaire"
+        "support": "Support prioritaire",
+        "niche": "Découverte de niche personnalisée",
+        "planning": "Planification de contenu par IA",
+        "analytics": "Analyses de croissance avancées"
       },
       "cta": "Commencer"
+    },
+    "testimonials": {
+      "title": "Ce Que Disent les Créateurs",
+      "subtitle": "Rejoignez des milliers de créateurs de contenu qui ont transformé leur parcours avec Climbley",
+      "creators": {
+        "sarah": {
+          "name": "Sarah Mitchell",
+          "initials": "SM",
+          "quote": "Climbley m'a aidé à être enfin cohérente avec mon contenu. Je suis passée de publications aléatoires à un plan clair chaque semaine !"
+        },
+        "marcus": {
+          "name": "Marcus Johnson",
+          "initials": "MJ",
+          "quote": "Le détecteur de niche était révélateur. J'ai découvert un angle de contenu auquel je n'avais jamais pensé, et mon engagement a triplé !"
+        },
+        "emily": {
+          "name": "Emily Chen",
+          "initials": "EC",
+          "quote": "En tant que coach, formateur et producteur tout en un ? C'est exactement ce qu'est Climbley. C'est comme avoir une équipe de contenu dans sa poche."
+        }
+      }
+    },
+    "cta": {
+      "title": "Prêt à Commencer à Créer ?",
+      "subtitle": "Rejoignez des milliers de créateurs qui construisent leur audience et monétisent leur passion.",
+      "button": "Commencer Gratuitement"
     }
   },
   "auth": {
@@ -84,12 +116,19 @@
   "dashboard": {
     "welcome": "Bienvenue",
     "subtitle": "Votre Tableau de Bord de Croissance YouTube",
+    "contactButton": "Nous Contacter",
     "quickActions": {
       "title": "Actions Rapides",
       "retakeQuiz": "Refaire le Quiz",
       "aiCoach": "Coach IA",
       "planContent": "Planifier le Contenu",
       "viewProgress": "Voir les Progrès"
+    },
+    "lastQuizResult": {
+      "title": "Dernier Résultat du Quiz",
+      "yourArchetype": "Votre Archétype",
+      "completed": "Terminé",
+      "viewResults": "Voir les Résultats Complets"
     },
     "journey": {
       "title": "Votre Parcours de Croissance",
@@ -108,15 +147,74 @@
       "trackProgress": {
         "title": "Suivre les Progrès",
         "description": "Surveillez vos métriques de croissance"
+      },
+      "generateIdeas": {
+        "title": "Générer des Idées",
+        "description": "Obtenez des idées de contenu avec l'IA"
+      },
+      "createPlan": {
+        "title": "Créer un Plan",
+        "description": "Créez un plan de contenu"
+      },
+      "completeTask": {
+        "title": "Compléter une Tâche",
+        "description": "Complétez votre première tâche"
+      },
+      "chatCoach": {
+        "title": "Discuter avec l'IA",
+        "description": "Obtenez des conseils du coach"
       }
     }
+  },
+  "contact": {
+    "title": "Nous Contacter",
+    "subtitle": "Des questions ? Nous sommes là pour vous aider !",
+    "name": "Votre Nom",
+    "email": "E-mail",
+    "message": "Message",
+    "messagePlaceholder": "Écrivez votre message ici...",
+    "characterCount": "caractères",
+    "characterLimit": "Maximum 144 caractères",
+    "send": "Envoyer",
+    "sending": "Envoi en cours...",
+    "success": "Message envoyé avec succès !",
+    "error": "Échec de l'envoi du message",
+    "emptyMessage": "Le message ne peut pas être vide",
+    "backToDashboard": "Retour au Tableau de Bord"
   },
   "quiz": {
     "title": "Découvrez votre Archétype de Créateur",
     "description": "Répondez à ces questions pour recevoir des stratégies personnalisées de croissance YouTube",
     "question": "Question",
     "of": "sur",
-    "finish": "Terminer le Quiz"
+    "finish": "Terminer le Quiz",
+    "savingError": "Échec de l'enregistrement des résultats"
+  },
+  "coach": {
+    "title": "Coach IA",
+    "description": "Obtenez des réponses 24/7 à vos questions sur la croissance YouTube",
+    "placeholder": "Posez-moi n'importe quelle question sur la croissance de votre chaîne YouTube...",
+    "send": "Envoyer",
+    "greeting": "Bonjour ! Je suis votre coach IA pour la croissance YouTube. Comment puis-je vous aider aujourd'hui ?"
+  },
+  "trendingTitles": {
+    "title": "Générateur de Titres Tendances",
+    "description": "Générez des titres de vidéos tendances basés sur votre niche et sujet",
+    "topicLabel": "Votre Sujet",
+    "topicPlaceholder": "ex. 'conseils fitness', 'recettes véganes', 'stratégie de jeux'",
+    "generate": "Générer des Titres",
+    "generating": "Génération de titres tendances...",
+    "generatedTitles": "Titres Générés",
+    "copy": "Copier",
+    "copied": "Copié !",
+    "copyAll": "Tout Copier",
+    "allCopied": "Tous les titres copiés !",
+    "createPlans": "Créer des Plans à partir de Ces Titres",
+    "creatingPlans": "Création de plans de contenu...",
+    "emptyState": "Entrez un sujet dans le champ ci-dessus et appuyez sur 'Générer des Titres' pour commencer.",
+    "generateError": "Échec de la génération de titres",
+    "plansSuccess": "Plans de contenu créés avec succès !",
+    "plansError": "Échec de la création des plans"
   },
   "calendar": {
     "title": "Calendrier de Contenu",
@@ -130,13 +228,81 @@
     "high": "Haute",
     "ideas": "Idées de Contenu",
     "trending": "Titres Tendances",
-    "plan": "Plan de Contenu"
+    "plan": "Plan de Contenu",
+    "viewMode": "Mode d'Affichage",
+    "list": "Liste",
+    "kanban": "Kanban",
+    "generateIdeas": "Générer des Idées",
+    "generatingIdeas": "L'IA génère des idées...",
+    "selectFrequency": "Sélectionner la Fréquence de Publication",
+    "timesPerWeek": "{{count}} fois par semaine",
+    "confirmFrequency": "Confirmer",
+    "cancelFrequency": "Annuler",
+    "generatePlan": "Générer un Plan",
+    "generatingPlan": "L'IA génère un plan...",
+    "schedulingOptions": "Options de Planification",
+    "scheduleWeek": "Planifier pour Cette Semaine",
+    "scheduleMonth": "Planifier pour Ce Mois",
+    "scheduleCustom": "Plage Personnalisée",
+    "selectDateRange": "Sélectionner une Plage de Dates",
+    "startDate": "Date de Début",
+    "endDate": "Date de Fin",
+    "confirmSchedule": "Confirmer la Planification",
+    "allTasks": "Toutes les Tâches",
+    "filterByStatus": "Filtrer par statut",
+    "todo": "À Faire",
+    "inProgress": "En Cours",
+    "completed": "Terminé",
+    "editTask": "Modifier la Tâche",
+    "deleteTask": "Supprimer la Tâche",
+    "saveTask": "Enregistrer la Tâche",
+    "cancel": "Annuler",
+    "confirmDelete": "Êtes-vous sûr de vouloir supprimer cette tâche ?",
+    "delete": "Supprimer",
+    "ideasSuccess": "Idées de contenu générées avec succès !",
+    "ideasError": "Échec de la génération d'idées",
+    "planSuccess": "Plan de contenu créé avec succès !",
+    "planError": "Échec de la création du plan",
+    "taskUpdated": "Tâche mise à jour avec succès",
+    "taskDeleted": "Tâche supprimée avec succès",
+    "taskError": "Échec de l'opération de tâche"
   },
-  "coach": {
-    "title": "Coach IA",
-    "placeholder": "Posez-moi n'importe quelle question sur la croissance de votre chaîne YouTube...",
-    "send": "Envoyer",
-    "greeting": "Bonjour ! Je suis votre coach IA pour la croissance YouTube. Comment puis-je vous aider aujourd'hui ?"
+  "progress": {
+    "title": "Progrès",
+    "overallCompletion": "Achèvement Global",
+    "completionRate": "Taux d'Achèvement",
+    "motivationalMessages": {
+      "start": "Excellent début ! Continuez à avancer !",
+      "progress": "Vous faites du bon travail ! Continuez !",
+      "halfway": "À mi-chemin ! Vous faites un travail incroyable !",
+      "nearComplete": "Très proche ! Continuez !",
+      "complete": "Incroyable ! Vous avez terminé toutes les tâches !"
+    },
+    "stats": {
+      "quizzes": "Quiz",
+      "totalQuizzes": "Quiz Terminés",
+      "lastQuiz": "Dernier Quiz",
+      "primaryArchetype": "Archétype Principal",
+      "contentIdeas": "Idées de Contenu",
+      "totalIdeas": "Idées Générées",
+      "contentPlans": "Plans de Contenu",
+      "totalPlans": "Plans Générés",
+      "tasks": "Tâches",
+      "completedTasks": "Terminées / Total",
+      "aiCoach": "Coach IA",
+      "conversations": "Conversations",
+      "totalMessages": "Messages Totaux"
+    },
+    "engagementScore": "Score d'Engagement",
+    "engagementDescription": "Actif sur {{features}} fonctionnalités",
+    "quickActions": {
+      "title": "Actions Rapides",
+      "retakeQuiz": "Refaire le Quiz",
+      "viewCalendar": "Voir le Calendrier",
+      "chatCoach": "Discuter avec le Coach IA"
+    },
+    "noData": "Pas encore de données",
+    "notTaken": "Pas encore fait"
   },
   "checkout": {
     "success": "Paiement Réussi !",

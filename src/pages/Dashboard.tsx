@@ -170,11 +170,11 @@ const Dashboard = () => {
                     <FileCheck className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
                   </div>
                 </div>
-                <CardTitle className="text-emerald-700 dark:text-emerald-300">Last Quiz Result</CardTitle>
+                <CardTitle className="text-emerald-700 dark:text-emerald-300">{t('dashboard.lastQuizResult.title')}</CardTitle>
                 <CardDescription>
-                  Your archetype: <span className="font-semibold capitalize">{lastQuizResult.primary_archetype}</span>
+                  {t('dashboard.lastQuizResult.yourArchetype')}: <span className="font-semibold capitalize">{lastQuizResult.primary_archetype}</span>
                   <br />
-                  <span className="text-xs">Completed {new Date(lastQuizResult.created_at).toLocaleDateString()}</span>
+                  <span className="text-xs">{t('dashboard.lastQuizResult.completed')} {new Date(lastQuizResult.created_at).toLocaleDateString()}</span>
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -182,7 +182,7 @@ const Dashboard = () => {
                   className="w-full bg-emerald-600 hover:bg-emerald-700 text-white" 
                   onClick={() => navigate(`/quiz-results/${lastQuizResult.id}`)}
                 >
-                  View Results
+                  {t('dashboard.lastQuizResult.viewResults')}
                 </Button>
               </CardContent>
             </Card>
@@ -275,9 +275,9 @@ const Dashboard = () => {
           {/* Your Journey Section */}
           <Card className="border-2">
             <CardHeader>
-              <CardTitle>Your Journey Begins Here</CardTitle>
+              <CardTitle>{t('dashboard.journey.title')}</CardTitle>
               <CardDescription>
-                Complete these steps to master your content creation journey
+                {t('dashboard.subtitle')}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
@@ -297,9 +297,9 @@ const Dashboard = () => {
                   {journeyProgress.hasQuiz ? <CheckCircle2 className="h-5 w-5" /> : '1'}
                 </div>
                 <div className="flex-1">
-                  <h4 className="font-semibold mb-1">Take the Niche Quiz</h4>
+                  <h4 className="font-semibold mb-1">{t('dashboard.journey.takeQuiz.title')}</h4>
                   <p className="text-sm text-muted-foreground">
-                    Discover your perfect content creator archetype
+                    {t('dashboard.journey.takeQuiz.description')}
                   </p>
                 </div>
               </div>
@@ -328,9 +328,9 @@ const Dashboard = () => {
                   {journeyProgress.hasIdeas ? <CheckCircle2 className="h-5 w-5" /> : '2'}
                 </div>
                 <div className="flex-1">
-                  <h4 className="font-semibold mb-1">Generate Content Ideas</h4>
+                  <h4 className="font-semibold mb-1">{t('dashboard.journey.generateIdeas.title')}</h4>
                   <p className="text-sm text-muted-foreground">
-                    Get AI-powered content ideas tailored to your archetype
+                    {t('dashboard.journey.generateIdeas.description')}
                   </p>
                 </div>
               </div>
@@ -359,9 +359,9 @@ const Dashboard = () => {
                   {journeyProgress.hasPlan ? <CheckCircle2 className="h-5 w-5" /> : '3'}
                 </div>
                 <div className="flex-1">
-                  <h4 className="font-semibold mb-1">Create 7-Day Plan</h4>
+                  <h4 className="font-semibold mb-1">{t('dashboard.journey.createPlan.title')}</h4>
                   <p className="text-sm text-muted-foreground">
-                    Build your weekly content schedule with AI
+                    {t('dashboard.journey.createPlan.description')}
                   </p>
                 </div>
               </div>
@@ -390,9 +390,9 @@ const Dashboard = () => {
                   {journeyProgress.hasCompletedTask ? <CheckCircle2 className="h-5 w-5" /> : '4'}
                 </div>
                 <div className="flex-1">
-                  <h4 className="font-semibold mb-1">Complete Your First Task</h4>
+                  <h4 className="font-semibold mb-1">{t('dashboard.journey.completeTask.title')}</h4>
                   <p className="text-sm text-muted-foreground">
-                    Start executing your content plan
+                    {t('dashboard.journey.completeTask.description')}
                   </p>
                 </div>
               </div>
@@ -413,9 +413,9 @@ const Dashboard = () => {
                   {journeyProgress.hasChatted ? <CheckCircle2 className="h-5 w-5" /> : '5'}
                 </div>
                 <div className="flex-1">
-                  <h4 className="font-semibold mb-1">Chat with AI Coach</h4>
+                  <h4 className="font-semibold mb-1">{t('dashboard.journey.chatCoach.title')}</h4>
                   <p className="text-sm text-muted-foreground">
-                    Get personalized advice and overcome creative blocks
+                    {t('dashboard.journey.chatCoach.description')}
                   </p>
                 </div>
               </div>
@@ -429,7 +429,7 @@ const Dashboard = () => {
               onClick={() => navigate("/contact")}
               className="text-muted-foreground hover:text-foreground"
             >
-              Contact Us
+              {t('dashboard.contactButton')}
             </Button>
           </div>
         </div>
