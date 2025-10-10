@@ -263,7 +263,7 @@ export type Database = {
           selected_topics: string[] | null
           target_audience: string | null
           time_bucket: string | null
-          user_id: string | null
+          user_id: string
         }
         Insert: {
           answers: Json
@@ -277,7 +277,7 @@ export type Database = {
           selected_topics?: string[] | null
           target_audience?: string | null
           time_bucket?: string | null
-          user_id?: string | null
+          user_id: string
         }
         Update: {
           answers?: Json
@@ -291,7 +291,7 @@ export type Database = {
           selected_topics?: string[] | null
           target_audience?: string | null
           time_bucket?: string | null
-          user_id?: string | null
+          user_id?: string
         }
         Relationships: []
       }
