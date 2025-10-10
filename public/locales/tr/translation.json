@@ -54,18 +54,50 @@
     },
     "pricing": {
       "title": "Basit Fiyatlandırma",
+      "subtitle": "7 günlük ücretsiz deneme ile başlayın, ardından ayda sadece $9.99",
       "monthly": "Aylık",
       "price": "$29",
       "perMonth": "/ay",
+      "cardTitle": "Climbley Premium",
+      "trial": "7 günlük ücretsiz deneme • Sorunsuz ödeme",
       "features": {
         "quiz": "Tam kişilik testi",
         "coaching": "AI destekli koçluk",
         "calendar": "İçerik takvimi",
         "tracking": "İlerleme takibi",
         "ideas": "Sınırsız içerik fikirleri",
-        "support": "Öncelikli destek"
+        "support": "Öncelikli destek",
+        "niche": "Kişiselleştirilmiş niş keşfi",
+        "planning": "AI destekli içerik planlaması",
+        "analytics": "Gelişmiş büyüme analitiği"
       },
       "cta": "Başlayın"
+    },
+    "testimonials": {
+      "title": "İçerik Üreticileri Ne Diyor",
+      "subtitle": "Climbley ile yolculuklarını dönüştüren binlerce içerik üreticisine katılın",
+      "creators": {
+        "sarah": {
+          "name": "Sarah Mitchell",
+          "initials": "SM",
+          "quote": "Climbley, içeriğimle tutarlı olmamı sağladı. Rastgele paylaşımdan her hafta net bir plana sahip olmaya geçtim!"
+        },
+        "marcus": {
+          "name": "Marcus Johnson",
+          "initials": "MJ",
+          "quote": "Niş bulucu göz açıcıydı. Hiç düşünmediğim bir içerik açısını keşfettim ve etkileşimim üç katına çıktı!"
+        },
+        "emily": {
+          "name": "Emily Chen",
+          "initials": "EC",
+          "quote": "Koç, eğitmen ve yapımcı hepsi bir arada mı? Climbley tam olarak bu. Cebinizde bir içerik ekibine sahip olmak gibi."
+        }
+      }
+    },
+    "cta": {
+      "title": "İçerik Üretmeye Başlamaya Hazır mısınız?",
+      "subtitle": "Kitlelerini oluşturan ve tutkularından para kazanan binlerce içerik üreticisine katılın.",
+      "button": "Ücretsiz Başla"
     }
   },
   "auth": {
@@ -84,12 +116,19 @@
   "dashboard": {
     "welcome": "Tekrar hoş geldiniz",
     "subtitle": "YouTube Büyüme Paneliniz",
+    "contactButton": "Bizimle İletişime Geçin",
     "quickActions": {
       "title": "Hızlı İşlemler",
       "retakeQuiz": "Testi Tekrarla",
       "aiCoach": "AI Koç",
       "planContent": "İçerik Planla",
       "viewProgress": "İlerlemeyi Görüntüle"
+    },
+    "lastQuizResult": {
+      "title": "Son Test Sonucu",
+      "yourArchetype": "Arketipiniz",
+      "completed": "Tamamlandı",
+      "viewResults": "Tüm Sonuçları Görüntüle"
     },
     "journey": {
       "title": "Büyüme Yolculuğunuz",
@@ -108,6 +147,22 @@
       "trackProgress": {
         "title": "İlerlemeyi Takip Edin",
         "description": "Büyüme metriklerinizi izleyin"
+      },
+      "generateIdeas": {
+        "title": "Fikirler Oluştur",
+        "description": "AI içerik fikirleri alın"
+      },
+      "createPlan": {
+        "title": "Plan Oluştur",
+        "description": "İçerik planı oluşturun"
+      },
+      "completeTask": {
+        "title": "Görev Tamamla",
+        "description": "İlk görevinizi tamamlayın"
+      },
+      "chatCoach": {
+        "title": "AI ile Sohbet Et",
+        "description": "Koçtan tavsiye alın"
       }
     }
   },
@@ -137,6 +192,144 @@
     "placeholder": "YouTube kanalınızı büyütme hakkında bana bir şey sorun...",
     "send": "Gönder",
     "greeting": "Merhaba! Ben YouTube büyüme AI koçunuzum. Bugün size nasıl yardımcı olabilirim?"
+  },
+  "contact": {
+    "title": "Bizimle İletişime Geçin",
+    "subtitle": "Sorularınız mı var? Yardım etmeye hazırız!",
+    "name": "Adınız",
+    "email": "E-posta",
+    "message": "Mesaj",
+    "messagePlaceholder": "Mesajınızı buraya yazın...",
+    "characterCount": "karakter",
+    "characterLimit": "Maksimum 144 karakter",
+    "send": "Gönder",
+    "sending": "Gönderiliyor...",
+    "success": "Mesaj başarıyla gönderildi!",
+    "error": "Mesaj gönderme başarısız oldu",
+    "emptyMessage": "Mesaj boş olamaz",
+    "backToDashboard": "Panele Dön"
+  },
+  "quiz": {
+    "title": "İçerik Üreticisi Arketipinizi Keşfedin",
+    "description": "Kişiselleştirilmiş YouTube büyüme stratejileri almak için bu soruları cevaplayın",
+    "question": "Soru",
+    "of": "/",
+    "finish": "Testi Bitir",
+    "savingError": "Sonuçları kaydetme başarısız oldu"
+  },
+  "coach": {
+    "title": "AI Koç",
+    "description": "YouTube büyümesi hakkında sorularınıza 7/24 yanıtlar alın",
+    "placeholder": "YouTube kanalınızı büyütme hakkında bana bir şey sorun...",
+    "send": "Gönder",
+    "greeting": "Merhaba! Ben YouTube büyüme AI koçunuzum. Bugün size nasıl yardımcı olabilirim?"
+  },
+  "trendingTitles": {
+    "title": "Trend Başlıklar Oluşturucu",
+    "description": "Nişinize ve konunuza göre trend video başlıkları oluşturun",
+    "topicLabel": "Konunuz",
+    "topicPlaceholder": "örn. 'fitness ipuçları', 'vegan tarifler', 'oyun stratejisi'",
+    "generate": "Başlıklar Oluştur",
+    "generating": "Trend başlıklar oluşturuluyor...",
+    "generatedTitles": "Oluşturulan Başlıklar",
+    "copy": "Kopyala",
+    "copied": "Kopyalandı!",
+    "copyAll": "Tümünü Kopyala",
+    "allCopied": "Tüm başlıklar kopyalandı!",
+    "createPlans": "Bu Başlıklardan Planlar Oluştur",
+    "creatingPlans": "İçerik planları oluşturuluyor...",
+    "emptyState": "Başlamak için yukarıdaki alanda bir konu girin ve 'Başlıklar Oluştur' düğmesine basın.",
+    "generateError": "Başlıkları oluşturma başarısız oldu",
+    "plansSuccess": "İçerik planları başarıyla oluşturuldu!",
+    "plansError": "Planları oluşturma başarısız oldu"
+  },
+  "calendar": {
+    "title": "İçerik Takvimi",
+    "addTask": "Görev Ekle",
+    "taskName": "Görev Adı",
+    "dueDate": "Son Tarih",
+    "priority": "Öncelik",
+    "category": "Kategori",
+    "low": "Düşük",
+    "medium": "Orta",
+    "high": "Yüksek",
+    "ideas": "İçerik Fikirleri",
+    "trending": "Trend Başlıklar",
+    "plan": "İçerik Planı",
+    "viewMode": "Görünüm Modu",
+    "list": "Liste",
+    "kanban": "Kanban",
+    "generateIdeas": "Fikirler Oluştur",
+    "generatingIdeas": "AI fikirler oluşturuyor...",
+    "selectFrequency": "Yayınlama Sıklığını Seçin",
+    "timesPerWeek": "Haftada {{count}} kez",
+    "confirmFrequency": "Onayla",
+    "cancelFrequency": "İptal",
+    "generatePlan": "Plan Oluştur",
+    "generatingPlan": "AI plan oluşturuyor...",
+    "schedulingOptions": "Zamanlama Seçenekleri",
+    "scheduleWeek": "Bu Haftaya Zamanla",
+    "scheduleMonth": "Bu Aya Zamanla",
+    "scheduleCustom": "Özel Aralık",
+    "selectDateRange": "Tarih Aralığı Seçin",
+    "startDate": "Başlangıç Tarihi",
+    "endDate": "Bitiş Tarihi",
+    "confirmSchedule": "Programı Onayla",
+    "allTasks": "Tüm Görevler",
+    "filterByStatus": "Duruma göre filtrele",
+    "todo": "Yapılacak",
+    "inProgress": "Devam Ediyor",
+    "completed": "Tamamlandı",
+    "editTask": "Görevi Düzenle",
+    "deleteTask": "Görevi Sil",
+    "saveTask": "Görevi Kaydet",
+    "cancel": "İptal",
+    "confirmDelete": "Bu görevi silmek istediğinizden emin misiniz?",
+    "delete": "Sil",
+    "ideasSuccess": "İçerik fikirleri başarıyla oluşturuldu!",
+    "ideasError": "Fikirler oluşturma başarısız oldu",
+    "planSuccess": "İçerik planı başarıyla oluşturuldu!",
+    "planError": "Plan oluşturma başarısız oldu",
+    "taskUpdated": "Görev başarıyla güncellendi",
+    "taskDeleted": "Görev başarıyla silindi",
+    "taskError": "Görev işlemi başarısız oldu"
+  },
+  "progress": {
+    "title": "İlerleme",
+    "overallCompletion": "Genel Tamamlanma",
+    "completionRate": "Tamamlanma Oranı",
+    "motivationalMessages": {
+      "start": "Harika bir başlangıç! İlerlemeye devam edin!",
+      "progress": "İyi iş çıkarıyorsunuz! Devam edin!",
+      "halfway": "Yolun yarısındasınız! Harika bir iş çıkarıyorsunuz!",
+      "nearComplete": "Çok yakınsınız! İlerleyin!",
+      "complete": "Harika! Tüm görevleri tamamladınız!"
+    },
+    "stats": {
+      "quizzes": "Testler",
+      "totalQuizzes": "Tamamlanan Testler",
+      "lastQuiz": "Son Test",
+      "primaryArchetype": "Birincil Arketip",
+      "contentIdeas": "İçerik Fikirleri",
+      "totalIdeas": "Oluşturulan Fikirler",
+      "contentPlans": "İçerik Planları",
+      "totalPlans": "Oluşturulan Planlar",
+      "tasks": "Görevler",
+      "completedTasks": "Tamamlanan / Toplam",
+      "aiCoach": "AI Koç",
+      "conversations": "Konuşmalar",
+      "totalMessages": "Toplam Mesajlar"
+    },
+    "engagementScore": "Etkileşim Skoru",
+    "engagementDescription": "{{features}} özellikte aktif",
+    "quickActions": {
+      "title": "Hızlı İşlemler",
+      "retakeQuiz": "Testi Tekrarla",
+      "viewCalendar": "Takvimi Görüntüle",
+      "chatCoach": "AI Koçla Sohbet Et"
+    },
+    "noData": "Henüz veri yok",
+    "notTaken": "Henüz alınmadı"
   },
   "checkout": {
     "success": "Ödeme Başarılı!",
