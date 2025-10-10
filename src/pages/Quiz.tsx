@@ -11,8 +11,11 @@ import { quizQuestions, archetypes } from "@/data/quizData";
 import logo from "@/assets/climbley-logo.png";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from "react-i18next";
+import { LanguageSelector } from "@/components/LanguageSelector";
 
 const Quiz = () => {
+  const { t } = useTranslation();
   const [currentStep, setCurrentStep] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string[]>>({});
   const navigate = useNavigate();
@@ -25,8 +28,8 @@ const Quiz = () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
         toast({
-          title: "Authentication required",
-          description: "Please sign in to take the quiz",
+          title: t('auth.signIn'),
+          description: t('quiz.description'),
           variant: "destructive"
         });
         navigate("/auth");
@@ -47,7 +50,7 @@ const Quiz = () => {
     });
 
     return () => subscription.unsubscribe();
-  }, [navigate, toast]);
+  }, [navigate, toast, t]);
 
   const currentQuestion = quizQuestions[currentStep];
   const progress = ((currentStep + 1) / quizQuestions.length) * 100;
@@ -171,8 +174,8 @@ const Quiz = () => {
     } catch (error) {
       console.error("Error saving quiz:", error);
       toast({
-        title: "Error saving results",
-        description: "Please try again",
+        title: t('quiz.savingError'),
+        description: t('quiz.savingError'),
         variant: "destructive"
       });
     }
@@ -197,14 +200,17 @@ const Quiz = () => {
               className="absolute left-0 top-0 gap-2"
             >
               <Home className="w-4 h-4" />
-              Home
+              {t('nav.home')}
             </Button>
+            <div className="inline-flex items-center gap-2 mb-4">
+              <LanguageSelector />
+            </div>
             <div className="inline-flex items-center gap-2 bg-primary/10 px-4 py-2 rounded-full mb-4">
               <img src={logo} alt="Climbley" className="w-4 h-4" />
-              <span className="text-sm font-medium">Find Your Creator Niche</span>
+              <span className="text-sm font-medium">{t('quiz.title')}</span>
             </div>
             <h1 className="text-4xl font-bold mb-2">
-              Step {currentStep + 1} of {quizQuestions.length}
+              {t('quiz.question')} {currentStep + 1} {t('quiz.of')} {quizQuestions.length}
             </h1>
             <Progress value={progress} className="mt-4" />
           </div>
@@ -215,7 +221,7 @@ const Quiz = () => {
               <CardTitle className="text-2xl">{currentQuestion.text}</CardTitle>
               {currentQuestion.type === "multi_select" && (
                 <CardDescription>
-                  Select up to {currentQuestion.maxSelect} option{currentQuestion.maxSelect > 1 ? "s" : ""} (selected: {answers[currentQuestion.id]?.length || 0})
+                  {currentQuestion.maxSelect} {t('quiz.of')} ({answers[currentQuestion.id]?.length || 0})
                 </CardDescription>
               )}
             </CardHeader>
@@ -270,7 +276,7 @@ const Quiz = () => {
                 className="gap-2"
               >
                 <ChevronLeft className="w-4 h-4" />
-                Back
+                {t('common.back')}
               </Button>
               
               <Button
@@ -278,7 +284,7 @@ const Quiz = () => {
                 disabled={!canProceed()}
                 className="gap-2 [background-image:var(--gradient-vibrant)] bg-primary shadow-[var(--shadow-vibrant)] !opacity-100 disabled:!opacity-100"
               >
-                {currentStep === quizQuestions.length - 1 ? "See Results" : "Next"}
+                {currentStep === quizQuestions.length - 1 ? t('quiz.finish') : t('common.next')}
                 <ChevronRight className="w-4 h-4" />
               </Button>
             </div>

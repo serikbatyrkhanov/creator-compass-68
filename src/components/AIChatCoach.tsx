@@ -12,6 +12,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { MessageCircle, Send, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from "react-i18next";
 
 interface Message {
   role: "user" | "assistant";
@@ -24,10 +25,11 @@ interface AIChatCoachProps {
 }
 
 export function AIChatCoach({ open, onOpenChange }: AIChatCoachProps) {
+  const { t } = useTranslation();
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
-      content: "Hi! I'm your AI content coach. I'm here to help you with creative blocks, content strategy, platform advice, or just to brainstorm ideas. What's on your mind?"
+      content: t('coach.greeting')
     }
   ]);
   const [input, setInput] = useState("");
@@ -178,8 +180,8 @@ export function AIChatCoach({ open, onOpenChange }: AIChatCoachProps) {
     } catch (err: any) {
       console.error("Chat error:", err);
       toast({
-        title: "Chat failed",
-        description: err.message || "Failed to send message. Please try again.",
+        title: t('contact.error'),
+        description: t('contact.error'),
         variant: "destructive"
       });
       // Remove the empty assistant message if streaming failed
@@ -209,10 +211,10 @@ export function AIChatCoach({ open, onOpenChange }: AIChatCoachProps) {
         <DialogHeader className="px-6 pt-6 pb-4 border-b">
           <DialogTitle className="flex items-center gap-2 text-2xl">
             <MessageCircle className="h-6 w-6 text-emerald-500" />
-            AI Content Coach
+            {t('coach.title')}
           </DialogTitle>
           <DialogDescription>
-            Get personalized advice and overcome creative challenges
+            {t('coach.description')}
           </DialogDescription>
         </DialogHeader>
 
@@ -250,7 +252,7 @@ export function AIChatCoach({ open, onOpenChange }: AIChatCoachProps) {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder="Ask me anything about content creation..."
+              placeholder={t('coach.placeholder')}
               disabled={isLoading}
               className="flex-1"
             />

@@ -9,8 +9,11 @@ import { Label } from "@/components/ui/label";
 import { ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import logo from "@/assets/climbley-logo.png";
+import { useTranslation } from "react-i18next";
+import { LanguageSelector } from "@/components/LanguageSelector";
 
 const ContactUs = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [user, setUser] = useState<any>(null);
@@ -43,8 +46,8 @@ const ContactUs = () => {
     
     if (isOverLimit) {
       toast({
-        title: "Message too long",
-        description: `Please reduce your message by ${Math.abs(remainingChars)} characters.`,
+        title: t('contact.error'),
+        description: t('contact.characterLimit'),
         variant: "destructive",
       });
       return;
@@ -52,8 +55,8 @@ const ContactUs = () => {
 
     if (!message.trim()) {
       toast({
-        title: "Message required",
-        description: "Please enter a message before sending.",
+        title: t('contact.error'),
+        description: t('contact.emptyMessage'),
         variant: "destructive",
       });
       return;
@@ -73,16 +76,16 @@ const ContactUs = () => {
       if (error) throw error;
 
       toast({
-        title: "Message sent!",
-        description: "We've received your message and will get back to you soon.",
+        title: t('contact.success'),
+        description: t('contact.success'),
       });
 
       navigate("/dashboard");
     } catch (error: any) {
       console.error("Error sending message:", error);
       toast({
-        title: "Failed to send message",
-        description: error.message || "Please try again later.",
+        title: t('contact.error'),
+        description: t('contact.error'),
         variant: "destructive",
       });
     } finally {
@@ -100,10 +103,13 @@ const ContactUs = () => {
           <div className="flex items-center gap-2">
             <img src={logo} alt="Climbley Logo" className="h-8 w-auto" />
           </div>
-          <Button variant="ghost" size="sm" onClick={() => navigate("/dashboard")}>
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Dashboard
-          </Button>
+          <div className="flex items-center gap-4">
+            <LanguageSelector />
+            <Button variant="ghost" size="sm" onClick={() => navigate("/dashboard")}>
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              {t('contact.backToDashboard')}
+            </Button>
+          </div>
         </div>
       </nav>
 
@@ -112,49 +118,49 @@ const ContactUs = () => {
         <div className="max-w-2xl mx-auto">
           <Card className="border-2">
             <CardHeader>
-              <CardTitle className="text-2xl">Contact Us</CardTitle>
+              <CardTitle className="text-2xl">{t('contact.title')}</CardTitle>
               <CardDescription>
-                Send us a message and we'll get back to you as soon as possible
+                {t('contact.subtitle')}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-2">
-                  <Label htmlFor="name">Name</Label>
+                  <Label htmlFor="name">{t('contact.name')}</Label>
                   <Input
                     id="name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="Your name"
+                    placeholder={t('contact.name')}
                     required
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email">{t('contact.email')}</Label>
                   <Input
                     id="email"
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="your@email.com"
+                    placeholder={t('contact.email')}
                     required
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="message">Message</Label>
+                  <Label htmlFor="message">{t('contact.message')}</Label>
                   <Textarea
                     id="message"
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
-                    placeholder="Tell us what's on your mind..."
+                    placeholder={t('contact.messagePlaceholder')}
                     className="min-h-[120px] resize-none"
                     required
                   />
                   <div className="flex justify-end">
                     <span className={`text-sm ${isOverLimit ? 'text-destructive font-semibold' : 'text-muted-foreground'}`}>
-                      {remainingChars} characters remaining
+                      {remainingChars} {t('contact.characterCount')}
                     </span>
                   </div>
                 </div>
@@ -164,7 +170,7 @@ const ContactUs = () => {
                   className="w-full" 
                   disabled={isSubmitting || isOverLimit}
                 >
-                  {isSubmitting ? "Sending..." : "Send Email"}
+                  {isSubmitting ? t('contact.sending') : t('contact.send')}
                 </Button>
               </form>
             </CardContent>
