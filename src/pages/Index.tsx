@@ -76,7 +76,7 @@ const Index = () => {
       </nav>
 
       {/* Hero Section with Image Slider */}
-      <section className="relative h-[72vh] overflow-hidden">
+      <section className="relative min-h-[85vh] overflow-hidden">
         {/* Image Slider */}
         <div className="absolute inset-0">
           <AnimatePresence>
@@ -103,8 +103,8 @@ const Index = () => {
         </div>
 
         {/* Hero Content - Left Aligned */}
-        <div className="relative z-10 container mx-auto px-4 h-full flex items-center">
-          <div className="max-w-3xl text-left space-y-8">
+        <div className="relative z-10 container mx-auto px-4 h-full flex items-center py-12 md:py-16">
+          <div className="max-w-3xl text-left space-y-6 md:space-y-8">
             <motion.div initial={{
             opacity: 0,
             x: -20
@@ -171,7 +171,7 @@ const Index = () => {
             x: 0
           }} transition={{
             delay: 0.7
-          }} className="flex flex-col sm:flex-row gap-4 pt-4">
+          }} className="flex flex-col sm:flex-row gap-4 pt-4 pb-4">
               <Link to="/auth">
                 <Button size="lg" className="rounded-full gap-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:opacity-90 transition-opacity text-white shadow-lg shadow-purple-500/50">
                   {t('index.hero.cta')}
@@ -186,7 +186,7 @@ const Index = () => {
         </div>
 
         {/* Slide indicators */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex gap-2">
+        <div className="absolute bottom-12 md:bottom-16 left-1/2 -translate-x-1/2 z-10 flex gap-2">
           {sliderImages.map((_, index) => <button key={index} onClick={() => setCurrentSlide(index)} className={`w-2 h-2 rounded-full transition-all ${index === currentSlide ? "bg-white w-8" : "bg-white/50 hover:bg-white/75"}`} aria-label={`Go to slide ${index + 1}`} />)}
         </div>
       </section>
