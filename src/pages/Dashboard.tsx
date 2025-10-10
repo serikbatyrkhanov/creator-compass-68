@@ -190,7 +190,7 @@ const Dashboard = () => {
 
           {/* Quick Actions */}
           <div className={`grid gap-6 animate-slide-up ${lastQuizResult ? 'md:grid-cols-4' : 'md:grid-cols-4'}`}>
-            <Card className="border-2 hover:shadow-lg transition-all cursor-pointer">
+            <Card className="border-2 hover:shadow-lg transition-all cursor-pointer flex flex-col">
               <CardHeader>
                 <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
                   <Target className="h-6 w-6 text-primary" />
@@ -200,14 +200,14 @@ const Dashboard = () => {
                   {lastQuizResult ? t('dashboard.journey.takeQuiz.description') : t('dashboard.journey.takeQuiz.description')}
                 </CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="mt-auto">
                 <Button className="w-full" onClick={() => navigate("/quiz")}>
                   {lastQuizResult ? t('dashboard.quickActions.retakeQuiz') : t('quiz.title')}
                 </Button>
               </CardContent>
             </Card>
 
-            <Card className="border-2 hover:shadow-lg transition-all cursor-pointer" onClick={() => setChatOpen(true)}>
+            <Card className="border-2 hover:shadow-lg transition-all cursor-pointer flex flex-col" onClick={() => setChatOpen(true)}>
               <CardHeader>
                 <div className="h-12 w-12 rounded-lg bg-emerald-500/10 flex items-center justify-center mb-4">
                   <MessageCircle className="h-6 w-6 text-emerald-600" />
@@ -217,14 +217,14 @@ const Dashboard = () => {
                   {t('coach.greeting')}
                 </CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="mt-auto">
                 <Button className="w-full bg-emerald-600 hover:bg-emerald-700">
                   {t('coach.send')}
                 </Button>
               </CardContent>
             </Card>
 
-            <Card className="border-2 hover:shadow-lg transition-all cursor-pointer" onClick={() => setTrendingTitlesOpen(true)}>
+            <Card className="border-2 hover:shadow-lg transition-all cursor-pointer flex flex-col" onClick={() => setTrendingTitlesOpen(true)}>
               <CardHeader>
                 <div className="h-12 w-12 rounded-lg bg-purple-500/10 flex items-center justify-center mb-4">
                   <Sparkles className="h-6 w-6 text-purple-600" />
@@ -234,14 +234,14 @@ const Dashboard = () => {
                   {t('calendar.plan')}
                 </CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="mt-auto">
                 <Button className="w-full bg-purple-600 hover:bg-purple-700">
                   {t('calendar.trending')}
                 </Button>
               </CardContent>
             </Card>
 
-            <Card className="border-2 hover:shadow-lg transition-all cursor-pointer" onClick={() => navigate("/content-calendar")}>
+            <Card className="border-2 hover:shadow-lg transition-all cursor-pointer flex flex-col" onClick={() => navigate("/content-calendar")}>
               <CardHeader>
                 <div className="h-12 w-12 rounded-lg bg-secondary/10 flex items-center justify-center mb-4">
                   <Calendar className="h-6 w-6 text-secondary" />
@@ -251,12 +251,12 @@ const Dashboard = () => {
                   {t('dashboard.journey.planContent.description')}
                 </CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="mt-auto">
                 <Button variant="outline" className="w-full">{t('nav.calendar')}</Button>
               </CardContent>
             </Card>
 
-            <Card className="border-2 hover:shadow-lg transition-all cursor-pointer" onClick={() => navigate("/progress")}>
+            <Card className="border-2 hover:shadow-lg transition-all cursor-pointer flex flex-col" onClick={() => navigate("/progress")}>
               <CardHeader>
                 <div className="h-12 w-12 rounded-lg bg-accent/10 flex items-center justify-center mb-4">
                   <TrendingUp className="h-6 w-6 text-accent" />
@@ -266,7 +266,7 @@ const Dashboard = () => {
                   {t('dashboard.journey.trackProgress.description')}
                 </CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="mt-auto">
                 <Button variant="outline" className="w-full">{t('nav.progress')}</Button>
               </CardContent>
             </Card>
