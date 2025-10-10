@@ -8,6 +8,7 @@ import { TrendingUp, RefreshCw, Copy, Check, Calendar } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import logo from "@/assets/climbley-logo.png";
 
 interface TrendingTitlesDialogProps {
@@ -16,6 +17,7 @@ interface TrendingTitlesDialogProps {
 }
 
 export const TrendingTitlesDialog = ({ open, onOpenChange }: TrendingTitlesDialogProps) => {
+  const { t } = useTranslation();
   const [prompt, setPrompt] = useState("");
   const [titles, setTitles] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
@@ -27,8 +29,8 @@ export const TrendingTitlesDialog = ({ open, onOpenChange }: TrendingTitlesDialo
   const generateTitles = async () => {
     if (!prompt.trim()) {
       toast({
-        title: "Prompt required",
-        description: "Please enter a topic or niche for title generation",
+        title: t("trendingTitles.promptRequired"),
+        description: t("trendingTitles.promptRequiredDescription"),
         variant: "destructive",
       });
       return;
@@ -47,8 +49,8 @@ export const TrendingTitlesDialog = ({ open, onOpenChange }: TrendingTitlesDialo
       if (data?.titles && Array.isArray(data.titles)) {
         setTitles(data.titles);
         toast({
-          title: "Success!",
-          description: `Generated ${data.titles.length} trending titles`,
+          title: t("trendingTitles.success"),
+          description: t("trendingTitles.generatedTitles", { count: data.titles.length }),
         });
       } else {
         throw new Error("Invalid response format");
@@ -56,8 +58,8 @@ export const TrendingTitlesDialog = ({ open, onOpenChange }: TrendingTitlesDialo
     } catch (error: any) {
       console.error("Error generating titles:", error);
       toast({
-        title: "Generation failed",
-        description: error.message || "Failed to generate titles. Please try again.",
+        title: t("trendingTitles.generationFailed"),
+        description: error.message || t("trendingTitles.errorMessage"),
         variant: "destructive",
       });
     } finally {
@@ -70,14 +72,14 @@ export const TrendingTitlesDialog = ({ open, onOpenChange }: TrendingTitlesDialo
       await navigator.clipboard.writeText(title);
       setCopiedIndex(index);
       toast({
-        title: "Copied!",
-        description: "Title copied to clipboard",
+        title: t("trendingTitles.copied"),
+        description: t("trendingTitles.copiedDescription"),
       });
       setTimeout(() => setCopiedIndex(null), 2000);
     } catch (error) {
       toast({
-        title: "Copy failed",
-        description: "Failed to copy title",
+        title: t("trendingTitles.copyFailed"),
+        description: t("trendingTitles.copyFailedDescription"),
         variant: "destructive",
       });
     }
@@ -88,13 +90,13 @@ export const TrendingTitlesDialog = ({ open, onOpenChange }: TrendingTitlesDialo
       const allTitles = titles.join('\n');
       await navigator.clipboard.writeText(allTitles);
       toast({
-        title: "All titles copied!",
-        description: "All 50 titles copied to clipboard",
+        title: t("trendingTitles.allCopied"),
+        description: t("trendingTitles.allCopiedDescription"),
       });
     } catch (error) {
       toast({
-        title: "Copy failed",
-        description: "Failed to copy titles",
+        title: t("trendingTitles.copyFailed"),
+        description: t("trendingTitles.copyFailedDescription"),
         variant: "destructive",
       });
     }
@@ -103,8 +105,8 @@ export const TrendingTitlesDialog = ({ open, onOpenChange }: TrendingTitlesDialo
   const generatePlansFromTitles = async () => {
     if (titles.length === 0) {
       toast({
-        title: "No titles available",
-        description: "Generate titles first before creating plans",
+        title: t("trendingTitles.noTitles"),
+        description: t("trendingTitles.noTitlesDescription"),
         variant: "destructive",
       });
       return;
@@ -130,8 +132,11 @@ export const TrendingTitlesDialog = ({ open, onOpenChange }: TrendingTitlesDialo
 
       if (data?.success) {
         toast({
-          title: "Plans created!",
-          description: `Successfully created ${data.plansCreated} content plans from ${data.titlesUsed} titles`,
+          title: t("trendingTitles.plansCreated"),
+          description: t("trendingTitles.plansCreatedDescription", { 
+            plansCreated: data.plansCreated, 
+            titlesUsed: data.titlesUsed 
+          }),
         });
         
         // Close dialog and navigate to content calendar
@@ -145,8 +150,8 @@ export const TrendingTitlesDialog = ({ open, onOpenChange }: TrendingTitlesDialo
     } catch (error: any) {
       console.error("Error generating plans:", error);
       toast({
-        title: "Plan generation failed",
-        description: error.message || "Failed to create content plans. Please try again.",
+        title: t("trendingTitles.planGenerationFailed"),
+        description: error.message || t("trendingTitles.planErrorMessage"),
         variant: "destructive",
       });
     } finally {
@@ -160,19 +165,19 @@ export const TrendingTitlesDialog = ({ open, onOpenChange }: TrendingTitlesDialo
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-2xl">
             <img src={logo} alt="" className="h-6 w-6" />
-            Trending Title Generator
+            {t("trendingTitles.title")}
           </DialogTitle>
           <DialogDescription>
-            Generate 50 viral, trending content titles using AI
+            {t("trendingTitles.description")}
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4 flex-1 flex flex-col min-h-0">
           {/* Input Section */}
           <div className="space-y-2">
-            <label className="text-sm font-medium">Your Topic or Niche</label>
+            <label className="text-sm font-medium">{t("trendingTitles.topicLabel")}</label>
             <Textarea
-              placeholder="e.g., 'Fitness tips for busy professionals' or 'Tech reviews and gadgets'"
+              placeholder={t("trendingTitles.topicPlaceholder")}
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
               className="min-h-[80px]"
@@ -186,12 +191,12 @@ export const TrendingTitlesDialog = ({ open, onOpenChange }: TrendingTitlesDialo
               {loading ? (
                 <>
                   <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
-                  Generating 50 Titles...
+                  {t("trendingTitles.generating")}
                 </>
               ) : (
                 <>
                   <TrendingUp className="h-4 w-4 mr-2" />
-                  Generate Trending Titles
+                  {t("trendingTitles.generateButton")}
                 </>
               )}
             </Button>
@@ -199,11 +204,11 @@ export const TrendingTitlesDialog = ({ open, onOpenChange }: TrendingTitlesDialo
 
           {/* Results Section */}
           {titles.length > 0 && (
-            <div className="space-y-3 flex-1 flex flex-col min-h-0">
+              <div className="space-y-3 flex-1 flex flex-col min-h-0">
               <div className="flex items-center justify-between flex-wrap gap-2">
                 <div className="flex items-center gap-2">
-                  <h3 className="text-sm font-semibold">Generated Titles</h3>
-                  <Badge variant="secondary">{titles.length} titles</Badge>
+                  <h3 className="text-sm font-semibold">{t("trendingTitles.generatedTitlesLabel")}</h3>
+                  <Badge variant="secondary">{titles.length} {t("trendingTitles.titlesCount")}</Badge>
                 </div>
                 <div className="flex gap-2">
                   <Button
@@ -213,7 +218,7 @@ export const TrendingTitlesDialog = ({ open, onOpenChange }: TrendingTitlesDialo
                     className="gap-2"
                   >
                     <Copy className="h-3 w-3" />
-                    Copy All
+                    {t("trendingTitles.copyAll")}
                   </Button>
                   <Button
                     size="sm"
@@ -224,12 +229,12 @@ export const TrendingTitlesDialog = ({ open, onOpenChange }: TrendingTitlesDialo
                     {generatingPlans ? (
                       <>
                         <RefreshCw className="h-3 w-3 animate-spin" />
-                        Creating Plans...
+                        {t("trendingTitles.creatingPlans")}
                       </>
                     ) : (
                       <>
                         <Calendar className="h-3 w-3" />
-                        Generate Plans
+                        {t("trendingTitles.generatePlansButton")}
                       </>
                     )}
                   </Button>
@@ -272,7 +277,7 @@ export const TrendingTitlesDialog = ({ open, onOpenChange }: TrendingTitlesDialo
               <div className="text-center space-y-2">
                 <TrendingUp className="h-12 w-12 mx-auto text-muted-foreground" />
                 <p className="text-sm text-muted-foreground">
-                  Enter your topic above and generate trending titles
+                  {t("trendingTitles.emptyState")}
                 </p>
               </div>
             </div>

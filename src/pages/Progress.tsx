@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -19,6 +20,7 @@ interface ProgressStats {
 }
 
 const Progress = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [stats, setStats] = useState<ProgressStats>({
     totalQuizzes: 0,
@@ -111,17 +113,17 @@ const Progress = () => {
     : 0;
 
   const getMotivationalMessage = () => {
-    if (completionRate === 100) return "Perfect! You're crushing it! 🏆";
-    if (completionRate >= 75) return "Excellent progress! Keep it up! 🌟";
-    if (completionRate >= 50) return "You're halfway there! 💪";
-    if (completionRate >= 25) return "Good start! Keep going! 🚀";
-    return "Let's get started! 🎯";
+    if (completionRate === 100) return t("progress.motivationalMessage100");
+    if (completionRate >= 75) return t("progress.motivationalMessage75");
+    if (completionRate >= 50) return t("progress.motivationalMessage50");
+    if (completionRate >= 25) return t("progress.motivationalMessage25");
+    return t("progress.motivationalMessage0");
   };
 
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-pulse">Loading stats...</div>
+        <div className="animate-pulse">{t("common.loading")}</div>
       </div>
     );
   }
@@ -134,21 +136,21 @@ const Progress = () => {
           <div className="flex items-center gap-4">
             <Button variant="ghost" size="sm" onClick={() => navigate("/dashboard")}>
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Back
+              {t("common.back")}
             </Button>
             <div>
               <h1 className="text-3xl font-bold flex items-center gap-2">
                 <TrendingUp className="h-8 w-8 text-primary" />
-                Your Progress
+                {t("progress.title")}
               </h1>
-              <p className="text-muted-foreground">Track your creator journey</p>
+              <p className="text-muted-foreground">{t("progress.subtitle")}</p>
             </div>
           </div>
 
           {/* Overall Progress Card */}
           <Card className="bg-gradient-to-br from-primary/10 to-secondary/10 border-2">
             <CardHeader>
-              <CardTitle className="text-2xl">Overall Completion</CardTitle>
+              <CardTitle className="text-2xl">{t("progress.overallCompletion")}</CardTitle>
               <CardDescription>{getMotivationalMessage()}</CardDescription>
             </CardHeader>
             <CardContent>
@@ -163,7 +165,7 @@ const Progress = () => {
                 />
               </div>
               <p className="text-sm text-muted-foreground">
-                {stats.completedTasks} of {stats.totalTasks} tasks completed
+                {t("progress.tasksCompleted", { completed: stats.completedTasks, total: stats.totalTasks })}
               </p>
             </CardContent>
           </Card>
@@ -174,24 +176,24 @@ const Progress = () => {
             <Card>
               <CardHeader>
                 <div className="flex items-center justify-between">
-                  <CardTitle>Quiz History</CardTitle>
+                  <CardTitle>{t("progress.quizHistory")}</CardTitle>
                   <Target className="h-6 w-6 text-primary" />
                 </div>
               </CardHeader>
               <CardContent className="space-y-3">
                 <div>
                   <p className="text-3xl font-bold">{stats.totalQuizzes}</p>
-                  <p className="text-sm text-muted-foreground">Quizzes taken</p>
+                  <p className="text-sm text-muted-foreground">{t("progress.quizzesTaken")}</p>
                 </div>
                 {stats.primaryArchetype && (
                   <div>
-                    <p className="text-sm font-medium">Current Archetype:</p>
+                    <p className="text-sm font-medium">{t("progress.currentArchetype")}</p>
                     <Badge className="mt-1 capitalize">{stats.primaryArchetype}</Badge>
                   </div>
                 )}
                 {stats.lastQuizDate && (
                   <p className="text-xs text-muted-foreground">
-                    Last: {new Date(stats.lastQuizDate).toLocaleDateString()}
+                    {t("progress.lastQuiz")}: {new Date(stats.lastQuizDate).toLocaleDateString()}
                   </p>
                 )}
               </CardContent>
@@ -201,7 +203,7 @@ const Progress = () => {
             <Card>
               <CardHeader>
                 <div className="flex items-center justify-between">
-                  <CardTitle>Content Ideas</CardTitle>
+                  <CardTitle>{t("progress.contentIdeas")}</CardTitle>
                   <Lightbulb className="h-6 w-6 text-amber-500" />
                 </div>
               </CardHeader>
@@ -209,7 +211,7 @@ const Progress = () => {
                 <div>
                   <p className="text-3xl font-bold">{stats.totalIdeas}</p>
                   <p className="text-sm text-muted-foreground">
-                    AI-generated idea sets
+                    {t("progress.ideaSets")}
                   </p>
                 </div>
                 <Button 
@@ -218,7 +220,7 @@ const Progress = () => {
                   className="w-full mt-4"
                   onClick={() => navigate("/dashboard")}
                 >
-                  Generate More Ideas
+                  {t("progress.generateMoreIdeas")}
                 </Button>
               </CardContent>
             </Card>
@@ -227,7 +229,7 @@ const Progress = () => {
             <Card>
               <CardHeader>
                 <div className="flex items-center justify-between">
-                  <CardTitle>Content Plans</CardTitle>
+                  <CardTitle>{t("progress.contentPlans")}</CardTitle>
                   <Calendar className="h-6 w-6 text-emerald-500" />
                 </div>
               </CardHeader>
@@ -235,7 +237,7 @@ const Progress = () => {
                 <div>
                   <p className="text-3xl font-bold">{stats.totalPlans}</p>
                   <p className="text-sm text-muted-foreground">
-                    7-day plans created
+                    {t("progress.plansCreated")}
                   </p>
                 </div>
                 <Button 
@@ -244,7 +246,7 @@ const Progress = () => {
                   className="w-full mt-4"
                   onClick={() => navigate("/content-calendar")}
                 >
-                  View Calendar
+                  {t("progress.viewCalendar")}
                 </Button>
               </CardContent>
             </Card>
@@ -253,7 +255,7 @@ const Progress = () => {
             <Card>
               <CardHeader>
                 <div className="flex items-center justify-between">
-                  <CardTitle>Tasks</CardTitle>
+                  <CardTitle>{t("progress.tasks")}</CardTitle>
                   <CheckCircle2 className="h-6 w-6 text-green-500" />
                 </div>
               </CardHeader>
@@ -261,11 +263,11 @@ const Progress = () => {
                 <div className="space-y-2">
                   <div>
                     <p className="text-3xl font-bold text-green-600">{stats.completedTasks}</p>
-                    <p className="text-sm text-muted-foreground">Tasks completed</p>
+                    <p className="text-sm text-muted-foreground">{t("progress.tasksCompletedLabel")}</p>
                   </div>
                   <div>
                     <p className="text-2xl font-semibold text-muted-foreground">{stats.totalTasks - stats.completedTasks}</p>
-                    <p className="text-xs text-muted-foreground">Tasks remaining</p>
+                    <p className="text-xs text-muted-foreground">{t("progress.tasksRemaining")}</p>
                   </div>
                 </div>
               </CardContent>
@@ -275,7 +277,7 @@ const Progress = () => {
             <Card>
               <CardHeader>
                 <div className="flex items-center justify-between">
-                  <CardTitle>AI Coach</CardTitle>
+                  <CardTitle>{t("progress.aiCoach")}</CardTitle>
                   <MessageCircle className="h-6 w-6 text-blue-500" />
                 </div>
               </CardHeader>
@@ -283,11 +285,11 @@ const Progress = () => {
                 <div className="space-y-2">
                   <div>
                     <p className="text-3xl font-bold">{stats.chatConversations}</p>
-                    <p className="text-sm text-muted-foreground">Conversations</p>
+                    <p className="text-sm text-muted-foreground">{t("progress.conversations")}</p>
                   </div>
                   <div>
                     <p className="text-2xl font-semibold text-muted-foreground">{stats.totalMessages}</p>
-                    <p className="text-xs text-muted-foreground">Total messages</p>
+                    <p className="text-xs text-muted-foreground">{t("progress.totalMessages")}</p>
                   </div>
                 </div>
               </CardContent>
@@ -296,31 +298,31 @@ const Progress = () => {
             {/* Engagement Score */}
             <Card className="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20">
               <CardHeader>
-                <CardTitle>Engagement Score</CardTitle>
-                <CardDescription>Based on your activity</CardDescription>
+                <CardTitle>{t("progress.engagementScore")}</CardTitle>
+                <CardDescription>{t("progress.basedOnActivity")}</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
                   <div className="flex items-center justify-between text-sm">
-                    <span>Quizzes</span>
+                    <span>{t("progress.quizzes")}</span>
                     <Badge variant={stats.totalQuizzes > 0 ? "default" : "secondary"}>
                       {stats.totalQuizzes > 0 ? "✓" : "○"}
                     </Badge>
                   </div>
                   <div className="flex items-center justify-between text-sm">
-                    <span>Generated Ideas</span>
+                    <span>{t("progress.generatedIdeas")}</span>
                     <Badge variant={stats.totalIdeas > 0 ? "default" : "secondary"}>
                       {stats.totalIdeas > 0 ? "✓" : "○"}
                     </Badge>
                   </div>
                   <div className="flex items-center justify-between text-sm">
-                    <span>Created Plans</span>
+                    <span>{t("progress.createdPlans")}</span>
                     <Badge variant={stats.totalPlans > 0 ? "default" : "secondary"}>
                       {stats.totalPlans > 0 ? "✓" : "○"}
                     </Badge>
                   </div>
                   <div className="flex items-center justify-between text-sm">
-                    <span>Completed Tasks</span>
+                    <span>{t("progress.completedTasksLabel")}</span>
                     <Badge variant={stats.completedTasks > 0 ? "default" : "secondary"}>
                       {stats.completedTasks > 0 ? "✓" : "○"}
                     </Badge>
@@ -333,21 +335,21 @@ const Progress = () => {
           {/* Quick Actions */}
           <Card>
             <CardHeader>
-              <CardTitle>Quick Actions</CardTitle>
-              <CardDescription>Continue your creator journey</CardDescription>
+              <CardTitle>{t("progress.quickActions")}</CardTitle>
+              <CardDescription>{t("progress.continueJourney")}</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-wrap gap-3">
               <Button onClick={() => navigate("/quiz")}>
                 <Target className="h-4 w-4 mr-2" />
-                Retake Quiz
+                {t("progress.retakeQuiz")}
               </Button>
               <Button variant="outline" onClick={() => navigate("/content-calendar")}>
                 <Calendar className="h-4 w-4 mr-2" />
-                View Calendar
+                {t("progress.viewCalendar")}
               </Button>
               <Button variant="outline" onClick={() => navigate("/dashboard")}>
                 <Lightbulb className="h-4 w-4 mr-2" />
-                Generate Ideas
+                {t("progress.generateIdeas")}
               </Button>
             </CardContent>
           </Card>

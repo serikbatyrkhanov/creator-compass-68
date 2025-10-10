@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -54,6 +55,7 @@ interface ContentPlan {
 }
 
 const ContentCalendar = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [plans, setPlans] = useState<ContentPlan[]>([]);
@@ -135,8 +137,8 @@ const ContentCalendar = () => {
     } catch (error) {
       console.error("Error fetching plans:", error);
       toast({
-        title: "Error",
-        description: "Failed to load your content plans",
+        title: t("common.error"),
+        description: t("calendar.errorLoadingPlans"),
         variant: "destructive"
       });
     } finally {
@@ -180,14 +182,14 @@ const ContentCalendar = () => {
       }
 
       toast({
-        title: !currentStatus ? "Task completed! 🎉" : "Task marked incomplete",
-        description: !currentStatus ? "Great work! Keep going!" : "Task status updated"
+        title: !currentStatus ? t("calendar.taskCompleted") : t("calendar.taskIncomplete"),
+        description: !currentStatus ? t("calendar.greatWork") : t("calendar.taskUpdated")
       });
     } catch (error) {
       console.error("Error updating task:", error);
       toast({
-        title: "Error",
-        description: "Failed to update task status",
+        title: t("common.error"),
+        description: t("calendar.errorUpdatingTask"),
         variant: "destructive"
       });
     }
@@ -245,16 +247,16 @@ const ContentCalendar = () => {
       }
 
       toast({
-        title: "Task updated",
-        description: "Your changes have been saved successfully"
+        title: t("calendar.taskUpdated"),
+        description: t("calendar.changesSaved")
       });
 
       setEditDialogOpen(false);
     } catch (error) {
       console.error("Error updating task:", error);
       toast({
-        title: "Error",
-        description: "Failed to update task",
+        title: t("common.error"),
+        description: t("calendar.errorUpdatingTask"),
         variant: "destructive"
       });
     }
@@ -308,8 +310,8 @@ const ContentCalendar = () => {
         console.error("Error updating task notes:", error);
         setNotesSaving(prev => ({ ...prev, [taskId]: false }));
         toast({
-          title: "Error updating notes",
-          description: "Failed to update task notes",
+          title: t("calendar.errorUpdatingNotes"),
+          description: t("calendar.errorUpdatingNotesDescription"),
           variant: "destructive"
         });
       }
@@ -345,8 +347,8 @@ const ContentCalendar = () => {
     } catch (error) {
       console.error("Error updating progress:", error);
       toast({
-        title: "Error",
-        description: "Failed to update progress",
+        title: t("common.error"),
+        description: t("calendar.errorUpdatingProgress"),
         variant: "destructive"
       });
     }
@@ -368,8 +370,8 @@ const ContentCalendar = () => {
 
       if (quizError || !quizResponse) {
         toast({
-          title: "No quiz results found",
-          description: "Please take the quiz first",
+          title: t("calendar.noQuizResults"),
+          description: t("calendar.pleaseQuizFirst"),
           variant: "destructive"
         });
         navigate("/quiz");
@@ -400,16 +402,16 @@ const ContentCalendar = () => {
       if (error) throw error;
 
       toast({
-        title: "Plan generated!",
-        description: "Your new weekly content plan is ready"
+        title: t("calendar.planGenerated"),
+        description: t("calendar.newPlanReady")
       });
 
       await fetchPlans();
     } catch (error) {
       console.error("Error generating plan:", error);
       toast({
-        title: "Error generating plan",
-        description: "Failed to create new plan. Please try again.",
+        title: t("calendar.errorGeneratingPlan"),
+        description: t("calendar.errorGeneratingPlanDescription"),
         variant: "destructive"
       });
     } finally {
@@ -456,14 +458,14 @@ const ContentCalendar = () => {
       }
 
       toast({
-        title: "Plan deleted",
-        description: "Your content plan has been removed"
+        title: t("calendar.planDeleted"),
+        description: t("calendar.planRemoved")
       });
     } catch (error) {
       console.error("Error deleting plan:", error);
       toast({
-        title: "Error deleting plan",
-        description: "Failed to delete the plan",
+        title: t("calendar.errorDeletingPlan"),
+        description: t("calendar.errorDeletingPlanDescription"),
         variant: "destructive"
       });
     } finally {
@@ -568,14 +570,14 @@ const ContentCalendar = () => {
       await fetchPlans();
 
       toast({
-        title: "Posting schedule updated",
-        description: "Your calendar has been updated across all plans"
+        title: t("calendar.scheduleUpdated"),
+        description: t("calendar.calendarUpdated")
       });
     } catch (error) {
       console.error("Error updating posting schedule:", error);
       toast({
-        title: "Error",
-        description: "Failed to update posting schedule",
+        title: t("common.error"),
+        description: t("calendar.errorUpdatingSchedule"),
         variant: "destructive"
       });
     }
@@ -628,7 +630,7 @@ const ContentCalendar = () => {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <RefreshCw className="h-8 w-8 animate-spin mx-auto mb-4 text-primary" />
-          <p>Loading your content calendar...</p>
+          <p>{t("calendar.loadingCalendar")}</p>
         </div>
       </div>
     );
@@ -661,20 +663,20 @@ const ContentCalendar = () => {
             <div className="flex items-center gap-4">
               <Button variant="ghost" size="sm" onClick={() => navigate("/dashboard")}>
                 <ArrowLeft className="h-4 w-4 mr-2" />
-                Back
+                {t("common.back")}
               </Button>
               <div>
                 <h1 className="text-3xl font-bold flex items-center gap-2">
                   <Calendar className="h-8 w-8 text-primary" />
-                  Content Calendar
+                  {t("calendar.title")}
                 </h1>
-                <p className="text-muted-foreground">Track your content plans</p>
+                <p className="text-muted-foreground">{t("calendar.subtitle")}</p>
               </div>
             </div>
             <div className="flex items-center gap-4">
               <Button onClick={generateNewPlan} disabled={generatingPlan}>
                 <img src={logo} alt="" className="h-4 w-4 mr-2" />
-                {generatingPlan ? "Generating..." : "Generate New Plan"}
+                {generatingPlan ? t("calendar.generating") : t("calendar.generateNewPlan")}
               </Button>
             </div>
           </div>
@@ -685,10 +687,10 @@ const ContentCalendar = () => {
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
                   <Calendar className="h-5 w-5 text-primary" />
-                  Posting Schedule Filter
+                  {t("calendar.scheduleFilter")}
                 </CardTitle>
                 <CardDescription>
-                  Select which days to show in your content calendar
+                  {t("calendar.scheduleFilterDescription")}
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -707,11 +709,11 @@ const ContentCalendar = () => {
             <Card className="text-center py-12">
               <CardContent>
                 <Calendar className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
-                <h3 className="text-xl font-semibold mb-2">No plans yet</h3>
+                <h3 className="text-xl font-semibold mb-2">{t("calendar.noPlans")}</h3>
                 <p className="text-muted-foreground mb-4">
-                  Complete the quiz and generate your first 7-day content plan
+                  {t("calendar.noPlansDescription")}
                 </p>
-                <Button onClick={() => navigate("/quiz")}>Take Quiz</Button>
+                <Button onClick={() => navigate("/quiz")}>{t("calendar.takeQuiz")}</Button>
               </CardContent>
             </Card>
           ) : (
@@ -719,8 +721,8 @@ const ContentCalendar = () => {
               {/* Plan Selector Sidebar */}
               <Card className="lg:col-span-1">
                 <CardHeader>
-                  <CardTitle className="text-lg">Your Plans</CardTitle>
-                  <CardDescription>Select a plan to view</CardDescription>
+                  <CardTitle className="text-lg">{t("calendar.yourPlans")}</CardTitle>
+                  <CardDescription>{t("calendar.selectPlan")}</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {Object.entries(groupPlansByMonth(plans)).map(([month, monthPlans]) => (
@@ -745,10 +747,10 @@ const ContentCalendar = () => {
                                 onClick={() => setSelectedPlan(plan)}
                                 disabled={isDeleting}
                               >
-                                <div className="flex flex-col items-start w-full gap-0.5 overflow-hidden">
+                                  <div className="flex flex-col items-start w-full gap-0.5 overflow-hidden">
                                   <div className="flex items-center gap-2 w-full">
                                     <span className="font-semibold text-sm truncate">
-                                      {isMonthly ? "Month Plan" : `Week ${weekOfMonth}`}
+                                      {isMonthly ? t("calendar.monthPlan") : t("calendar.week", { week: weekOfMonth })}
                                     </span>
                                     <Badge variant={isMonthly ? "default" : "secondary"} className="text-xs">
                                       {isMonthly ? "30d" : "7d"}
@@ -758,7 +760,7 @@ const ContentCalendar = () => {
                                     {format(startDate, 'MMM d')} - {format(endDate, 'MMM d')}
                                   </span>
                                   <span className="text-xs opacity-75 truncate w-full">
-                                    {planCompleted}/{planTotal} done
+                                    {planCompleted}/{planTotal} {t("calendar.done")}
                                   </span>
                                 </div>
                               </Button>
@@ -794,15 +796,15 @@ const ContentCalendar = () => {
                   <CardHeader>
                     <div className="flex items-center justify-between">
                       <div>
-                        <CardTitle>Current Plan Progress</CardTitle>
+                        <CardTitle>{t("calendar.currentPlanProgress")}</CardTitle>
                         <CardDescription>
-                          Created {new Date(selectedPlan?.created_at || "").toLocaleDateString()}
+                          {t("calendar.created")} {new Date(selectedPlan?.created_at || "").toLocaleDateString()}
                         </CardDescription>
                       </div>
                       <div className="text-right">
                         <div className="text-3xl font-bold text-primary">{progressPercentage}%</div>
                         <div className="text-sm text-muted-foreground">
-                          {completedTasks} of {totalTasks} tasks
+                          {completedTasks} {t("calendar.of")} {totalTasks} {t("calendar.tasks")}
                         </div>
                       </div>
                     </div>
