@@ -124,7 +124,7 @@ const Index = () => {
           }} transition={{
             delay: 0.3
           }} className="text-4xl lg:text-6xl font-bold tracking-tight text-white">
-              You've Always Wanted to Create Content...
+              {t('index.hero.mainHeadline')}
             </motion.h1>
 
             <motion.p initial={{
@@ -135,7 +135,7 @@ const Index = () => {
             x: 0
           }} transition={{
             delay: 0.4
-          }} className="text-2xl lg:text-3xl font-semibold text-white/90">...but didn't have a plan?</motion.p>
+          }} className="text-2xl lg:text-3xl font-semibold text-white/90">{t('index.hero.subHeadline')}</motion.p>
             
             <motion.p initial={{
             opacity: 0,
@@ -158,7 +158,7 @@ const Index = () => {
           }} transition={{
             delay: 0.6
           }} className="text-xl font-medium bg-gradient-to-r from-purple-300 via-pink-300 to-purple-300 bg-clip-text lg:text-xl text-zinc-50">
-              Your personal Coach, Trainer, and Producer — all in one
+              {t('index.hero.tagline')}
             </motion.p>
             
             <motion.div initial={{
