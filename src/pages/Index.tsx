@@ -49,7 +49,9 @@ const sliderImages = [{
   alt: "Lifestyle vlog couple"
 }];
 const Index = () => {
-  const { t } = useTranslation();
+  const {
+    t
+  } = useTranslation();
   const [currentSlide, setCurrentSlide] = useState(0);
   useEffect(() => {
     const timer = setInterval(() => {
@@ -124,7 +126,7 @@ const Index = () => {
           }} transition={{
             delay: 0.3
           }} className="text-4xl lg:text-6xl font-bold tracking-tight text-white">
-              {t('index.hero.mainHeadline')}
+              You've Always Wanted to Create Content...
             </motion.h1>
 
             <motion.p initial={{
@@ -135,7 +137,7 @@ const Index = () => {
             x: 0
           }} transition={{
             delay: 0.4
-          }} className="text-2xl lg:text-3xl font-semibold text-white/90">{t('index.hero.subHeadline')}</motion.p>
+          }} className="text-2xl lg:text-3xl font-semibold text-white/90">...но не знали с чего начать?</motion.p>
             
             <motion.p initial={{
             opacity: 0,
@@ -158,7 +160,7 @@ const Index = () => {
           }} transition={{
             delay: 0.6
           }} className="text-xl font-medium bg-gradient-to-r from-purple-300 via-pink-300 to-purple-300 bg-clip-text lg:text-xl text-zinc-50">
-              {t('index.hero.tagline')}
+              Your personal Coach, Trainer, and Producer — all in one
             </motion.p>
             
             <motion.div initial={{
