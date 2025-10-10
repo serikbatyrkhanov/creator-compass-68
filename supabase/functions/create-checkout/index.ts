@@ -70,7 +70,7 @@ serve(async (req) => {
       mode: "subscription",
       line_items: [
         {
-          price: "price_1SEvmHRzLvTDNnZmJm0o3nKV",
+          price: "price_1SEvmURvCVnQCUeV3vP9GVhX",
           quantity: 1,
         },
       ],
