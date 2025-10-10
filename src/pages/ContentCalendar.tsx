@@ -571,7 +571,7 @@ const ContentCalendar = () => {
 
       toast({
         title: t("calendar.scheduleUpdated"),
-        description: t("calendar.calendarUpdated")
+        description: t("calendar.scheduleUpdatedDesc")
       });
     } catch (error) {
       console.error("Error updating posting schedule:", error);
@@ -676,7 +676,7 @@ const ContentCalendar = () => {
             <div className="flex items-center gap-4">
               <Button onClick={generateNewPlan} disabled={generatingPlan}>
                 <img src={logo} alt="" className="h-4 w-4 mr-2" />
-                {generatingPlan ? t("calendar.generating") : t("calendar.generateNewPlan")}
+                {generatingPlan ? t("calendar.generating") : t("calendar.generateNew")}
               </Button>
             </div>
           </div>
@@ -687,10 +687,10 @@ const ContentCalendar = () => {
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
                   <Calendar className="h-5 w-5 text-primary" />
-                  {t("calendar.scheduleFilter")}
+                  {t("calendar.postingSchedule")}
                 </CardTitle>
                 <CardDescription>
-                  {t("calendar.scheduleFilterDescription")}
+                  {t("calendar.postingScheduleDesc")}
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -750,7 +750,7 @@ const ContentCalendar = () => {
                                   <div className="flex flex-col items-start w-full gap-0.5 overflow-hidden">
                                   <div className="flex items-center gap-2 w-full">
                                     <span className="font-semibold text-sm truncate">
-                                      {isMonthly ? t("calendar.monthPlan") : t("calendar.week", { week: weekOfMonth })}
+                                      {isMonthly ? t("calendar.monthPlan") : t("calendar.week", { number: weekOfMonth })}
                                     </span>
                                     <Badge variant={isMonthly ? "default" : "secondary"} className="text-xs">
                                       {isMonthly ? "30d" : "7d"}
@@ -796,15 +796,15 @@ const ContentCalendar = () => {
                   <CardHeader>
                     <div className="flex items-center justify-between">
                       <div>
-                        <CardTitle>{t("calendar.currentPlanProgress")}</CardTitle>
+                        <CardTitle>{t("calendar.currentProgress")}</CardTitle>
                         <CardDescription>
-                          {t("calendar.created")} {new Date(selectedPlan?.created_at || "").toLocaleDateString()}
+                          {t("calendar.created", { date: new Date(selectedPlan?.created_at || "").toLocaleDateString() })}
                         </CardDescription>
                       </div>
                       <div className="text-right">
                         <div className="text-3xl font-bold text-primary">{progressPercentage}%</div>
                         <div className="text-sm text-muted-foreground">
-                          {completedTasks} {t("calendar.of")} {totalTasks} {t("calendar.tasks")}
+                          {completedTasks} of {totalTasks} {t("calendar.tasks")}
                         </div>
                       </div>
                     </div>
