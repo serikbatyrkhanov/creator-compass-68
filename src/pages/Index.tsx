@@ -126,7 +126,7 @@ const Index = () => {
           }} transition={{
             delay: 0.3
           }} className="text-4xl lg:text-6xl font-bold tracking-tight text-white">
-              You've Always Wanted to Create Content...
+              {t('index.hero.mainHeadline')}
             </motion.h1>
 
             <motion.p initial={{
@@ -137,7 +137,7 @@ const Index = () => {
             x: 0
           }} transition={{
             delay: 0.4
-          }} className="text-2xl lg:text-3xl font-semibold text-white/90">...но не знали с чего начать?</motion.p>
+          }} className="text-2xl lg:text-3xl font-semibold text-white/90">{t('index.hero.subHeadline')}</motion.p>
             
             <motion.p initial={{
             opacity: 0,
@@ -160,7 +160,7 @@ const Index = () => {
           }} transition={{
             delay: 0.6
           }} className="text-xl font-medium bg-gradient-to-r from-purple-300 via-pink-300 to-purple-300 bg-clip-text lg:text-xl text-zinc-50">
-              Your personal Coach, Trainer, and Producer — all in one
+              {t('index.hero.tagline')}
             </motion.p>
             
             <motion.div initial={{
@@ -229,9 +229,9 @@ const Index = () => {
       {/* Pricing Section */}
       <section className="container mx-auto px-4 py-20">
         <div className="max-w-4xl mx-auto text-center mb-12">
-          <h2 className="text-3xl lg:text-4xl font-bold mb-4">Simple, Transparent Pricing</h2>
+          <h2 className="text-3xl lg:text-4xl font-bold mb-4">{t('index.pricing.title')}</h2>
           <p className="text-lg text-muted-foreground">
-            Start with a 7-day free trial, then just $9.99/month
+            {t('index.pricing.subtitle')}
           </p>
         </div>
         
@@ -241,31 +241,31 @@ const Index = () => {
               <div className="mx-auto w-16 h-16 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center mb-4 p-3">
                 <img src={logo} alt="Climbley" className="h-full w-full object-contain" />
               </div>
-              <CardTitle className="text-2xl mb-2">Climbley Premium</CardTitle>
+              <CardTitle className="text-2xl mb-2">{t('index.pricing.cardTitle')}</CardTitle>
               <div className="flex items-baseline justify-center gap-2">
-                <span className="text-5xl font-bold">$9.99</span>
-                <span className="text-muted-foreground">/month</span>
+                <span className="text-5xl font-bold">{t('index.pricing.price')}</span>
+                <span className="text-muted-foreground">{t('index.pricing.perMonth')}</span>
               </div>
-              <p className="text-sm text-muted-foreground mt-2">7-day free trial • Seamless checkout</p>
+              <p className="text-sm text-muted-foreground mt-2">{t('index.pricing.trial')}</p>
             </CardHeader>
             <CardContent className="space-y-4">
               <ul className="space-y-3">
                 <li className="flex items-start gap-3">
                   <Target className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                  <span>Personalized niche discovery</span>
+                  <span>{t('index.pricing.features.niche')}</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Calendar className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                  <span>AI-powered content planning</span>
+                  <span>{t('index.pricing.features.planning')}</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <TrendingUp className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                  <span>Advanced growth analytics</span>
+                  <span>{t('index.pricing.features.analytics')}</span>
                 </li>
               </ul>
               <Link to="/auth">
                 <Button size="lg" className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90">
-                  Start Free Trial
+                  {t('index.pricing.cta')}
                   <ArrowRight className="h-4 w-4 ml-2" />
                 </Button>
               </Link>
@@ -278,9 +278,9 @@ const Index = () => {
       <section className="container mx-auto px-4 py-20 bg-gradient-to-b from-background to-muted/30">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl lg:text-4xl font-bold mb-4">What Creators Are Saying</h2>
+            <h2 className="text-3xl lg:text-4xl font-bold mb-4">{t('index.testimonials.title')}</h2>
             <p className="text-lg text-muted-foreground">
-              Join thousands of content creators who've transformed their journey with Climbley
+              {t('index.testimonials.subtitle')}
             </p>
           </div>
 
@@ -293,15 +293,14 @@ const Index = () => {
                     SM
                   </div>
                   <div>
-                    <div className="font-semibold">Sarah Mitchell</div>
-                    <div className="text-sm text-muted-foreground">YouTube Creator</div>
+                    <div className="font-semibold">{t('index.testimonials.creator1.name')}</div>
                   </div>
                 </div>
                 <div className="flex gap-1 mb-4">
                   {[...Array(5)].map((_, i) => <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />)}
                 </div>
                 <p className="text-muted-foreground italic">
-                  "Climbley helped me finally get consistent with my content. I went from posting randomly to having a clear plan every week!"
+                  {t('index.testimonials.creator1.quote')}
                 </p>
               </CardContent>
             </Card>
@@ -314,15 +313,14 @@ const Index = () => {
                     MJ
                   </div>
                   <div>
-                    <div className="font-semibold">Marcus Johnson</div>
-                    <div className="text-sm text-muted-foreground">TikTok Influencer</div>
+                    <div className="font-semibold">{t('index.testimonials.creator2.name')}</div>
                   </div>
                 </div>
                 <div className="flex gap-1 mb-4">
                   {[...Array(5)].map((_, i) => <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />)}
                 </div>
                 <p className="text-muted-foreground italic">
-                  "The niche finder was eye-opening. I discovered a content angle I never considered, and my engagement tripled!"
+                  {t('index.testimonials.creator2.quote')}
                 </p>
               </CardContent>
             </Card>
@@ -335,15 +333,14 @@ const Index = () => {
                     EC
                   </div>
                   <div>
-                    <div className="font-semibold">Emily Chen</div>
-                    <div className="text-sm text-muted-foreground">Instagram Content Creator</div>
+                    <div className="font-semibold">{t('index.testimonials.creator3.name')}</div>
                   </div>
                 </div>
                 <div className="flex gap-1 mb-4">
                   {[...Array(5)].map((_, i) => <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />)}
                 </div>
                 <p className="text-muted-foreground italic">
-                  "As a coach, trainer, and producer all in one? That's exactly what Climbley is. It's like having a content team in your pocket."
+                  {t('index.testimonials.creator3.quote')}
                 </p>
               </CardContent>
             </Card>
@@ -355,14 +352,14 @@ const Index = () => {
       <section className="container mx-auto px-4 py-20">
         <div className="max-w-4xl mx-auto text-center p-12 rounded-3xl bg-gradient-to-r from-primary/10 via-secondary/10 to-accent/10 border border-primary/20">
           <h2 className="text-3xl lg:text-4xl font-bold mb-4">
-            Ready to Start Creating?
+            {t('index.cta.title')}
           </h2>
           <p className="text-lg text-muted-foreground mb-8">
-            Join thousands of creators building their audience and monetizing their passion.
+            {t('index.cta.subtitle')}
           </p>
           <Link to="/auth">
             <Button size="lg" className="rounded-full gap-2 bg-gradient-to-r from-primary to-secondary hover:opacity-90">
-              Get Started Free
+              {t('index.cta.button')}
               <ArrowRight className="h-4 w-4" />
             </Button>
           </Link>

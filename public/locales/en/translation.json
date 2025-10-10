@@ -53,11 +53,16 @@
       }
     },
     "pricing": {
-      "title": "Simple Pricing",
-      "monthly": "Monthly",
-      "price": "$29",
+      "title": "Simple, Transparent Pricing",
+      "subtitle": "Start with a 7-day free trial, then just $9.99/month",
+      "cardTitle": "Climbley Premium",
+      "price": "$9.99",
       "perMonth": "/month",
+      "trial": "7-day free trial • Seamless checkout",
       "features": {
+        "niche": "Personalized niche discovery",
+        "planning": "AI-powered content planning",
+        "analytics": "Advanced growth analytics",
         "quiz": "Complete personality quiz",
         "coaching": "AI-powered coaching",
         "calendar": "Content calendar",
@@ -65,7 +70,28 @@
         "ideas": "Unlimited content ideas",
         "support": "Priority support"
       },
-      "cta": "Get Started"
+      "cta": "Start Free Trial"
+    },
+    "testimonials": {
+      "title": "What Creators Are Saying",
+      "subtitle": "Join thousands of content creators who've transformed their journey with Climbley",
+      "creator1": {
+        "name": "Sarah Mitchell",
+        "quote": "Climbley helped me finally get consistent with my content. I went from posting randomly to having a clear plan every week!"
+      },
+      "creator2": {
+        "name": "Marcus Johnson",
+        "quote": "The niche finder was eye-opening. I discovered a content angle I never considered, and my engagement tripled!"
+      },
+      "creator3": {
+        "name": "Emily Chen",
+        "quote": "As a coach, trainer, and producer all in one? That's exactly what Climbley is. It's like having a content team in your pocket."
+      }
+    },
+    "cta": {
+      "title": "Ready to Start Creating?",
+      "subtitle": "Join thousands of creators building their audience and monetizing their passion.",
+      "button": "Get Started Free"
     }
   },
   "auth": {
@@ -84,6 +110,12 @@
   "dashboard": {
     "welcome": "Welcome back",
     "subtitle": "Your YouTube Growth Dashboard",
+    "lastQuizResult": {
+      "title": "Last Quiz Result",
+      "yourArchetype": "Your archetype:",
+      "completed": "Completed",
+      "viewResults": "View Results"
+    },
     "quickActions": {
       "title": "Quick Actions",
       "retakeQuiz": "Retake Quiz",
@@ -92,10 +124,27 @@
       "viewProgress": "View Progress"
     },
     "journey": {
-      "title": "Your Growth Journey",
+      "title": "Your Journey Begins Here",
+      "subtitle": "Complete these steps to master your content creation journey",
       "takeQuiz": {
-        "title": "Take the Quiz",
-        "description": "Discover your creator archetype"
+        "title": "Take the Niche Quiz",
+        "description": "Discover your perfect content creator archetype"
+      },
+      "generateIdeas": {
+        "title": "Generate Content Ideas",
+        "description": "Get AI-powered content ideas tailored to your archetype"
+      },
+      "createPlan": {
+        "title": "Create 7-Day Plan",
+        "description": "Build your weekly content schedule with AI"
+      },
+      "completeTask": {
+        "title": "Complete Your First Task",
+        "description": "Start executing your content plan"
+      },
+      "chatCoach": {
+        "title": "Chat with AI Coach",
+        "description": "Get personalized advice and overcome creative blocks"
       },
       "getResults": {
         "title": "Get Your Results",
@@ -109,17 +158,256 @@
         "title": "Track Progress",
         "description": "Monitor your growth metrics"
       }
-    }
+    },
+    "contactButton": "Contact Us"
   },
   "quiz": {
-    "title": "Discover Your Creator Archetype",
+    "title": "Find Your Creator Niche",
     "description": "Answer these questions to receive personalized YouTube growth strategies",
+    "stepOf": "Step {current} of {total}",
+    "home": "Home",
+    "back": "Back",
+    "next": "Next",
+    "seeResults": "See Results",
+    "selectUpTo": "Select up to {max} option(s) (selected: {count})",
+    "selectionLimitReached": "Selection limit reached",
+    "selectionLimitDesc": "You can only select up to {max} options",
+    "authRequired": "Authentication required",
+    "authRequiredDesc": "Please sign in to take the quiz",
+    "errorSaving": "Error saving results",
+    "errorSavingDesc": "Please try again",
     "question": "Question",
     "of": "of",
-    "finish": "Finish Quiz"
+    "finish": "Finish Quiz",
+    "questions": {
+      "Q1_content_mode": {
+        "text": "Which style of creating sounds most like you?",
+        "options": {
+          "Q1A1": "Teaching and explaining step by step",
+          "Q1A2": "Entertaining with humor, skits, or performance",
+          "Q1A3": "Sharing lifestyle, routines, or inspiration",
+          "Q1A4": "Reviewing or analyzing products and trends",
+          "Q1A5": "Documenting my progress and lessons learned"
+        }
+      },
+      "Q2_passions": {
+        "text": "Pick up to 3 topics you could talk about for hours.",
+        "options": {
+          "Q2T1": "Technology & AI",
+          "Q2T2": "Fitness & Wellness",
+          "Q2T3": "Food & Cooking",
+          "Q2T4": "Travel & Adventure",
+          "Q2T5": "Money & Careers",
+          "Q2T6": "Education & Study Hacks",
+          "Q2T7": "Fashion & Beauty",
+          "Q2T8": "Gaming & Esports",
+          "Q2T9": "Home, DIY & Productivity",
+          "Q2T10": "Parenting & Relationships",
+          "Q2T11": "Entertainment & Pop Culture",
+          "Q2T12": "Entrepreneurship & Startups"
+        }
+      },
+      "Q3_strengths": {
+        "text": "Which strengths feel most true? (Pick up to 2)",
+        "options": {
+          "Q3A1": "Clear explanations and step-by-steps",
+          "Q3A2": "Making people laugh / performance",
+          "Q3A3": "Aesthetics / lifestyle storytelling",
+          "Q3A4": "Breaking things down analytically",
+          "Q3A5": "Honest self-reflection / sharing progress"
+        }
+      },
+      "Q4_motivation": {
+        "text": "Your main reason to create?",
+        "options": {
+          "Q4A1": "Help others learn and grow",
+          "Q4A2": "Entertain and bring joy",
+          "Q4A3": "Inspire with my lifestyle",
+          "Q4A4": "Share opinions and reviews people trust",
+          "Q4A5": "Document my journey from zero"
+        }
+      },
+      "Q5_format_comfort": {
+        "text": "Which format feels most natural?",
+        "options": {
+          "Q5A1": "Talking head tutorials",
+          "Q5A2": "Skits / reactions / performance",
+          "Q5A3": "Aesthetic b-roll / vlogs",
+          "Q5A4": "Screen shares / breakdowns",
+          "Q5A5": "Short progress updates"
+        }
+      },
+      "Q6_time": {
+        "text": "Realistic time you can dedicate weekly?",
+        "options": {
+          "Q6A1": "< 5 hours",
+          "Q6A2": "5–10 hours",
+          "Q6A3": "10–20 hours",
+          "Q6A4": "20+ hours"
+        }
+      },
+      "Q7_resources": {
+        "text": "What gear/resources do you have today?",
+        "options": {
+          "Q7A1": "Smartphone only",
+          "Q7A2": "Good lighting / mic",
+          "Q7A3": "Screen capture setup",
+          "Q7A4": "Camera + lenses",
+          "Q7A5": "Editing software"
+        }
+      },
+      "Q8_audience": {
+        "text": "Who do you most want to reach?",
+        "options": {
+          "Q8A1": "Beginners learning a skill",
+          "Q8A2": "Professionals in my field",
+          "Q8A3": "People who like my lifestyle",
+          "Q8A4": "General audience / entertainment",
+          "Q8A5": "Niche hobby communities"
+        }
+      }
+    }
+  },
+  "contact": {
+    "title": "Contact Us",
+    "subtitle": "Send us a message and we'll get back to you as soon as possible",
+    "name": "Name",
+    "email": "Email",
+    "message": "Message",
+    "namePlaceholder": "Your name",
+    "emailPlaceholder": "your@email.com",
+    "messagePlaceholder": "Tell us what's on your mind...",
+    "charactersRemaining": "characters remaining",
+    "sendEmail": "Send Email",
+    "sending": "Sending...",
+    "backToDashboard": "Back to Dashboard",
+    "messageTooLong": "Message too long",
+    "reduceBy": "Please reduce your message by {count} characters.",
+    "messageRequired": "Message required",
+    "enterMessage": "Please enter a message before sending.",
+    "messageSent": "Message sent!",
+    "messageSentDesc": "We've received your message and will get back to you soon.",
+    "sendFailed": "Failed to send message",
+    "tryAgain": "Please try again later."
+  },
+  "coach": {
+    "title": "AI Content Coach",
+    "description": "Get personalized advice and overcome creative challenges",
+    "placeholder": "Ask me anything about content creation...",
+    "greeting": "Hi! I'm your AI content coach. I'm here to help you with creative blocks, content strategy, platform advice, or just to brainstorm ideas. What's on your mind?",
+    "send": "Send",
+    "chatFailed": "Chat failed",
+    "chatFailedDesc": "Failed to send message. Please try again."
+  },
+  "trendingTitles": {
+    "title": "Trending Title Generator",
+    "description": "Generate 50 viral, trending content titles using AI",
+    "topicLabel": "Your Topic or Niche",
+    "topicPlaceholder": "e.g., 'Fitness tips for busy professionals' or 'Tech reviews and gadgets'",
+    "generateButton": "Generate Trending Titles",
+    "generating": "Generating 50 Titles...",
+    "generatedTitles": "Generated Titles",
+    "titles": "titles",
+    "copyAll": "Copy All",
+    "generatePlans": "Generate Plans",
+    "creatingPlans": "Creating Plans...",
+    "emptyState": "Enter your topic above and generate trending titles",
+    "promptRequired": "Prompt required",
+    "promptRequiredDesc": "Please enter a topic or niche for title generation",
+    "success": "Success!",
+    "successDesc": "Generated {count} trending titles",
+    "generationFailed": "Generation failed",
+    "generationFailedDesc": "Failed to generate titles. Please try again.",
+    "copied": "Copied!",
+    "copiedDesc": "Title copied to clipboard",
+    "allCopied": "All titles copied!",
+    "allCopiedDesc": "All 50 titles copied to clipboard",
+    "copyFailed": "Copy failed",
+    "copyFailedDesc": "Failed to copy title",
+    "noTitles": "No titles available",
+    "noTitlesDesc": "Generate titles first before creating plans",
+    "plansCreated": "Plans created!",
+    "plansCreatedDesc": "Successfully created {plansCreated} content plans from {titlesUsed} titles",
+    "plansFailed": "Plan generation failed",
+    "plansFailedDesc": "Failed to create content plans. Please try again."
   },
   "calendar": {
     "title": "Content Calendar",
+    "subtitle": "Track your content plans",
+    "back": "Back",
+    "generateNew": "Generate New Plan",
+    "generating": "Generating...",
+    "postingSchedule": "Posting Schedule Filter",
+    "postingScheduleDesc": "Select which days to show in your content calendar",
+    "noPlans": "No plans yet",
+    "noPlansDesc": "Complete the quiz and generate your first 7-day content plan",
+    "takeQuiz": "Take Quiz",
+    "yourPlans": "Your Plans",
+    "selectPlan": "Select a plan to view",
+    "monthPlan": "Month Plan",
+    "week": "Week {number}",
+    "done": "done",
+    "currentProgress": "Current Plan Progress",
+    "created": "Created {date}",
+    "tasks": "tasks",
+    "selectPlatform": "Select platform",
+    "postTitle": "Post Title",
+    "postTitlePlaceholder": "Enter post title...",
+    "description": "Description",
+    "descriptionPlaceholder": "What will this content be about...",
+    "aiSuggestion": "AI Suggestion",
+    "progressSteps": "Progress Steps",
+    "workOnScript": "Work on Script/Plan",
+    "shootVideo": "Shoot Video / Take Photo",
+    "editContent": "Edit Content",
+    "published": "Published",
+    "stepsCompleted": "{completed}/4 steps completed",
+    "quickNotes": "Quick Notes",
+    "saving": "Saving...",
+    "saved": "Saved",
+    "notesPlaceholder": "Add notes, ideas, or reminders...",
+    "edit": "Edit",
+    "complete": "Complete",
+    "editTaskTitle": "Edit Task Details",
+    "editTaskDesc": "Customize your post details, track progress, and add notes",
+    "originalAiTask": "Original AI Task",
+    "progressTracking": "Progress Tracking",
+    "cancel": "Cancel",
+    "saveChanges": "Save Changes",
+    "taskCompleted": "Task completed! 🎉",
+    "taskCompletedDesc": "Great work! Keep going!",
+    "taskIncomplete": "Task marked incomplete",
+    "taskStatusUpdated": "Task status updated",
+    "taskUpdated": "Task updated",
+    "taskUpdatedDesc": "Your changes have been saved successfully",
+    "timeUpdated": "Time estimate updated",
+    "timeUpdatedDesc": "Set to {time}",
+    "timeReset": "Reset to default",
+    "platformUpdated": "Platform updated",
+    "platformUpdatedDesc": "Changed to {platform}",
+    "updateFailed": "Failed to update platform",
+    "updateFailedDesc": "Please try again",
+    "notesUpdateFailed": "Error updating notes",
+    "notesUpdateFailedDesc": "Failed to update task notes",
+    "scheduleUpdated": "Posting schedule updated",
+    "scheduleUpdatedDesc": "Your calendar has been updated across all plans",
+    "planDeleted": "Plan deleted",
+    "planDeletedDesc": "Your content plan has been removed",
+    "deletePlanTitle": "Delete Plan?",
+    "deletePlanDesc": "This will permanently delete this content plan and all its tasks. This action cannot be undone.",
+    "deletePlanConfirm": "Delete Plan",
+    "noQuizResults": "No quiz results found",
+    "noQuizResultsDesc": "Please take the quiz first",
+    "planGenerated": "Plan generated!",
+    "planGeneratedDesc": "Your new weekly content plan is ready",
+    "planGenerationFailed": "Error generating plan",
+    "planGenerationFailedDesc": "Failed to create new plan. Please try again.",
+    "loadingCalendar": "Loading your content calendar...",
+    "error": "Error",
+    "errorLoadingPlans": "Failed to load your content plans",
+    "errorUpdating": "Failed to update task status",
+    "errorDeletingPlan": "Error deleting plan",
+    "errorDeletingPlanDesc": "Failed to delete the plan",
     "addTask": "Add Task",
     "taskName": "Task Name",
     "dueDate": "Due Date",
@@ -132,11 +420,43 @@
     "trending": "Trending Titles",
     "plan": "Content Plan"
   },
-  "coach": {
-    "title": "AI Coach",
-    "placeholder": "Ask me anything about growing your YouTube channel...",
-    "send": "Send",
-    "greeting": "Hi! I'm your AI YouTube growth coach. How can I help you today?"
+  "progress": {
+    "title": "Your Progress",
+    "subtitle": "Track your creator journey",
+    "back": "Back",
+    "overallCompletion": "Overall Completion",
+    "motivationPerfect": "Perfect! You're crushing it! 🏆",
+    "motivationExcellent": "Excellent progress! Keep it up! 🌟",
+    "motivationHalfway": "You're halfway there! 💪",
+    "motivationGoodStart": "Good start! Keep going! 🚀",
+    "motivationStart": "Let's get started! 🎯",
+    "tasksCompleted": "{completed} of {total} tasks completed",
+    "quizHistory": "Quiz History",
+    "quizzesTaken": "Quizzes taken",
+    "currentArchetype": "Current Archetype:",
+    "lastQuiz": "Last: {date}",
+    "contentIdeas": "Content Ideas",
+    "aiGeneratedIdeas": "AI-generated idea sets",
+    "generateMoreIdeas": "Generate More Ideas",
+    "contentPlans": "Content Plans",
+    "plansCreated": "7-day plans created",
+    "viewCalendar": "View Calendar",
+    "tasksTitle": "Tasks",
+    "tasksCompletedCount": "Tasks completed",
+    "tasksRemaining": "Tasks remaining",
+    "aiCoach": "AI Coach",
+    "conversations": "Conversations",
+    "totalMessages": "Total messages",
+    "engagementScore": "Engagement Score",
+    "engagementDesc": "Based on your activity",
+    "quizzes": "Quizzes",
+    "generatedIdeas": "Generated Ideas",
+    "createdPlans": "Created Plans",
+    "completedTasks": "Completed Tasks",
+    "quickActions": "Quick Actions",
+    "quickActionsDesc": "Continue your creator journey",
+    "retakeQuiz": "Retake Quiz",
+    "loadingStats": "Loading stats..."
   },
   "checkout": {
     "success": "Payment Successful!",
