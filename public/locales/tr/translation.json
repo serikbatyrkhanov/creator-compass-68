@@ -256,6 +256,7 @@
     "ideas": "İçerik Fikirleri",
     "trending": "Trend Başlıklar",
     "plan": "İçerik Planı",
+    "week": "Hafta {number}",
     "viewMode": "Görünüm Modu",
     "list": "Liste",
     "kanban": "Kanban",

@@ -229,6 +229,7 @@
     "ideas": "Ideas de Contenido",
     "trending": "Títulos en Tendencia",
     "plan": "Plan de Contenido",
+    "week": "Semana {number}",
     "viewMode": "Modo de Vista",
     "list": "Lista",
     "kanban": "Kanban",
