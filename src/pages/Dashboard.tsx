@@ -11,8 +11,13 @@ import {
   FileCheck, 
   MessageCircle, 
   CheckCircle2,
-  Sparkles
+  Sparkles,
+  Bell
 } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { AIChatCoach } from "@/components/AIChatCoach";
 import { TrendingTitlesDialog } from "@/components/TrendingTitlesDialog";
@@ -35,6 +40,9 @@ const Dashboard = () => {
     hasCompletedTask: false,
     hasChatted: false
   });
+  const [smsEnabled, setSmsEnabled] = useState(true);
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [timezone, setTimezone] = useState('America/New_York');
 
   useEffect(() => {
     // Check if user is authenticated
@@ -99,6 +107,19 @@ const Dashboard = () => {
           hasCompletedTask: !!tasks.data,
           hasChatted: !!messages.data
         });
+
+        // Load SMS notification settings
+        const { data: profileData } = await supabase
+          .from('profiles')
+          .select('phone, timezone, sms_notifications_enabled')
+          .eq('id', session.user.id)
+          .single();
+        
+        if (profileData) {
+          setPhoneNumber(profileData.phone || '');
+          setTimezone(profileData.timezone || 'America/New_York');
+          setSmsEnabled(profileData.sms_notifications_enabled ?? true);
+        }
       }
     };
 
@@ -123,6 +144,97 @@ const Dashboard = () => {
       description: "You've been successfully signed out.",
     });
     navigate("/");
+  };
+
+  const handleToggleSMS = async (checked: boolean) => {
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({ sms_notifications_enabled: checked })
+        .eq('id', user.id);
+      
+      if (error) throw error;
+      
+      setSmsEnabled(checked);
+      toast({
+        title: checked ? "SMS reminders enabled" : "SMS reminders disabled",
+        description: checked 
+          ? "You'll receive daily reminders at 9:00 AM in your timezone" 
+          : "You won't receive SMS reminders anymore",
+      });
+    } catch (error) {
+      console.error('Error toggling SMS:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update SMS settings",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleUpdatePhone = async () => {
+    if (!phoneNumber) {
+      toast({
+        title: "Error",
+        description: "Please enter a phone number",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!phoneNumber.startsWith('+')) {
+      toast({
+        title: "Error",
+        description: "Phone number must start with + and country code (e.g., +12125551234)",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({ phone: phoneNumber })
+        .eq('id', user.id);
+      
+      if (error) throw error;
+      
+      toast({
+        title: "Phone number updated",
+        description: "Your phone number has been updated successfully",
+      });
+    } catch (error) {
+      console.error('Error updating phone:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update phone number",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleTimezoneChange = async (value: string) => {
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({ timezone: value })
+        .eq('id', user.id);
+      
+      if (error) throw error;
+      
+      setTimezone(value);
+      toast({
+        title: "Timezone updated",
+        description: "Your timezone has been updated successfully",
+      });
+    } catch (error) {
+      console.error('Error updating timezone:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update timezone",
+        variant: "destructive",
+      });
+    }
   };
 
   if (!user) return null;
@@ -418,6 +530,84 @@ const Dashboard = () => {
                     {t('dashboard.journey.chatCoach.description')}
                   </p>
                 </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Notification Settings */}
+          <Card className="border-2">
+            <CardHeader>
+              <div className="flex items-start justify-between">
+                <div className="h-12 w-12 rounded-lg bg-blue-500/10 flex items-center justify-center mb-4">
+                  <Bell className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                </div>
+              </div>
+              <CardTitle className="text-blue-700 dark:text-blue-300">📱 Notification Settings</CardTitle>
+              <CardDescription>
+                Manage your daily task reminders via SMS
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* SMS Toggle */}
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <Label className="text-base">Daily Task Reminders</Label>
+                  <p className="text-sm text-muted-foreground">
+                    Get SMS reminders at 9:00 AM for your tasks
+                  </p>
+                </div>
+                <Switch 
+                  checked={smsEnabled}
+                  onCheckedChange={handleToggleSMS}
+                />
+              </div>
+              
+              {/* Phone Number */}
+              <div className="space-y-2">
+                <Label>Phone Number</Label>
+                <div className="flex gap-2">
+                  <Input 
+                    type="tel"
+                    value={phoneNumber}
+                    onChange={(e) => setPhoneNumber(e.target.value)}
+                    placeholder="+1234567890"
+                    className="flex-1"
+                  />
+                  <Button onClick={handleUpdatePhone}>Update</Button>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Format: +[country code][number] (e.g., +12125551234)
+                </p>
+              </div>
+              
+              {/* Timezone Selector */}
+              <div className="space-y-2">
+                <Label>Your Timezone</Label>
+                <Select value={timezone} onValueChange={handleTimezoneChange}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="America/New_York">Eastern Time (US & Canada)</SelectItem>
+                    <SelectItem value="America/Chicago">Central Time (US & Canada)</SelectItem>
+                    <SelectItem value="America/Denver">Mountain Time (US & Canada)</SelectItem>
+                    <SelectItem value="America/Los_Angeles">Pacific Time (US & Canada)</SelectItem>
+                    <SelectItem value="America/Anchorage">Alaska</SelectItem>
+                    <SelectItem value="Pacific/Honolulu">Hawaii</SelectItem>
+                    <SelectItem value="Europe/London">London</SelectItem>
+                    <SelectItem value="Europe/Paris">Paris/Berlin/Rome</SelectItem>
+                    <SelectItem value="Europe/Moscow">Moscow</SelectItem>
+                    <SelectItem value="Asia/Dubai">Dubai</SelectItem>
+                    <SelectItem value="Asia/Kolkata">India</SelectItem>
+                    <SelectItem value="Asia/Shanghai">China</SelectItem>
+                    <SelectItem value="Asia/Tokyo">Tokyo</SelectItem>
+                    <SelectItem value="Australia/Sydney">Sydney</SelectItem>
+                    <SelectItem value="Pacific/Auckland">Auckland</SelectItem>
+                  </SelectContent>
+                </Select>
+                <p className="text-xs text-muted-foreground">
+                  Reminders will be sent at 9:00 AM in your timezone
+                </p>
               </div>
             </CardContent>
           </Card>

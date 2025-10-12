@@ -257,7 +257,10 @@ export type Database = {
           first_name: string
           id: string
           last_name: string
+          last_sms_sent_date: string | null
           phone: string | null
+          sms_notifications_enabled: boolean | null
+          timezone: string | null
           updated_at: string
         }
         Insert: {
@@ -266,7 +269,10 @@ export type Database = {
           first_name: string
           id: string
           last_name: string
+          last_sms_sent_date?: string | null
           phone?: string | null
+          sms_notifications_enabled?: boolean | null
+          timezone?: string | null
           updated_at?: string
         }
         Update: {
@@ -275,7 +281,10 @@ export type Database = {
           first_name?: string
           id?: string
           last_name?: string
+          last_sms_sent_date?: string | null
           phone?: string | null
+          sms_notifications_enabled?: boolean | null
+          timezone?: string | null
           updated_at?: string
         }
         Relationships: []

@@ -17,3 +17,6 @@ verify_jwt = false
 
 [functions.generate-plans-from-titles]
 verify_jwt = false
+
+[functions.send-task-reminders]
+verify_jwt = false
