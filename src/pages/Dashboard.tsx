@@ -12,7 +12,11 @@ import {
   MessageCircle, 
   CheckCircle2,
   Sparkles,
-  Bell
+  Bell,
+  User,
+  Youtube,
+  Instagram as InstagramIcon,
+  Music
 } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
@@ -43,6 +47,10 @@ const Dashboard = () => {
   const [smsEnabled, setSmsEnabled] = useState(true);
   const [phoneNumber, setPhoneNumber] = useState('');
   const [timezone, setTimezone] = useState('America/New_York');
+  const [email, setEmail] = useState('');
+  const [youtubeUrl, setYoutubeUrl] = useState('');
+  const [instagramUrl, setInstagramUrl] = useState('');
+  const [tiktokUrl, setTiktokUrl] = useState('');
 
   useEffect(() => {
     // Check if user is authenticated
@@ -108,10 +116,10 @@ const Dashboard = () => {
           hasChatted: !!messages.data
         });
 
-        // Load SMS notification settings
+        // Load SMS notification settings and profile data
         const { data: profileData } = await supabase
           .from('profiles')
-          .select('phone, timezone, sms_notifications_enabled')
+          .select('phone, timezone, sms_notifications_enabled, email, youtube_url, instagram_url, tiktok_url')
           .eq('id', session.user.id)
           .single();
         
@@ -119,6 +127,12 @@ const Dashboard = () => {
           setPhoneNumber(profileData.phone || '');
           setTimezone(profileData.timezone || 'America/New_York');
           setSmsEnabled(profileData.sms_notifications_enabled ?? true);
+          setEmail(profileData.email || session.user.email || '');
+          setYoutubeUrl(profileData.youtube_url || '');
+          setInstagramUrl(profileData.instagram_url || '');
+          setTiktokUrl(profileData.tiktok_url || '');
+        } else {
+          setEmail(session.user.email || '');
         }
       }
     };
@@ -232,6 +246,107 @@ const Dashboard = () => {
       toast({
         title: "Error",
         description: "Failed to update timezone",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleUpdateEmail = async () => {
+    if (!email) {
+      toast({
+        title: "Error",
+        description: "Please enter an email address",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({ email: email })
+        .eq('id', user.id);
+      
+      if (error) throw error;
+      
+      toast({
+        title: "Email updated",
+        description: "Your email has been updated successfully",
+      });
+    } catch (error) {
+      console.error('Error updating email:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update email",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleUpdateYoutubeUrl = async () => {
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({ youtube_url: youtubeUrl })
+        .eq('id', user.id);
+      
+      if (error) throw error;
+      
+      toast({
+        title: "YouTube URL updated",
+        description: "Your YouTube channel URL has been updated successfully",
+      });
+    } catch (error) {
+      console.error('Error updating YouTube URL:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update YouTube URL",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleUpdateInstagramUrl = async () => {
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({ instagram_url: instagramUrl })
+        .eq('id', user.id);
+      
+      if (error) throw error;
+      
+      toast({
+        title: "Instagram URL updated",
+        description: "Your Instagram profile URL has been updated successfully",
+      });
+    } catch (error) {
+      console.error('Error updating Instagram URL:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update Instagram URL",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleUpdateTiktokUrl = async () => {
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({ tiktok_url: tiktokUrl })
+        .eq('id', user.id);
+      
+      if (error) throw error;
+      
+      toast({
+        title: "TikTok URL updated",
+        description: "Your TikTok profile URL has been updated successfully",
+      });
+    } catch (error) {
+      console.error('Error updating TikTok URL:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update TikTok URL",
         variant: "destructive",
       });
     }
@@ -534,32 +649,33 @@ const Dashboard = () => {
             </CardContent>
           </Card>
 
-          {/* Notification Settings */}
+          {/* Profile Management */}
           <Card className="border-2">
             <CardHeader>
               <div className="flex items-start justify-between">
                 <div className="h-12 w-12 rounded-lg bg-blue-500/10 flex items-center justify-center mb-4">
-                  <Bell className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                  <User className="h-6 w-6 text-blue-600 dark:text-blue-400" />
                 </div>
               </div>
-              <CardTitle className="text-blue-700 dark:text-blue-300">📱 Notification Settings</CardTitle>
+              <CardTitle className="text-blue-700 dark:text-blue-300">👤 Profile Management</CardTitle>
               <CardDescription>
-                Manage your daily task reminders via SMS
+                Manage your profile information and social media connections
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              {/* SMS Toggle */}
-              <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                  <Label className="text-base">Daily Task Reminders</Label>
-                  <p className="text-sm text-muted-foreground">
-                    Get SMS reminders at 9:00 AM for your tasks
-                  </p>
+              {/* Email */}
+              <div className="space-y-2">
+                <Label>Email Address</Label>
+                <div className="flex gap-2">
+                  <Input 
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="your.email@example.com"
+                    className="flex-1"
+                  />
+                  <Button onClick={handleUpdateEmail}>Update</Button>
                 </div>
-                <Switch 
-                  checked={smsEnabled}
-                  onCheckedChange={handleToggleSMS}
-                />
               </div>
               
               {/* Phone Number */}
@@ -606,8 +722,93 @@ const Dashboard = () => {
                   </SelectContent>
                 </Select>
                 <p className="text-xs text-muted-foreground">
-                  Reminders will be sent at 9:00 AM in your timezone
+                  Used for SMS reminders and local time calculations
                 </p>
+              </div>
+
+              {/* Social Media Connections */}
+              <div className="pt-4 border-t">
+                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                  <Sparkles className="h-5 w-5 text-primary" />
+                  Social Media Profiles
+                </h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Connect your social media profiles to track real-time statistics in Progress section
+                </p>
+                
+                {/* YouTube URL */}
+                <div className="space-y-2 mb-4">
+                  <Label className="flex items-center gap-2">
+                    <Youtube className="h-4 w-4 text-red-600" />
+                    YouTube Channel URL
+                  </Label>
+                  <div className="flex gap-2">
+                    <Input 
+                      type="url"
+                      value={youtubeUrl}
+                      onChange={(e) => setYoutubeUrl(e.target.value)}
+                      placeholder="https://youtube.com/@yourchannel"
+                      className="flex-1"
+                    />
+                    <Button onClick={handleUpdateYoutubeUrl}>Update</Button>
+                  </div>
+                </div>
+
+                {/* Instagram URL */}
+                <div className="space-y-2 mb-4">
+                  <Label className="flex items-center gap-2">
+                    <InstagramIcon className="h-4 w-4 text-pink-600" />
+                    Instagram Profile URL
+                  </Label>
+                  <div className="flex gap-2">
+                    <Input 
+                      type="url"
+                      value={instagramUrl}
+                      onChange={(e) => setInstagramUrl(e.target.value)}
+                      placeholder="https://instagram.com/yourprofile"
+                      className="flex-1"
+                    />
+                    <Button onClick={handleUpdateInstagramUrl}>Update</Button>
+                  </div>
+                </div>
+
+                {/* TikTok URL */}
+                <div className="space-y-2">
+                  <Label className="flex items-center gap-2">
+                    <Music className="h-4 w-4 text-black dark:text-white" />
+                    TikTok Profile URL
+                  </Label>
+                  <div className="flex gap-2">
+                    <Input 
+                      type="url"
+                      value={tiktokUrl}
+                      onChange={(e) => setTiktokUrl(e.target.value)}
+                      placeholder="https://tiktok.com/@yourprofile"
+                      className="flex-1"
+                    />
+                    <Button onClick={handleUpdateTiktokUrl}>Update</Button>
+                  </div>
+                </div>
+              </div>
+
+              {/* SMS Notifications */}
+              <div className="pt-4 border-t">
+                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                  <Bell className="h-5 w-5 text-primary" />
+                  Notifications
+                </h3>
+                <div className="flex items-center justify-between">
+                  <div className="space-y-0.5">
+                    <Label className="text-base">Daily Task Reminders</Label>
+                    <p className="text-sm text-muted-foreground">
+                      Get SMS reminders at 9:00 AM for your tasks
+                    </p>
+                  </div>
+                  <Switch 
+                    checked={smsEnabled}
+                    onCheckedChange={handleToggleSMS}
+                  />
+                </div>
               </div>
             </CardContent>
           </Card>

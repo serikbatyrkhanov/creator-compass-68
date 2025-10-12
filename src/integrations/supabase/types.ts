@@ -256,36 +256,45 @@ export type Database = {
           email: string
           first_name: string
           id: string
+          instagram_url: string | null
           last_name: string
           last_sms_sent_date: string | null
           phone: string | null
           sms_notifications_enabled: boolean | null
+          tiktok_url: string | null
           timezone: string | null
           updated_at: string
+          youtube_url: string | null
         }
         Insert: {
           created_at?: string
           email: string
           first_name: string
           id: string
+          instagram_url?: string | null
           last_name: string
           last_sms_sent_date?: string | null
           phone?: string | null
           sms_notifications_enabled?: boolean | null
+          tiktok_url?: string | null
           timezone?: string | null
           updated_at?: string
+          youtube_url?: string | null
         }
         Update: {
           created_at?: string
           email?: string
           first_name?: string
           id?: string
+          instagram_url?: string | null
           last_name?: string
           last_sms_sent_date?: string | null
           phone?: string | null
           sms_notifications_enabled?: boolean | null
+          tiktok_url?: string | null
           timezone?: string | null
           updated_at?: string
+          youtube_url?: string | null
         }
         Relationships: []
       }
