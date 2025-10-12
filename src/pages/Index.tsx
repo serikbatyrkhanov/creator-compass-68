@@ -179,9 +179,11 @@ const Index = () => {
                   <ArrowRight className="h-4 w-4" />
                 </Button>
               </Link>
-              <Button size="lg" variant="outline" className="rounded-full bg-white/10 backdrop-blur-sm border-white/30 text-white hover:bg-white/20">
-                {t('index.hero.learnMore')}
-              </Button>
+              <Link to="/learn-more">
+                <Button size="lg" variant="outline" className="rounded-full bg-white/10 backdrop-blur-sm border-white/30 text-white hover:bg-white/20">
+                  {t('index.hero.learnMore')}
+                </Button>
+              </Link>
             </motion.div>
           </div>
         </div>
