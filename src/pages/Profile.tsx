@@ -247,12 +247,20 @@ export default function Profile() {
         <Card>
           <CardHeader>
             <div className="flex items-center gap-6">
+            <div 
+              className="relative group cursor-pointer" 
+              onClick={() => document.getElementById("avatar-upload")?.click()}
+            >
               <Avatar className="h-24 w-24">
                 <AvatarImage src={avatarUrl || undefined} />
                 <AvatarFallback className="text-2xl">
                   {firstName?.[0]}{lastName?.[0]}
                 </AvatarFallback>
               </Avatar>
+              <div className="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                <Upload className="h-8 w-8 text-white" />
+              </div>
+            </div>
               <div>
                 <CardTitle className="text-2xl">
                   {firstName} {lastName}
@@ -267,32 +275,22 @@ export default function Profile() {
         <Card>
           <CardHeader>
             <CardTitle>Avatar</CardTitle>
-            <CardDescription>Upload a profile picture (max 2MB, JPG/PNG/WebP)</CardDescription>
+            <CardDescription>Click your avatar above to upload (max 2MB, JPG/PNG/WebP)</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex gap-4">
-              <Button
-                variant="outline"
-                disabled={uploading}
-                onClick={() => document.getElementById("avatar-upload")?.click()}
-              >
-                <Upload className="mr-2 h-4 w-4" />
-                {uploading ? "Uploading..." : "Upload Avatar"}
+          <CardContent>
+            <input
+              id="avatar-upload"
+              type="file"
+              accept="image/jpeg,image/jpg,image/png,image/webp"
+              className="hidden"
+              onChange={handleAvatarUpload}
+            />
+            {avatarUrl && (
+              <Button variant="outline" onClick={handleRemoveAvatar}>
+                <Trash2 className="mr-2 h-4 w-4" />
+                Remove Avatar
               </Button>
-              {avatarUrl && (
-                <Button variant="outline" onClick={handleRemoveAvatar}>
-                  <Trash2 className="mr-2 h-4 w-4" />
-                  Remove Avatar
-                </Button>
-              )}
-              <input
-                id="avatar-upload"
-                type="file"
-                accept="image/jpeg,image/jpg,image/png,image/webp"
-                className="hidden"
-                onChange={handleAvatarUpload}
-              />
-            </div>
+            )}
           </CardContent>
         </Card>
 
