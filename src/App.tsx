@@ -17,6 +17,18 @@ import Progress from "./pages/Progress";
 import Profile from "./pages/Profile";
 import LearnMore from "./pages/LearnMore";
 import NotFound from "./pages/NotFound";
+import BlogIndex from "./pages/BlogIndex";
+import BlogPost from "./pages/BlogPost";
+import AdminLogin from "./pages/admin/AdminLogin";
+import { AdminLayout } from "./components/admin/AdminLayout";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminBlog from "./pages/admin/AdminBlog";
+import AdminBlogEditor from "./pages/admin/AdminBlogEditor";
+import AdminUsers from "./pages/admin/AdminUsers";
+import AdminImages from "./pages/admin/AdminImages";
+import AdminSmsTest from "./pages/admin/AdminSmsTest";
+import AdminContent from "./pages/admin/AdminContent";
+import { Navigate } from "react-router-dom";
 
 const queryClient = new QueryClient();
 
@@ -40,6 +52,25 @@ const App = () => (
             <Route path="/progress" element={<Progress />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/learn-more" element={<LearnMore />} />
+            
+            {/* Blog Routes */}
+            <Route path="/blog" element={<BlogIndex />} />
+            <Route path="/blog/:slug" element={<BlogPost />} />
+            
+            {/* Admin Routes */}
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route index element={<Navigate to="/admin/dashboard" replace />} />
+              <Route path="dashboard" element={<AdminDashboard />} />
+              <Route path="blog" element={<AdminBlog />} />
+              <Route path="blog/new" element={<AdminBlogEditor />} />
+              <Route path="blog/edit/:id" element={<AdminBlogEditor />} />
+              <Route path="users" element={<AdminUsers />} />
+              <Route path="images" element={<AdminImages />} />
+              <Route path="sms-test" element={<AdminSmsTest />} />
+              <Route path="content" element={<AdminContent />} />
+            </Route>
+            
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

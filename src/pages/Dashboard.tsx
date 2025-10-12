@@ -40,6 +40,7 @@ const Dashboard = () => {
     hasCompletedTask: false,
     hasChatted: false
   });
+  const [blogPosts, setBlogPosts] = useState<any[]>([]);
 
   useEffect(() => {
     // Check if user is authenticated
@@ -300,6 +301,58 @@ const Dashboard = () => {
               </CardContent>
             </Card>
           </div>
+
+          {/* Educational Resources Section */}
+          {blogPosts.length > 0 && (
+            <Card className="border-2">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle>Educational Resources</CardTitle>
+                    <CardDescription>
+                      Learn strategies and insights to grow your content creation journey
+                    </CardDescription>
+                  </div>
+                  <Button variant="outline" onClick={() => navigate("/blog")}>
+                    View All
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {blogPosts.map((post) => (
+                    <Card 
+                      key={post.id} 
+                      className="cursor-pointer hover:shadow-lg transition-shadow"
+                      onClick={() => navigate(`/blog/${post.slug}`)}
+                    >
+                      {post.cover_image_url && (
+                        <img
+                          src={post.cover_image_url}
+                          alt={post.title}
+                          className="w-full h-32 object-cover rounded-t-lg"
+                        />
+                      )}
+                      <CardHeader className="p-4">
+                        <CardTitle className="text-base line-clamp-2">{post.title}</CardTitle>
+                        <CardDescription className="text-sm line-clamp-2">
+                          {post.excerpt || "Read more to discover valuable insights..."}
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent className="p-4 pt-0">
+                        <div className="flex items-center justify-between text-xs text-muted-foreground">
+                          <span>{new Date(post.published_at).toLocaleDateString()}</span>
+                          <Button variant="ghost" size="sm" className="h-auto p-0 hover:bg-transparent">
+                            Read More →
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
           {/* Your Journey Section */}
           <Card className="border-2">
