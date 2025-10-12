@@ -798,7 +798,9 @@ const ContentCalendar = () => {
                       <div>
                         <CardTitle>{t("calendar.currentProgress")}</CardTitle>
                         <CardDescription>
-                          {t("calendar.created", { date: new Date(selectedPlan?.created_at || "").toLocaleDateString() })}
+                          {t("calendar.created", { 
+                            date: format(new Date(selectedPlan?.created_at || ""), 'PPP')
+                          })}
                         </CardDescription>
                       </div>
                       <div className="text-right">

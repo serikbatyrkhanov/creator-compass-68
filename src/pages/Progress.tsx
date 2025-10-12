@@ -220,7 +220,9 @@ const Progress = () => {
                 )}
                 {stats.lastQuizDate && (
                   <p className="text-xs text-muted-foreground">
-                    {t("progress.lastQuiz")}: {new Date(stats.lastQuizDate).toLocaleDateString()}
+                    {t("progress.lastQuiz", { 
+                      date: new Date(stats.lastQuizDate).toLocaleDateString()
+                    })}
                   </p>
                 )}
               </CardContent>

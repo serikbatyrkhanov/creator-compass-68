@@ -439,7 +439,7 @@
     "quizHistory": "История тестов",
     "quizzesTaken": "Пройдено тестов",
     "currentArchetype": "Текущий архетип:",
-    "lastQuiz": "Последний",
+    "lastQuiz": "Последний: {date}",
     "contentIdeas": "Идеи контента",
     "ideaSets": "AI-сгенерированные наборы идей",
     "generateMoreIdeas": "Создать больше идей",

@@ -438,7 +438,7 @@
     "quizHistory": "Quiz History",
     "quizzesTaken": "Quizzes taken",
     "currentArchetype": "Current Archetype:",
-    "lastQuiz": "Last",
+    "lastQuiz": "Last: {date}",
     "contentIdeas": "Content Ideas",
     "ideaSets": "AI-generated idea sets",
     "generateMoreIdeas": "Generate More Ideas",
