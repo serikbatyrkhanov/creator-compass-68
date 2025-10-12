@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowRight, Target, TrendingUp, Calendar, Star } from "lucide-react";
 import { Link } from "react-router-dom";
 import logo from "@/assets/climbley-logo-updated.png";
+import logoRaw from "@/assets/climbley-logo-raw.png";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
@@ -239,7 +240,7 @@ const Index = () => {
           <Card className="border-2 border-primary shadow-xl">
             <CardHeader className="text-center pb-8">
               <div className="mx-auto w-16 h-16 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center mb-4 p-3">
-                <img src={logo} alt="Climbley" className="h-full w-full object-contain" />
+                <img src={logoRaw} alt="Climbley" className="h-full w-full object-contain" />
               </div>
               <CardTitle className="text-2xl mb-2">{t('index.pricing.cardTitle')}</CardTitle>
               <div className="flex items-baseline justify-center gap-2">
