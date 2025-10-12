@@ -48,7 +48,7 @@ const LearnMore = () => {
           <img 
             src={slider1} 
             alt="Food content creator with ring light" 
-            className="w-full h-[400px] object-cover rounded-2xl shadow-2xl"
+            className="w-full h-[400px] object-contain rounded-2xl shadow-2xl bg-muted/20"
           />
         </div>
       </section>
@@ -79,7 +79,7 @@ const LearnMore = () => {
           <img 
             src={slider2} 
             alt="Podcast creator with microphone" 
-            className="w-full h-[400px] object-cover rounded-2xl shadow-2xl"
+            className="w-full h-[400px] object-contain rounded-2xl shadow-2xl bg-muted/20"
           />
         </div>
       </section>
@@ -102,11 +102,11 @@ const LearnMore = () => {
       {/* Image 3 - Beauty Content Creator */}
       <section className="w-full">
         <div className="max-w-6xl mx-auto px-4">
-          <img 
-            src={slider4} 
-            alt="Beauty content creator" 
-            className="w-full h-[400px] object-cover rounded-2xl shadow-2xl"
-          />
+            <img
+              src={slider4}
+              alt="Beauty content creator"
+              className="w-full h-[400px] object-contain rounded-2xl shadow-2xl bg-muted/20"
+            />
         </div>
       </section>
 
@@ -125,11 +125,11 @@ const LearnMore = () => {
       {/* Image 4 - Fitness Lifestyle Creator */}
       <section className="w-full">
         <div className="max-w-6xl mx-auto px-4">
-          <img 
-            src={slider5} 
-            alt="Fitness lifestyle creator" 
-            className="w-full h-[400px] object-cover rounded-2xl shadow-2xl"
-          />
+            <img
+              src={slider5}
+              alt="Fitness lifestyle creator"
+              className="w-full h-[400px] object-contain rounded-2xl shadow-2xl bg-muted/20"
+            />
         </div>
       </section>
 
@@ -207,11 +207,11 @@ const LearnMore = () => {
       {/* Image 5 - Tech Tutorial Creator */}
       <section className="w-full bg-muted/30 py-16">
         <div className="max-w-6xl mx-auto px-4">
-          <img 
-            src={slider8} 
-            alt="Tech tutorial creator" 
-            className="w-full h-[400px] object-cover rounded-2xl shadow-2xl"
-          />
+            <img
+              src={slider8}
+              alt="Tech tutorial creator"
+              className="w-full h-[400px] object-contain rounded-2xl shadow-2xl bg-muted/20"
+            />
         </div>
       </section>
 
@@ -238,11 +238,11 @@ const LearnMore = () => {
       {/* Image 6 - Outdoor Videography Creator */}
       <section className="w-full">
         <div className="max-w-6xl mx-auto px-4">
-          <img 
-            src={slider10} 
-            alt="Outdoor videography creator" 
-            className="w-full h-[400px] object-cover rounded-2xl shadow-2xl"
-          />
+            <img
+              src={slider10}
+              alt="Outdoor videography creator"
+              className="w-full h-[400px] object-contain rounded-2xl shadow-2xl bg-muted/20"
+            />
         </div>
       </section>
 
@@ -287,11 +287,11 @@ const LearnMore = () => {
       {/* Image 7 - Educational Content Creator */}
       <section className="w-full">
         <div className="max-w-6xl mx-auto px-4">
-          <img 
-            src={slider11} 
-            alt="Educational content creator" 
-            className="w-full h-[400px] object-cover rounded-2xl shadow-2xl"
-          />
+            <img
+              src={slider11}
+              alt="Educational content creator"
+              className="w-full h-[400px] object-contain rounded-2xl shadow-2xl bg-muted/20"
+            />
         </div>
       </section>
 
@@ -313,11 +313,11 @@ const LearnMore = () => {
       {/* Image 8 - Fashion Content Creator */}
       <section className="w-full bg-muted/30 py-16">
         <div className="max-w-6xl mx-auto px-4">
-          <img 
-            src={slider13} 
-            alt="Fashion content creator" 
-            className="w-full h-[400px] object-cover rounded-2xl shadow-2xl"
-          />
+            <img
+              src={slider13}
+              alt="Fashion content creator"
+              className="w-full h-[400px] object-contain rounded-2xl shadow-2xl bg-muted/20"
+            />
         </div>
       </section>
 
