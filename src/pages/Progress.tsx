@@ -508,10 +508,6 @@ const Progress = () => {
                 <Calendar className="h-4 w-4 mr-2" />
                 {t("progress.viewCalendar")}
               </Button>
-              <Button variant="outline" onClick={() => navigate("/dashboard")}>
-                <Lightbulb className="h-4 w-4 mr-2" />
-                {t("progress.generateIdeas")}
-              </Button>
             </CardContent>
           </Card>
         </div>
