@@ -16,6 +16,7 @@ i18n
     },
     backend: {
       loadPath: '/locales/{{lng}}/{{ns}}.json',
+      queryStringParams: { v: Date.now().toString() },
     },
     detection: {
       order: ['localStorage', 'navigator'],
