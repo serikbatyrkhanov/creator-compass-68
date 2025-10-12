@@ -239,7 +239,7 @@ const Index = () => {
         <div className="max-w-md mx-auto">
           <Card className="border-2 border-primary shadow-xl">
             <CardHeader className="text-center pb-8">
-              <div className="mx-auto w-16 h-16 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center mb-4 p-3">
+              <div className="mx-auto w-16 h-16 rounded-full bg-white flex items-center justify-center mb-4 p-3">
                 <img src={logoRaw} alt="Climbley" className="h-full w-full object-contain" />
               </div>
               <CardTitle className="text-2xl mb-2">{t('index.pricing.cardTitle')}</CardTitle>
