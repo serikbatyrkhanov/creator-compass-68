@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { TrendingUp, ArrowLeft, Target, Calendar, Lightbulb, MessageCircle, CheckCircle2, Award, Users, Video, Heart } from "lucide-react";
+import { TrendingUp, ArrowLeft, Target, Calendar, Lightbulb, MessageCircle, CheckCircle2, Award, Users, Video, Heart, ExternalLink } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 
@@ -20,21 +20,10 @@ interface ProgressStats {
   totalMessages: number;
 }
 
-interface SocialStats {
-  youtube?: {
-    subscribers: number;
-    videos: number;
-    views: number;
-  };
-  instagram?: {
-    followers: number;
-    posts: number;
-  };
-  tiktok?: {
-    followers: number;
-    likes: number;
-    videos: number;
-  };
+interface SocialProfiles {
+  youtubeUrl: string | null;
+  instagramUrl: string | null;
+  tiktokUrl: string | null;
 }
 
 const Progress = () => {
@@ -51,13 +40,15 @@ const Progress = () => {
     chatConversations: 0,
     totalMessages: 0
   });
-  const [socialStats, setSocialStats] = useState<SocialStats>({});
+  const [socialProfiles, setSocialProfiles] = useState<SocialProfiles>({
+    youtubeUrl: null,
+    instagramUrl: null,
+    tiktokUrl: null
+  });
   const [loading, setLoading] = useState(true);
-  const [loadingSocial, setLoadingSocial] = useState(false);
 
   useEffect(() => {
     fetchStats();
-    fetchSocialStats();
   }, []);
 
   const fetchStats = async () => {
@@ -75,7 +66,8 @@ const Progress = () => {
         plans,
         tasks,
         conversations,
-        messages
+        messages,
+        profile
       ] = await Promise.all([
         supabase
           .from("quiz_responses")
@@ -106,7 +98,13 @@ const Progress = () => {
         supabase
           .from("chat_messages")
           .select("id")
-          .eq("user_id", user.id)
+          .eq("user_id", user.id),
+        
+        supabase
+          .from("profiles")
+          .select("youtube_url, instagram_url, tiktok_url")
+          .eq("id", user.id)
+          .single()
       ]);
 
       const completedTasksCount = tasks.data?.filter(t => t.completed).length || 0;
@@ -122,6 +120,12 @@ const Progress = () => {
         chatConversations: conversations.data?.length || 0,
         totalMessages: messages.data?.length || 0
       });
+
+      setSocialProfiles({
+        youtubeUrl: profile.data?.youtube_url || null,
+        instagramUrl: profile.data?.instagram_url || null,
+        tiktokUrl: profile.data?.tiktok_url || null
+      });
     } catch (error) {
       console.error("Error fetching stats:", error);
     } finally {
@@ -129,41 +133,37 @@ const Progress = () => {
     }
   };
 
-  const fetchSocialStats = async () => {
-    setLoadingSocial(true);
+  const extractUsername = (url: string | null, platform: 'youtube' | 'instagram' | 'tiktok'): string => {
+    if (!url) return 'View Profile';
+    
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) return;
-
-      const { data, error } = await supabase.functions.invoke('fetch-social-stats', {
-        headers: {
-          Authorization: `Bearer ${session.access_token}`,
-        },
-      });
-
-      if (error) {
-        console.error('Error fetching social stats:', error);
-        return;
+      const urlObj = new URL(url);
+      const pathname = urlObj.pathname;
+      
+      if (platform === 'youtube') {
+        // Handle @username or /channel/ID or /c/customname
+        if (pathname.includes('/@')) {
+          return pathname.split('/@')[1].split('/')[0];
+        } else if (pathname.includes('/channel/')) {
+          return pathname.split('/channel/')[1].split('/')[0];
+        } else if (pathname.includes('/c/')) {
+          return pathname.split('/c/')[1].split('/')[0];
+        }
+      } else if (platform === 'instagram') {
+        // Handle instagram.com/username
+        const parts = pathname.split('/').filter(Boolean);
+        return parts[0] || 'View Profile';
+      } else if (platform === 'tiktok') {
+        // Handle tiktok.com/@username
+        if (pathname.includes('/@')) {
+          return pathname.split('/@')[1].split('/')[0];
+        }
       }
-
-      if (data?.stats) {
-        setSocialStats(data.stats);
-      }
-    } catch (error) {
-      console.error('Error fetching social stats:', error);
-    } finally {
-      setLoadingSocial(false);
+    } catch (e) {
+      console.error('Error parsing URL:', e);
     }
-  };
-
-  const formatNumber = (num: number): string => {
-    if (num >= 1000000) {
-      return (num / 1000000).toFixed(1) + 'M';
-    }
-    if (num >= 1000) {
-      return (num / 1000).toFixed(1) + 'K';
-    }
-    return num.toString();
+    
+    return 'View Profile';
   };
 
   const completionRate = stats.totalTasks > 0 
@@ -390,103 +390,97 @@ const Progress = () => {
             </Card>
           </div>
 
-          {/* Social Media Stats Section */}
-          {(socialStats.youtube || socialStats.instagram || socialStats.tiktok) && (
+          {/* Social Media Profiles Section */}
+          {(socialProfiles.youtubeUrl || socialProfiles.instagramUrl || socialProfiles.tiktokUrl) && (
             <>
               <div className="mt-8">
                 <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
-                  <TrendingUp className="h-6 w-6 text-primary" />
-                  Social Media Statistics
+                  <Users className="h-6 w-6 text-primary" />
+                  Social Media Profiles
                 </h2>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {/* YouTube Stats */}
-                {socialStats.youtube && (
+                {/* YouTube Profile */}
+                {socialProfiles.youtubeUrl && (
                   <Card className="bg-gradient-to-br from-red-50 to-red-100 dark:from-red-950/20 dark:to-red-900/20">
                     <CardHeader>
-                      <div className="flex items-center justify-between">
-                        <CardTitle className="flex items-center gap-2">
-                          <Video className="h-5 w-5 text-red-600" />
-                          YouTube
-                        </CardTitle>
-                      </div>
+                      <CardTitle className="flex items-center gap-2">
+                        <Video className="h-5 w-5 text-red-600" />
+                        YouTube
+                      </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-3">
                       <div>
-                        <p className="text-3xl font-bold text-red-600">
-                          {formatNumber(socialStats.youtube.subscribers)}
+                        <p className="text-lg font-medium text-foreground">
+                          @{extractUsername(socialProfiles.youtubeUrl, 'youtube')}
                         </p>
-                        <p className="text-sm text-muted-foreground">Subscribers</p>
+                        <p className="text-sm text-muted-foreground">Channel</p>
                       </div>
-                      <div className="flex justify-between text-sm">
-                        <div>
-                          <p className="font-semibold">{formatNumber(socialStats.youtube.videos)}</p>
-                          <p className="text-xs text-muted-foreground">Videos</p>
-                        </div>
-                        <div>
-                          <p className="font-semibold">{formatNumber(socialStats.youtube.views)}</p>
-                          <p className="text-xs text-muted-foreground">Total Views</p>
-                        </div>
-                      </div>
+                      <Button 
+                        variant="outline" 
+                        className="w-full"
+                        onClick={() => window.open(socialProfiles.youtubeUrl!, '_blank')}
+                      >
+                        <ExternalLink className="h-4 w-4 mr-2" />
+                        View on YouTube
+                      </Button>
                     </CardContent>
                   </Card>
                 )}
 
-                {/* Instagram Stats */}
-                {socialStats.instagram && (
+                {/* Instagram Profile */}
+                {socialProfiles.instagramUrl && (
                   <Card className="bg-gradient-to-br from-pink-50 to-purple-100 dark:from-pink-950/20 dark:to-purple-900/20">
                     <CardHeader>
-                      <div className="flex items-center justify-between">
-                        <CardTitle className="flex items-center gap-2">
-                          <Users className="h-5 w-5 text-pink-600" />
-                          Instagram
-                        </CardTitle>
-                      </div>
+                      <CardTitle className="flex items-center gap-2">
+                        <Users className="h-5 w-5 text-pink-600" />
+                        Instagram
+                      </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-3">
                       <div>
-                        <p className="text-3xl font-bold text-pink-600">
-                          {formatNumber(socialStats.instagram.followers)}
+                        <p className="text-lg font-medium text-foreground">
+                          @{extractUsername(socialProfiles.instagramUrl, 'instagram')}
                         </p>
-                        <p className="text-sm text-muted-foreground">Followers</p>
+                        <p className="text-sm text-muted-foreground">Profile</p>
                       </div>
-                      <div>
-                        <p className="font-semibold">{formatNumber(socialStats.instagram.posts)}</p>
-                        <p className="text-xs text-muted-foreground">Posts</p>
-                      </div>
+                      <Button 
+                        variant="outline" 
+                        className="w-full"
+                        onClick={() => window.open(socialProfiles.instagramUrl!, '_blank')}
+                      >
+                        <ExternalLink className="h-4 w-4 mr-2" />
+                        View on Instagram
+                      </Button>
                     </CardContent>
                   </Card>
                 )}
 
-                {/* TikTok Stats */}
-                {socialStats.tiktok && (
+                {/* TikTok Profile */}
+                {socialProfiles.tiktokUrl && (
                   <Card className="bg-gradient-to-br from-cyan-50 to-blue-100 dark:from-cyan-950/20 dark:to-blue-900/20">
                     <CardHeader>
-                      <div className="flex items-center justify-between">
-                        <CardTitle className="flex items-center gap-2">
-                          <Heart className="h-5 w-5 text-cyan-600" />
-                          TikTok
-                        </CardTitle>
-                      </div>
+                      <CardTitle className="flex items-center gap-2">
+                        <Heart className="h-5 w-5 text-cyan-600" />
+                        TikTok
+                      </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-3">
                       <div>
-                        <p className="text-3xl font-bold text-cyan-600">
-                          {formatNumber(socialStats.tiktok.followers)}
+                        <p className="text-lg font-medium text-foreground">
+                          @{extractUsername(socialProfiles.tiktokUrl, 'tiktok')}
                         </p>
-                        <p className="text-sm text-muted-foreground">Followers</p>
+                        <p className="text-sm text-muted-foreground">Profile</p>
                       </div>
-                      <div className="flex justify-between text-sm">
-                        <div>
-                          <p className="font-semibold">{formatNumber(socialStats.tiktok.videos)}</p>
-                          <p className="text-xs text-muted-foreground">Videos</p>
-                        </div>
-                        <div>
-                          <p className="font-semibold">{formatNumber(socialStats.tiktok.likes)}</p>
-                          <p className="text-xs text-muted-foreground">Total Likes</p>
-                        </div>
-                      </div>
+                      <Button 
+                        variant="outline" 
+                        className="w-full"
+                        onClick={() => window.open(socialProfiles.tiktokUrl!, '_blank')}
+                      >
+                        <ExternalLink className="h-4 w-4 mr-2" />
+                        View on TikTok
+                      </Button>
                     </CardContent>
                   </Card>
                 )}
@@ -495,13 +489,13 @@ const Progress = () => {
           )}
 
           {/* Show message if no social media connected */}
-          {!loadingSocial && !socialStats.youtube && !socialStats.instagram && !socialStats.tiktok && (
+          {!socialProfiles.youtubeUrl && !socialProfiles.instagramUrl && !socialProfiles.tiktokUrl && (
             <Card className="border-dashed">
               <CardContent className="flex flex-col items-center justify-center py-8">
                 <Users className="h-12 w-12 text-muted-foreground mb-4" />
                 <p className="text-lg font-medium mb-2">No Social Media Connected</p>
                 <p className="text-sm text-muted-foreground text-center mb-4">
-                  Connect your YouTube, Instagram, or TikTok accounts in Profile Management to see live statistics
+                  Connect your YouTube, Instagram, or TikTok accounts in Profile Management
                 </p>
                 <Button onClick={() => navigate("/profile")}>
                   Go to Profile Management
