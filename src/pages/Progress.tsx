@@ -4,8 +4,9 @@ import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { TrendingUp, ArrowLeft, Target, Calendar, Lightbulb, MessageCircle, CheckCircle2, Award } from "lucide-react";
+import { TrendingUp, ArrowLeft, Target, Calendar, Lightbulb, MessageCircle, CheckCircle2, Award, Users, Video, Heart } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { toast } from "sonner";
 
 interface ProgressStats {
   totalQuizzes: number;
@@ -17,6 +18,23 @@ interface ProgressStats {
   totalTasks: number;
   chatConversations: number;
   totalMessages: number;
+}
+
+interface SocialStats {
+  youtube?: {
+    subscribers: number;
+    videos: number;
+    views: number;
+  };
+  instagram?: {
+    followers: number;
+    posts: number;
+  };
+  tiktok?: {
+    followers: number;
+    likes: number;
+    videos: number;
+  };
 }
 
 const Progress = () => {
@@ -33,10 +51,13 @@ const Progress = () => {
     chatConversations: 0,
     totalMessages: 0
   });
+  const [socialStats, setSocialStats] = useState<SocialStats>({});
   const [loading, setLoading] = useState(true);
+  const [loadingSocial, setLoadingSocial] = useState(false);
 
   useEffect(() => {
     fetchStats();
+    fetchSocialStats();
   }, []);
 
   const fetchStats = async () => {
@@ -106,6 +127,43 @@ const Progress = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const fetchSocialStats = async () => {
+    setLoadingSocial(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
+
+      const { data, error } = await supabase.functions.invoke('fetch-social-stats', {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      });
+
+      if (error) {
+        console.error('Error fetching social stats:', error);
+        return;
+      }
+
+      if (data?.stats) {
+        setSocialStats(data.stats);
+      }
+    } catch (error) {
+      console.error('Error fetching social stats:', error);
+    } finally {
+      setLoadingSocial(false);
+    }
+  };
+
+  const formatNumber = (num: number): string => {
+    if (num >= 1000000) {
+      return (num / 1000000).toFixed(1) + 'M';
+    }
+    if (num >= 1000) {
+      return (num / 1000).toFixed(1) + 'K';
+    }
+    return num.toString();
   };
 
   const completionRate = stats.totalTasks > 0 
@@ -331,6 +389,126 @@ const Progress = () => {
               </CardContent>
             </Card>
           </div>
+
+          {/* Social Media Stats Section */}
+          {(socialStats.youtube || socialStats.instagram || socialStats.tiktok) && (
+            <>
+              <div className="mt-8">
+                <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
+                  <TrendingUp className="h-6 w-6 text-primary" />
+                  Social Media Statistics
+                </h2>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {/* YouTube Stats */}
+                {socialStats.youtube && (
+                  <Card className="bg-gradient-to-br from-red-50 to-red-100 dark:from-red-950/20 dark:to-red-900/20">
+                    <CardHeader>
+                      <div className="flex items-center justify-between">
+                        <CardTitle className="flex items-center gap-2">
+                          <Video className="h-5 w-5 text-red-600" />
+                          YouTube
+                        </CardTitle>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      <div>
+                        <p className="text-3xl font-bold text-red-600">
+                          {formatNumber(socialStats.youtube.subscribers)}
+                        </p>
+                        <p className="text-sm text-muted-foreground">Subscribers</p>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <div>
+                          <p className="font-semibold">{formatNumber(socialStats.youtube.videos)}</p>
+                          <p className="text-xs text-muted-foreground">Videos</p>
+                        </div>
+                        <div>
+                          <p className="font-semibold">{formatNumber(socialStats.youtube.views)}</p>
+                          <p className="text-xs text-muted-foreground">Total Views</p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+
+                {/* Instagram Stats */}
+                {socialStats.instagram && (
+                  <Card className="bg-gradient-to-br from-pink-50 to-purple-100 dark:from-pink-950/20 dark:to-purple-900/20">
+                    <CardHeader>
+                      <div className="flex items-center justify-between">
+                        <CardTitle className="flex items-center gap-2">
+                          <Users className="h-5 w-5 text-pink-600" />
+                          Instagram
+                        </CardTitle>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      <div>
+                        <p className="text-3xl font-bold text-pink-600">
+                          {formatNumber(socialStats.instagram.followers)}
+                        </p>
+                        <p className="text-sm text-muted-foreground">Followers</p>
+                      </div>
+                      <div>
+                        <p className="font-semibold">{formatNumber(socialStats.instagram.posts)}</p>
+                        <p className="text-xs text-muted-foreground">Posts</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+
+                {/* TikTok Stats */}
+                {socialStats.tiktok && (
+                  <Card className="bg-gradient-to-br from-cyan-50 to-blue-100 dark:from-cyan-950/20 dark:to-blue-900/20">
+                    <CardHeader>
+                      <div className="flex items-center justify-between">
+                        <CardTitle className="flex items-center gap-2">
+                          <Heart className="h-5 w-5 text-cyan-600" />
+                          TikTok
+                        </CardTitle>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      <div>
+                        <p className="text-3xl font-bold text-cyan-600">
+                          {formatNumber(socialStats.tiktok.followers)}
+                        </p>
+                        <p className="text-sm text-muted-foreground">Followers</p>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <div>
+                          <p className="font-semibold">{formatNumber(socialStats.tiktok.videos)}</p>
+                          <p className="text-xs text-muted-foreground">Videos</p>
+                        </div>
+                        <div>
+                          <p className="font-semibold">{formatNumber(socialStats.tiktok.likes)}</p>
+                          <p className="text-xs text-muted-foreground">Total Likes</p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
+            </>
+          )}
+
+          {/* Show message if no social media connected */}
+          {!loadingSocial && !socialStats.youtube && !socialStats.instagram && !socialStats.tiktok && (
+            <Card className="border-dashed">
+              <CardContent className="flex flex-col items-center justify-center py-8">
+                <Users className="h-12 w-12 text-muted-foreground mb-4" />
+                <p className="text-lg font-medium mb-2">No Social Media Connected</p>
+                <p className="text-sm text-muted-foreground text-center mb-4">
+                  Connect your YouTube, Instagram, or TikTok accounts in Profile Management to see live statistics
+                </p>
+                <Button onClick={() => navigate("/profile")}>
+                  Go to Profile Management
+                </Button>
+              </CardContent>
+            </Card>
+          )}
 
           {/* Quick Actions */}
           <Card>
