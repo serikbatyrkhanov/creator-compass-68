@@ -8,7 +8,7 @@ type ArchetypeWeights = {
 
 type QuizOption = {
   id: string;
-  label: string;
+  labelKey: string; // Translation key instead of hardcoded label
   weights?: ArchetypeWeights;
   meta?: {
     time_bucket?: string;
@@ -17,144 +17,128 @@ type QuizOption = {
   };
 };
 
+export const archetypeIds = ['educator', 'entertainer', 'lifestyle', 'reviewer', 'journey'] as const;
+export type ArchetypeId = typeof archetypeIds[number];
+
+// Simple archetype data - emoji only, rest comes from translations
 export const archetypes = {
-  educator: {
-    label: "Educator / Teacher",
-    description: "Explains concepts, teaches skills, breaks things into steps.",
-    emoji: "🎓"
-  },
-  entertainer: {
-    label: "Entertainer / Performer",
-    description: "Skits, humor, reactions, gaming, performance.",
-    emoji: "🎭"
-  },
-  lifestyle: {
-    label: "Lifestyle & Inspiration",
-    description: "Daily routines, fashion, wellness, motivation, travel.",
-    emoji: "✨"
-  },
-  reviewer: {
-    label: "Reviewer / Analyst",
-    description: "Unboxings, comparisons, deep dives, opinions with evidence.",
-    emoji: "🔍"
-  },
-  journey: {
-    label: "Journey / Documenter",
-    description: "Build in public, progress logs, behind-the-scenes.",
-    emoji: "🚀"
-  }
+  educator: { emoji: "🎓" },
+  entertainer: { emoji: "🎭" },
+  lifestyle: { emoji: "✨" },
+  reviewer: { emoji: "🔍" },
+  journey: { emoji: "🚀" }
 };
 
 export const quizQuestions: Array<{
   id: string;
-  text: string;
+  textKey: string; // Translation key for question text
   type: "single_select" | "multi_select";
   maxSelect?: number;
   options: QuizOption[];
 }> = [
   {
     id: "Q1_content_mode",
-    text: "Which style of creating sounds most like you?",
+    textKey: "quiz.questions.Q1_content_mode.text",
     type: "single_select" as const,
     options: [
-      { id: "Q1A1", label: "Teaching and explaining step by step", weights: { educator: 3 } },
-      { id: "Q1A2", label: "Entertaining with humor, skits, or performance", weights: { entertainer: 3 } },
-      { id: "Q1A3", label: "Sharing lifestyle, routines, or inspiration", weights: { lifestyle: 3 } },
-      { id: "Q1A4", label: "Reviewing or analyzing products and trends", weights: { reviewer: 3 } },
-      { id: "Q1A5", label: "Documenting my progress and lessons learned", weights: { journey: 3 } }
+      { id: "Q1A1", labelKey: "quiz.questions.Q1_content_mode.options.Q1A1", weights: { educator: 3 } },
+      { id: "Q1A2", labelKey: "quiz.questions.Q1_content_mode.options.Q1A2", weights: { entertainer: 3 } },
+      { id: "Q1A3", labelKey: "quiz.questions.Q1_content_mode.options.Q1A3", weights: { lifestyle: 3 } },
+      { id: "Q1A4", labelKey: "quiz.questions.Q1_content_mode.options.Q1A4", weights: { reviewer: 3 } },
+      { id: "Q1A5", labelKey: "quiz.questions.Q1_content_mode.options.Q1A5", weights: { journey: 3 } }
     ]
   },
   {
     id: "Q2_passions",
-    text: "Pick up to 3 topics you could talk about for hours.",
+    textKey: "quiz.questions.Q2_passions.text",
     type: "multi_select" as const,
     maxSelect: 3,
     options: [
-      { id: "Q2T1", label: "Technology & AI" },
-      { id: "Q2T2", label: "Fitness & Wellness" },
-      { id: "Q2T3", label: "Food & Cooking" },
-      { id: "Q2T4", label: "Travel & Adventure" },
-      { id: "Q2T5", label: "Money & Careers" },
-      { id: "Q2T6", label: "Education & Study Hacks" },
-      { id: "Q2T7", label: "Fashion & Beauty" },
-      { id: "Q2T8", label: "Gaming & Esports" },
-      { id: "Q2T9", label: "Home, DIY & Productivity" },
-      { id: "Q2T10", label: "Parenting & Relationships" },
-      { id: "Q2T11", label: "Entertainment & Pop Culture" },
-      { id: "Q2T12", label: "Entrepreneurship & Startups" }
+      { id: "Q2T1", labelKey: "quiz.questions.Q2_passions.options.Q2T1" },
+      { id: "Q2T2", labelKey: "quiz.questions.Q2_passions.options.Q2T2" },
+      { id: "Q2T3", labelKey: "quiz.questions.Q2_passions.options.Q2T3" },
+      { id: "Q2T4", labelKey: "quiz.questions.Q2_passions.options.Q2T4" },
+      { id: "Q2T5", labelKey: "quiz.questions.Q2_passions.options.Q2T5" },
+      { id: "Q2T6", labelKey: "quiz.questions.Q2_passions.options.Q2T6" },
+      { id: "Q2T7", labelKey: "quiz.questions.Q2_passions.options.Q2T7" },
+      { id: "Q2T8", labelKey: "quiz.questions.Q2_passions.options.Q2T8" },
+      { id: "Q2T9", labelKey: "quiz.questions.Q2_passions.options.Q2T9" },
+      { id: "Q2T10", labelKey: "quiz.questions.Q2_passions.options.Q2T10" },
+      { id: "Q2T11", labelKey: "quiz.questions.Q2_passions.options.Q2T11" },
+      { id: "Q2T12", labelKey: "quiz.questions.Q2_passions.options.Q2T12" }
     ]
   },
   {
     id: "Q3_strengths",
-    text: "Which strengths feel most true? (Pick up to 2)",
+    textKey: "quiz.questions.Q3_strengths.text",
     type: "multi_select" as const,
     maxSelect: 2,
     options: [
-      { id: "Q3A1", label: "Clear explanations and step-by-steps", weights: { educator: 2, reviewer: 1 } },
-      { id: "Q3A2", label: "Making people laugh / performance", weights: { entertainer: 2 } },
-      { id: "Q3A3", label: "Aesthetics / lifestyle storytelling", weights: { lifestyle: 2 } },
-      { id: "Q3A4", label: "Breaking things down analytically", weights: { reviewer: 2, educator: 1 } },
-      { id: "Q3A5", label: "Honest self-reflection / sharing progress", weights: { journey: 2 } }
+      { id: "Q3A1", labelKey: "quiz.questions.Q3_strengths.options.Q3A1", weights: { educator: 2, reviewer: 1 } },
+      { id: "Q3A2", labelKey: "quiz.questions.Q3_strengths.options.Q3A2", weights: { entertainer: 2 } },
+      { id: "Q3A3", labelKey: "quiz.questions.Q3_strengths.options.Q3A3", weights: { lifestyle: 2 } },
+      { id: "Q3A4", labelKey: "quiz.questions.Q3_strengths.options.Q3A4", weights: { reviewer: 2, educator: 1 } },
+      { id: "Q3A5", labelKey: "quiz.questions.Q3_strengths.options.Q3A5", weights: { journey: 2 } }
     ]
   },
   {
     id: "Q4_motivation",
-    text: "Your main reason to create?",
+    textKey: "quiz.questions.Q4_motivation.text",
     type: "single_select" as const,
     options: [
-      { id: "Q4A1", label: "Help others learn and grow", weights: { educator: 2 } },
-      { id: "Q4A2", label: "Entertain and bring joy", weights: { entertainer: 2 } },
-      { id: "Q4A3", label: "Inspire with my lifestyle", weights: { lifestyle: 2 } },
-      { id: "Q4A4", label: "Share opinions and reviews people trust", weights: { reviewer: 2 } },
-      { id: "Q4A5", label: "Document my journey from zero", weights: { journey: 2 } }
+      { id: "Q4A1", labelKey: "quiz.questions.Q4_motivation.options.Q4A1", weights: { educator: 2 } },
+      { id: "Q4A2", labelKey: "quiz.questions.Q4_motivation.options.Q4A2", weights: { entertainer: 2 } },
+      { id: "Q4A3", labelKey: "quiz.questions.Q4_motivation.options.Q4A3", weights: { lifestyle: 2 } },
+      { id: "Q4A4", labelKey: "quiz.questions.Q4_motivation.options.Q4A4", weights: { reviewer: 2 } },
+      { id: "Q4A5", labelKey: "quiz.questions.Q4_motivation.options.Q4A5", weights: { journey: 2 } }
     ]
   },
   {
     id: "Q5_format_comfort",
-    text: "Which format feels most natural?",
+    textKey: "quiz.questions.Q5_format_comfort.text",
     type: "single_select" as const,
     options: [
-      { id: "Q5A1", label: "Talking head tutorials", weights: { educator: 1 } },
-      { id: "Q5A2", label: "Skits / reactions / performance", weights: { entertainer: 1 } },
-      { id: "Q5A3", label: "Aesthetic b-roll / vlogs", weights: { lifestyle: 1, journey: 1 } },
-      { id: "Q5A4", label: "Screen shares / breakdowns", weights: { educator: 1, reviewer: 1 } },
-      { id: "Q5A5", label: "Short progress updates", weights: { journey: 1 } }
+      { id: "Q5A1", labelKey: "quiz.questions.Q5_format_comfort.options.Q5A1", weights: { educator: 1 } },
+      { id: "Q5A2", labelKey: "quiz.questions.Q5_format_comfort.options.Q5A2", weights: { entertainer: 1 } },
+      { id: "Q5A3", labelKey: "quiz.questions.Q5_format_comfort.options.Q5A3", weights: { lifestyle: 1, journey: 1 } },
+      { id: "Q5A4", labelKey: "quiz.questions.Q5_format_comfort.options.Q5A4", weights: { educator: 1, reviewer: 1 } },
+      { id: "Q5A5", labelKey: "quiz.questions.Q5_format_comfort.options.Q5A5", weights: { journey: 1 } }
     ]
   },
   {
     id: "Q6_time",
-    text: "Realistic time you can dedicate weekly?",
+    textKey: "quiz.questions.Q6_time.text",
     type: "single_select" as const,
     options: [
-      { id: "Q6A1", label: "< 5 hours", meta: { time_bucket: "under_5" } },
-      { id: "Q6A2", label: "5–10 hours", meta: { time_bucket: "5_to_10" } },
-      { id: "Q6A3", label: "10–20 hours", meta: { time_bucket: "10_to_20" } },
-      { id: "Q6A4", label: "20+ hours", meta: { time_bucket: "20_plus" } }
+      { id: "Q6A1", labelKey: "quiz.questions.Q6_time.options.Q6A1", meta: { time_bucket: "under_5" } },
+      { id: "Q6A2", labelKey: "quiz.questions.Q6_time.options.Q6A2", meta: { time_bucket: "5_to_10" } },
+      { id: "Q6A3", labelKey: "quiz.questions.Q6_time.options.Q6A3", meta: { time_bucket: "10_to_20" } },
+      { id: "Q6A4", labelKey: "quiz.questions.Q6_time.options.Q6A4", meta: { time_bucket: "20_plus" } }
     ]
   },
   {
     id: "Q7_resources",
-    text: "What gear/resources do you have today?",
+    textKey: "quiz.questions.Q7_resources.text",
     type: "multi_select" as const,
     maxSelect: 3,
     options: [
-      { id: "Q7A1", label: "Smartphone only", meta: { gear: "phone" } },
-      { id: "Q7A2", label: "Good lighting / mic", meta: { gear: "basic_studio" } },
-      { id: "Q7A3", label: "Screen capture setup", meta: { gear: "screen" } },
-      { id: "Q7A4", label: "Camera + lenses", meta: { gear: "camera" } },
-      { id: "Q7A5", label: "Editing software", meta: { gear: "editor" } }
+      { id: "Q7A1", labelKey: "quiz.questions.Q7_resources.options.Q7A1", meta: { gear: "phone" } },
+      { id: "Q7A2", labelKey: "quiz.questions.Q7_resources.options.Q7A2", meta: { gear: "basic_studio" } },
+      { id: "Q7A3", labelKey: "quiz.questions.Q7_resources.options.Q7A3", meta: { gear: "screen" } },
+      { id: "Q7A4", labelKey: "quiz.questions.Q7_resources.options.Q7A4", meta: { gear: "camera" } },
+      { id: "Q7A5", labelKey: "quiz.questions.Q7_resources.options.Q7A5", meta: { gear: "editor" } }
     ]
   },
   {
     id: "Q8_audience",
-    text: "Who do you most want to reach?",
+    textKey: "quiz.questions.Q8_audience.text",
     type: "single_select" as const,
     options: [
-      { id: "Q8A1", label: "Beginners learning a skill", weights: { educator: 1 }, meta: { platform_bias: ["YouTube", "TikTok", "Blog"] } },
-      { id: "Q8A2", label: "Professionals in my field", weights: { educator: 1, reviewer: 1 }, meta: { platform_bias: ["LinkedIn", "YouTube"] } },
-      { id: "Q8A3", label: "People who like my lifestyle", weights: { lifestyle: 1 }, meta: { platform_bias: ["Instagram", "TikTok", "YouTube"] } },
-      { id: "Q8A4", label: "General audience / entertainment", weights: { entertainer: 1 }, meta: { platform_bias: ["TikTok", "Instagram", "YouTube Shorts"] } },
-      { id: "Q8A5", label: "Niche hobby communities", weights: { reviewer: 1, journey: 1 }, meta: { platform_bias: ["YouTube", "Reddit", "Discord"] } }
+      { id: "Q8A1", labelKey: "quiz.questions.Q8_audience.options.Q8A1", weights: { educator: 1 }, meta: { platform_bias: ["YouTube", "TikTok", "Blog"] } },
+      { id: "Q8A2", labelKey: "quiz.questions.Q8_audience.options.Q8A2", weights: { educator: 1, reviewer: 1 }, meta: { platform_bias: ["LinkedIn", "YouTube"] } },
+      { id: "Q8A3", labelKey: "quiz.questions.Q8_audience.options.Q8A3", weights: { lifestyle: 1 }, meta: { platform_bias: ["Instagram", "TikTok", "YouTube"] } },
+      { id: "Q8A4", labelKey: "quiz.questions.Q8_audience.options.Q8A4", weights: { entertainer: 1 }, meta: { platform_bias: ["TikTok", "Instagram", "YouTube Shorts"] } },
+      { id: "Q8A5", labelKey: "quiz.questions.Q8_audience.options.Q8A5", weights: { reviewer: 1, journey: 1 }, meta: { platform_bias: ["YouTube", "Reddit", "Discord"] } }
     ]
   }
 ];

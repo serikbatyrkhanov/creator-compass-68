@@ -202,7 +202,7 @@ const Dashboard = () => {
                 </div>
                 <CardTitle className="text-emerald-700 dark:text-emerald-300">{t('dashboard.lastQuizResult.title')}</CardTitle>
                 <CardDescription>
-                  {t('dashboard.lastQuizResult.yourArchetype')}: <span className="font-semibold capitalize">{lastQuizResult.primary_archetype}</span>
+                  {t('dashboard.lastQuizResult.yourArchetype')}: <span className="font-semibold capitalize">{t(`quiz.archetypes.${lastQuizResult.primary_archetype}.label`)}</span>
                   <br />
                   <span className="text-xs">{t('dashboard.lastQuizResult.completed')} {new Date(lastQuizResult.created_at).toLocaleDateString()}</span>
                 </CardDescription>

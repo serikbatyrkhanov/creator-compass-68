@@ -168,14 +168,14 @@
   "quiz": {
     "title": "Find Your Creator Niche",
     "description": "Answer these questions to receive personalized YouTube growth strategies",
-     "stepOf": "Step {{current}} of {{total}}",
-     "home": "Home",
-     "back": "Back",
-     "next": "Next",
-     "seeResults": "See Results",
-     "selectUpTo": "Select up to {{max}} option(s) (selected: {{count}})",
+    "stepOf": "Step {{current}} of {{total}}",
+    "home": "Home",
+    "back": "Back",
+    "next": "Next",
+    "seeResults": "See Results",
+    "selectUpTo": "Select up to {{max}} option(s) (selected: {{count}})",
     "selectionLimitReached": "Selection limit reached",
-    "selectionLimitDesc": "You can only select up to {max} options",
+    "selectionLimitDesc": "You can only select up to {{max}} options",
     "authRequired": "Authentication required",
     "authRequiredDesc": "Please sign in to take the quiz",
     "errorSaving": "Error saving results",
@@ -183,6 +183,195 @@
     "question": "Question",
     "of": "of",
     "finish": "Finish Quiz",
+    "archetypes": {
+      "educator": {
+        "label": "Educator / Teacher",
+        "description": "Explains concepts, teaches skills, breaks things into steps.",
+        "emoji": "📚",
+        "tagline": "Turn know-how into clear, actionable lessons.",
+        "fullDescription": "You thrive at explaining, simplifying, and helping people make real progress. Your content compounds as evergreen value.",
+        "strengths": [
+          "Builds trust & authority",
+          "Evergreen, searchable content",
+          "Natural path to courses & coaching"
+        ],
+        "challenges": [
+          "Prep time for quality lessons",
+          "Consistency needed for growth"
+        ],
+        "platforms": [
+          "YouTube (tutorials)",
+          "TikTok/Reels (quick tips)",
+          "LinkedIn (pro topics)",
+          "Blog/Medium"
+        ],
+        "ideas": [
+          "Beginner Python in 7 days",
+          "5-minute productivity hacks",
+          "No-code app tutorial series"
+        ],
+        "monetization": [
+          "Courses",
+          "Workshops",
+          "Ebooks",
+          "Coaching/Consulting"
+        ]
+      },
+      "entertainer": {
+        "label": "Entertainer / Performer",
+        "description": "Skits, humor, reactions, gaming, performance.",
+        "emoji": "🎭",
+        "tagline": "Capture attention with humor, story, and energy.",
+        "fullDescription": "You shine on camera and love making people feel something—laughs, thrills, or surprise. Great fit for trends and rapid iteration.",
+        "strengths": [
+          "High viral potential",
+          "Strong parasocial connection",
+          "Trend-friendly"
+        ],
+        "challenges": [
+          "High content cadence",
+          "Short shelf life for trends"
+        ],
+        "platforms": [
+          "TikTok",
+          "Instagram Reels",
+          "YouTube Shorts",
+          "Twitch (live)"
+        ],
+        "ideas": [
+          "Daily comedy skits",
+          "Reacting to viral clips",
+          "Gaming challenges with forfeits"
+        ],
+        "monetization": [
+          "Brand deals",
+          "Sponsorships",
+          "Merch",
+          "Patreon"
+        ]
+      },
+      "lifestyle": {
+        "label": "Lifestyle & Inspiration",
+        "description": "Daily routines, fashion, wellness, motivation, travel.",
+        "emoji": "🌿",
+        "tagline": "Make your habits and taste the brand.",
+        "fullDescription": "You inspire through routines, aesthetics, and personal stories. Your personality is the product—show, don't tell.",
+        "strengths": [
+          "High relatability",
+          "Strong brand partnerships",
+          "Broad topics"
+        ],
+        "challenges": [
+          "Requires unique personal style",
+          "Consistency around your life"
+        ],
+        "platforms": [
+          "Instagram",
+          "TikTok",
+          "YouTube (vlogs)",
+          "Pinterest"
+        ],
+        "ideas": [
+          "AM/PM routine reels",
+          "Budget travel mini-vlogs",
+          "Healthy meal prep week"
+        ],
+        "monetization": [
+          "Sponsorships",
+          "Affiliate links",
+          "Product collabs",
+          "Digital presets/templates"
+        ]
+      },
+      "reviewer": {
+        "label": "Reviewer / Analyst",
+        "description": "Unboxings, comparisons, deep dives, opinions with evidence.",
+        "emoji": "🔎",
+        "tagline": "Help people decide with honest breakdowns.",
+        "fullDescription": "You love testing, comparing, and forming opinions backed by evidence. Trust is your growth engine.",
+        "strengths": [
+          "Searchable & intent-rich",
+          "Credibility builds fast",
+          "Affiliate friendly"
+        ],
+        "challenges": [
+          "Access to products/services",
+          "Crowded in big niches"
+        ],
+        "platforms": [
+          "YouTube (deep dives)",
+          "TikTok/Reels (quick takes)",
+          "Blog/Medium/Substack",
+          "Reddit/Discord"
+        ],
+        "ideas": [
+          "Top 5 budget mics",
+          "iPhone vs Galaxy honest review",
+          "Weekly streaming picks"
+        ],
+        "monetization": [
+          "Affiliate programs",
+          "Sponsorships",
+          "Brand partnerships",
+          "Amazon Influencer"
+        ]
+      },
+      "journey": {
+        "label": "Journey / Documenter",
+        "description": "Build in public, progress logs, behind-the-scenes.",
+        "emoji": "🛤",
+        "tagline": "Bring people along as you learn and build.",
+        "fullDescription": "You share the real process—wins and stumbles. Authenticity and consistency turn long arcs into loyal communities.",
+        "strengths": [
+          "Highly relatable",
+          "Low barrier to start",
+          "Long-term loyalty"
+        ],
+        "challenges": [
+          "Slower monetization early",
+          "Results take time"
+        ],
+        "platforms": [
+          "YouTube (docu/progress)",
+          "TikTok (updates)",
+          "X/Twitter (threads)",
+          "Instagram Stories"
+        ],
+        "ideas": [
+          "90-day transformation log",
+          "Building a startup in public",
+          "Learning guitar: day-by-day"
+        ],
+        "monetization": [
+          "Patreon",
+          "Affiliate links",
+          "Courses later",
+          "Community"
+        ]
+      }
+    },
+    "results": {
+      "topMatch": "Top Match",
+      "strengths": "Strengths",
+      "challenges": "Challenges",
+      "bestPlatforms": "Best Platforms",
+      "exampleIdeas": "Example Content Ideas",
+      "monetization": "Monetization Paths",
+      "getStarterPrompts": "Get 3 Starter Prompts",
+      "make7DayPlan": "Make 7-Day Plan",
+      "yourPrimaryArchetype": "Your Creator Path",
+      "yourCreatorPath": "Your Creator Path",
+      "basedOnQuiz": "Based on your quiz, here's your primary archetype and tailored platform recommendations.",
+      "alsoStrong": "You're also strong in",
+      "allArchetypes": "All 5 Creator Archetypes",
+      "analyzingPath": "Analyzing your creator path...",
+      "backToDashboard": "Back to Dashboard",
+      "errorLoadingResults": "Error loading results",
+      "unableToLoad": "Unable to load your quiz results",
+      "aiCoach": "AI Coach",
+      "weeklyTime": "Weekly time:",
+      "tip": "Tip: Use the \"Get 3 Starter Prompts\" button to generate personalized ideas, create a 7-day plan, or chat with the AI Coach for help anytime."
+    },
     "questions": {
       "Q1_content_mode": {
         "text": "Which style of creating sounds most like you?",

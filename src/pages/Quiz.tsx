@@ -67,11 +67,11 @@ const Quiz = () => {
       if (current.length < maxSelect) {
         setAnswers({ ...answers, [currentQuestion.id]: [...current, optionId] });
       } else {
-        toast({
-          title: "Selection limit reached",
-          description: `You can only select up to ${maxSelect} options`,
-          variant: "destructive"
-        });
+      toast({
+        title: t('quiz.selectionLimitReached'),
+        description: t('quiz.selectionLimitDesc', { max: maxSelect }),
+        variant: "destructive"
+      });
       }
     } else {
       setAnswers({ ...answers, [currentQuestion.id]: current.filter(id => id !== optionId) });
@@ -130,7 +130,7 @@ const Quiz = () => {
     const q2Topics = answers["Q2_passions"] || [];
     const selectedTopics = q2Topics.map(id => {
       const opt = quizQuestions[1].options.find(o => o.id === id);
-      return opt?.label || "";
+      return opt?.labelKey ? t(opt.labelKey) : "";
     }).filter(Boolean);
 
     const q6Answer = answers["Q6_time"]?.[0];
@@ -142,8 +142,10 @@ const Quiz = () => {
       return opt?.meta?.gear || "";
     }).filter(Boolean);
 
+    // Extract target audience from Q8
     const q8Answer = answers["Q8_audience"]?.[0];
-    const targetAudience = quizQuestions[7].options.find(o => o.id === q8Answer)?.label || "";
+    const targetAudienceOpt = quizQuestions[7].options.find(o => o.id === q8Answer);
+    const targetAudience = targetAudienceOpt?.labelKey ? t(targetAudienceOpt.labelKey) : "general audience";
 
     // Save to database
     try {
@@ -218,7 +220,7 @@ const Quiz = () => {
           {/* Question Card */}
           <Card className="backdrop-blur-sm bg-card/80 border-2 shadow-[var(--shadow-vibrant)] flex flex-col max-h-[calc(100vh-16rem)] overflow-hidden">
             <CardHeader className="flex-shrink-0">
-              <CardTitle className="text-2xl">{currentQuestion.text}</CardTitle>
+              <CardTitle className="text-2xl">{t(currentQuestion.textKey)}</CardTitle>
               {currentQuestion.type === "multi_select" && (
                 <CardDescription>
                   {currentQuestion.maxSelect} {t('quiz.of')} ({answers[currentQuestion.id]?.length || 0})
@@ -240,7 +242,7 @@ const Quiz = () => {
                     >
                       <RadioGroupItem value={option.id} id={option.id} />
                       <Label htmlFor={option.id} className="flex-1 cursor-pointer text-base">
-                        {option.label}
+                        {t(option.labelKey)}
                       </Label>
                     </div>
                   ))}
@@ -256,9 +258,9 @@ const Quiz = () => {
                           checked={isChecked}
                           onCheckedChange={(checked) => handleMultiSelect(option.id, checked as boolean)}
                         />
-                        <Label htmlFor={option.id} className="flex-1 cursor-pointer text-base">
-                          {option.label}
-                        </Label>
+                      <Label htmlFor={option.id} className="flex-1 cursor-pointer text-base">
+                        {t(option.labelKey)}
+                      </Label>
                       </div>
                     );
                   })}

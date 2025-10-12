@@ -9,6 +9,7 @@ import { ContentPlanDialog } from "@/components/ContentPlanDialog";
 import { AIChatCoach } from "@/components/AIChatCoach";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from "react-i18next";
 
 // ---------- Types ----------
 export type ArchetypeId =
@@ -28,140 +29,77 @@ export interface ArchetypeProfile {
   description: string;
   strengths: string[];
   challenges: string[];
-  platforms: string[]; // base platforms before filters
-  ideas: string[]; // example content ideas
+  platforms: string[];
+  ideas: string[];
   monetization: string[];
 }
 
-// ---------- Data ----------
-const PROFILES: Record<ArchetypeId, ArchetypeProfile> = {
-  educator: {
-    id: "educator",
-    title: "Educator / Teacher",
-    emoji: "📚",
-    tagline: "Turn know‑how into clear, actionable lessons.",
-    description:
-      "You thrive at explaining, simplifying, and helping people make real progress. Your content compounds as evergreen value.",
-    strengths: [
-      "Builds trust & authority",
-      "Evergreen, searchable content",
-      "Natural path to courses & coaching",
-    ],
-    challenges: [
-      "Prep time for quality lessons",
-      "Consistency needed for growth",
-    ],
-    platforms: [
-      "YouTube (tutorials)",
-      "TikTok/Reels (quick tips)",
-      "LinkedIn (pro topics)",
-      "Blog/Medium",
-    ],
-    ideas: [
-      "Beginner Python in 7 days",
-      "5‑minute productivity hacks",
-      "No‑code app tutorial series",
-    ],
-    monetization: ["Courses", "Workshops", "Ebooks", "Coaching/Consulting"],
-  },
-  entertainer: {
-    id: "entertainer",
-    title: "Entertainer / Performer",
-    emoji: "🎭",
-    tagline: "Capture attention with humor, story, and energy.",
-    description:
-      "You shine on camera and love making people feel something—laughs, thrills, or surprise. Great fit for trends and rapid iteration.",
-    strengths: ["High viral potential", "Strong parasocial connection", "Trend‑friendly"],
-    challenges: ["High content cadence", "Short shelf life for trends"],
-    platforms: [
-      "TikTok",
-      "Instagram Reels",
-      "YouTube Shorts",
-      "Twitch (live)",
-    ],
-    ideas: [
-      "Daily comedy skits",
-      "Reacting to viral clips",
-      "Gaming challenges with forfeits",
-    ],
-    monetization: ["Brand deals", "Sponsorships", "Merch", "Patreon"],
-  },
-  lifestyle: {
-    id: "lifestyle",
-    title: "Lifestyle & Inspiration",
-    emoji: "🌿",
-    tagline: "Make your habits and taste the brand.",
-    description:
-      "You inspire through routines, aesthetics, and personal stories. Your personality is the product—show, don't tell.",
-    strengths: ["High relatability", "Strong brand partnerships", "Broad topics"],
-    challenges: ["Requires unique personal style", "Consistency around your life"],
-    platforms: [
-      "Instagram",
-      "TikTok",
-      "YouTube (vlogs)",
-      "Pinterest",
-    ],
-    ideas: [
-      "AM/PM routine reels",
-      "Budget travel mini‑vlogs",
-      "Healthy meal prep week",
-    ],
-    monetization: [
-      "Sponsorships",
-      "Affiliate links",
-      "Product collabs",
-      "Digital presets/templates",
-    ],
-  },
-  reviewer: {
-    id: "reviewer",
-    title: "Reviewer / Analyst",
-    emoji: "🔎",
-    tagline: "Help people decide with honest breakdowns.",
-    description:
-      "You love testing, comparing, and forming opinions backed by evidence. Trust is your growth engine.",
-    strengths: ["Searchable & intent‑rich", "Credibility builds fast", "Affiliate friendly"],
-    challenges: ["Access to products/services", "Crowded in big niches"],
-    platforms: [
-      "YouTube (deep dives)",
-      "TikTok/Reels (quick takes)",
-      "Blog/Medium/Substack",
-      "Reddit/Discord",
-    ],
-    ideas: [
-      "Top 5 budget mics",
-      "iPhone vs Galaxy honest review",
-      "Weekly streaming picks",
-    ],
-    monetization: [
-      "Affiliate programs",
-      "Sponsorships",
-      "Brand partnerships",
-      "Amazon Influencer",
-    ],
-  },
-  journey: {
-    id: "journey",
-    title: "Journey / Documenter",
-    emoji: "🛤",
-    tagline: "Bring people along as you learn and build.",
-    description:
-      "You share the real process—wins and stumbles. Authenticity and consistency turn long arcs into loyal communities.",
-    strengths: ["Highly relatable", "Low barrier to start", "Long‑term loyalty"],
-    challenges: ["Slower monetization early", "Results take time"],
-    platforms: [
-      "YouTube (docu/progress)",
-      "TikTok (updates)",
-      "X/Twitter (threads)",
-      "Instagram Stories",
-    ],
-    ideas: [
-      "90‑day transformation log",
-      "Building a startup in public",
-      "Learning guitar: day‑by‑day",
-    ],
-    monetization: ["Patreon", "Affiliate links", "Courses later", "Community"],
-  },
+// Hook to get translated archetype profiles
+const useArchetypeProfiles = (): Record<ArchetypeId, ArchetypeProfile> => {
+  const { t } = useTranslation();
+  
+  return {
+    educator: {
+      id: "educator",
+      title: t('quiz.archetypes.educator.label'),
+      emoji: t('quiz.archetypes.educator.emoji'),
+      tagline: t('quiz.archetypes.educator.tagline'),
+      description: t('quiz.archetypes.educator.fullDescription'),
+      strengths: t('quiz.archetypes.educator.strengths', { returnObjects: true }) as string[],
+      challenges: t('quiz.archetypes.educator.challenges', { returnObjects: true }) as string[],
+      platforms: t('quiz.archetypes.educator.platforms', { returnObjects: true }) as string[],
+      ideas: t('quiz.archetypes.educator.ideas', { returnObjects: true }) as string[],
+      monetization: t('quiz.archetypes.educator.monetization', { returnObjects: true }) as string[],
+    },
+    entertainer: {
+      id: "entertainer",
+      title: t('quiz.archetypes.entertainer.label'),
+      emoji: t('quiz.archetypes.entertainer.emoji'),
+      tagline: t('quiz.archetypes.entertainer.tagline'),
+      description: t('quiz.archetypes.entertainer.fullDescription'),
+      strengths: t('quiz.archetypes.entertainer.strengths', { returnObjects: true }) as string[],
+      challenges: t('quiz.archetypes.entertainer.challenges', { returnObjects: true }) as string[],
+      platforms: t('quiz.archetypes.entertainer.platforms', { returnObjects: true }) as string[],
+      ideas: t('quiz.archetypes.entertainer.ideas', { returnObjects: true }) as string[],
+      monetization: t('quiz.archetypes.entertainer.monetization', { returnObjects: true }) as string[],
+    },
+    lifestyle: {
+      id: "lifestyle",
+      title: t('quiz.archetypes.lifestyle.label'),
+      emoji: t('quiz.archetypes.lifestyle.emoji'),
+      tagline: t('quiz.archetypes.lifestyle.tagline'),
+      description: t('quiz.archetypes.lifestyle.fullDescription'),
+      strengths: t('quiz.archetypes.lifestyle.strengths', { returnObjects: true }) as string[],
+      challenges: t('quiz.archetypes.lifestyle.challenges', { returnObjects: true }) as string[],
+      platforms: t('quiz.archetypes.lifestyle.platforms', { returnObjects: true }) as string[],
+      ideas: t('quiz.archetypes.lifestyle.ideas', { returnObjects: true }) as string[],
+      monetization: t('quiz.archetypes.lifestyle.monetization', { returnObjects: true }) as string[],
+    },
+    reviewer: {
+      id: "reviewer",
+      title: t('quiz.archetypes.reviewer.label'),
+      emoji: t('quiz.archetypes.reviewer.emoji'),
+      tagline: t('quiz.archetypes.reviewer.tagline'),
+      description: t('quiz.archetypes.reviewer.fullDescription'),
+      strengths: t('quiz.archetypes.reviewer.strengths', { returnObjects: true }) as string[],
+      challenges: t('quiz.archetypes.reviewer.challenges', { returnObjects: true }) as string[],
+      platforms: t('quiz.archetypes.reviewer.platforms', { returnObjects: true }) as string[],
+      ideas: t('quiz.archetypes.reviewer.ideas', { returnObjects: true }) as string[],
+      monetization: t('quiz.archetypes.reviewer.monetization', { returnObjects: true }) as string[],
+    },
+    journey: {
+      id: "journey",
+      title: t('quiz.archetypes.journey.label'),
+      emoji: t('quiz.archetypes.journey.emoji'),
+      tagline: t('quiz.archetypes.journey.tagline'),
+      description: t('quiz.archetypes.journey.fullDescription'),
+      strengths: t('quiz.archetypes.journey.strengths', { returnObjects: true }) as string[],
+      challenges: t('quiz.archetypes.journey.challenges', { returnObjects: true }) as string[],
+      platforms: t('quiz.archetypes.journey.platforms', { returnObjects: true }) as string[],
+      ideas: t('quiz.archetypes.journey.ideas', { returnObjects: true }) as string[],
+      monetization: t('quiz.archetypes.journey.monetization', { returnObjects: true }) as string[],
+    },
+  };
 };
 
 // ---------- Helpers ----------
@@ -196,7 +134,6 @@ function pickPlatforms(
 ): string[] {
   const t = time ? TIME_FILTERS[time] : undefined;
   const merged = new Set<string>([...base, ...(extras || []), ...(t?.prefer || [])]);
-  // Light de‑duplication by label start
   const unique = Array.from(merged);
   return unique.slice(0, 6);
 }
@@ -221,10 +158,8 @@ const PLATFORM_EMOJIS: Record<string, string> = {
 };
 
 const getPlatformWithEmoji = (platform: string): string => {
-  // Check if platform already has emoji
   if (/[\u{1F300}-\u{1F9FF}]/u.test(platform)) return platform;
   
-  // Find matching emoji
   for (const [key, emoji] of Object.entries(PLATFORM_EMOJIS)) {
     if (platform.includes(key)) {
       return `${emoji} ${platform}`;
@@ -270,7 +205,7 @@ const Divider: React.FC = () => (
 interface ArchetypeCardProps {
   profile: ArchetypeProfile;
   time?: TimeBucket;
-  extras?: string[]; // e.g., from gear or audience bias
+  extras?: string[];
   highlight?: boolean;
   quizResponseId?: string;
   selectedTopics?: string[];
@@ -286,6 +221,7 @@ const ArchetypeCard: React.FC<ArchetypeCardProps> = ({
   selectedTopics,
   targetAudience
 }) => {
+  const { t } = useTranslation();
   const recPlatforms = pickPlatforms(profile.platforms, time, extras);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [planDialogOpen, setPlanDialogOpen] = useState(false);
@@ -336,7 +272,6 @@ const ArchetypeCard: React.FC<ArchetypeCardProps> = ({
     setPlanDialogOpen(true);
     
     try {
-      // Use generated ideas if available, otherwise use example ideas
       const selectedIdeas = ideas.length > 0 ? ideas : profile.ideas.map(idea => ({ title: idea }));
 
       const { data, error } = await supabase.functions.invoke('generate-content-plan', {
@@ -387,7 +322,9 @@ const ArchetypeCard: React.FC<ArchetypeCardProps> = ({
               <p className="mt-1 text-sm text-neutral-600">{profile.tagline}</p>
             </div>
             {highlight && (
-              <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700 border border-emerald-200">Top Match</span>
+              <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700 border border-emerald-200">
+                {t('quiz.results.topMatch')}
+              </span>
             )}
           </div>
 
@@ -397,11 +334,15 @@ const ArchetypeCard: React.FC<ArchetypeCardProps> = ({
 
           <div className="mt-5 grid grid-cols-1 gap-6 md:grid-cols-2">
             <div>
-              <SectionTitle icon={<img src={logo} alt="" className="h-4 w-4" />}>Strengths</SectionTitle>
+              <SectionTitle icon={<img src={logo} alt="" className="h-4 w-4" />}>
+                {t('quiz.results.strengths')}
+              </SectionTitle>
               <FeatureList items={profile.strengths} />
             </div>
             <div>
-              <SectionTitle icon={<Zap className="h-4 w-4" />}>Challenges</SectionTitle>
+              <SectionTitle icon={<Zap className="h-4 w-4" />}>
+                {t('quiz.results.challenges')}
+              </SectionTitle>
               <FeatureList items={profile.challenges} />
             </div>
           </div>
@@ -410,13 +351,17 @@ const ArchetypeCard: React.FC<ArchetypeCardProps> = ({
 
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <div>
-              <SectionTitle icon={<VideoIcon className="h-4 w-4" />}>Best Platforms</SectionTitle>
+              <SectionTitle icon={<VideoIcon className="h-4 w-4" />}>
+                {t('quiz.results.bestPlatforms')}
+              </SectionTitle>
               <div className="mt-2 flex flex-wrap gap-2">
                 {recPlatforms.map((p) => badge(getPlatformWithEmoji(p), p))}
               </div>
             </div>
             <div>
-              <SectionTitle icon={<BookOpen className="h-4 w-4" />}>Example Content Ideas</SectionTitle>
+              <SectionTitle icon={<BookOpen className="h-4 w-4" />}>
+                {t('quiz.results.exampleIdeas')}
+              </SectionTitle>
               <ul className="mt-2 list-disc pl-5 text-sm leading-6">
                 {profile.ideas.map((idea, idx) => (
                   <li key={idx}>{idea}</li>
@@ -429,7 +374,9 @@ const ArchetypeCard: React.FC<ArchetypeCardProps> = ({
 
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <div>
-              <SectionTitle icon={<TrendingUp className="h-4 w-4" />}>Monetization Paths</SectionTitle>
+              <SectionTitle icon={<TrendingUp className="h-4 w-4" />}>
+                {t('quiz.results.monetization')}
+              </SectionTitle>
               <div className="mt-2 flex flex-wrap gap-2">
                 {profile.monetization.map((m, i) => badge(m, i))}
               </div>
@@ -442,7 +389,7 @@ const ArchetypeCard: React.FC<ArchetypeCardProps> = ({
                 disabled={loading}
               >
                 <img src={logo} alt="" className="h-4 w-4" />
-                Get 3 Starter Prompts
+                {t('quiz.results.getStarterPrompts')}
               </Button>
               <Button 
                 variant="outline" 
@@ -451,7 +398,7 @@ const ArchetypeCard: React.FC<ArchetypeCardProps> = ({
                 disabled={planLoading}
               >
                 <Calendar className="h-4 w-4" />
-                Make 7‑Day Plan
+                {t('quiz.results.make7DayPlan')}
               </Button>
             </div>
           </div>
@@ -482,8 +429,8 @@ const ArchetypeCard: React.FC<ArchetypeCardProps> = ({
 interface ResultsProps {
   primary?: ArchetypeId;
   secondary?: ArchetypeId;
-  time?: TimeBucket; // from quiz Q6
-  extras?: string[]; // from gear or audience bias
+  time?: TimeBucket;
+  extras?: string[];
   quizResponseId?: string;
   selectedTopics?: string[];
   targetAudience?: string;
@@ -508,11 +455,12 @@ export default function ArchetypeResults(
     targetAudience
   }: ResultsProps
 ) {
+  const { t } = useTranslation();
+  const PROFILES = useArchetypeProfiles();
   const primaryProfile = PROFILES[primary];
   const secondaryProfile = PROFILES[secondary];
   const [chatOpen, setChatOpen] = useState(false);
 
-  // Build a display list with primary first, then secondary, then others (collapsed)
   const rest = orderedIds.filter((id) => id !== primary && id !== secondary);
 
   return (
@@ -520,9 +468,9 @@ export default function ArchetypeResults(
       <div className="mx-auto max-w-6xl">
         <header className="mb-8 flex flex-col items-start gap-3 md:flex-row md:items-center md:justify-between" data-testid="archetype-results-v2">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight">Your Creator Path</h1>
+            <h1 className="text-2xl font-bold tracking-tight">{t('quiz.results.yourCreatorPath')}</h1>
             <p className="mt-1 text-neutral-600">
-              Based on your quiz, here's your primary archetype and tailored platform recommendations.
+              {t('quiz.results.basedOnQuiz')}
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -533,11 +481,11 @@ export default function ArchetypeResults(
               className="gap-2"
             >
               <MessageCircle className="h-4 w-4" />
-              AI Coach
+              {t('quiz.results.aiCoach')}
             </Button>
             <div className="flex items-center gap-2 rounded-2xl border bg-white/70 px-3 py-1 text-sm">
               <Clock className="h-4 w-4" />
-              <span>Weekly time: </span>
+              <span>{t('quiz.results.weeklyTime')} </span>
               <strong className="ml-1 capitalize">{time.replace(/_/g, " ")}</strong>
             </div>
           </div>
@@ -557,7 +505,7 @@ export default function ArchetypeResults(
 
         <footer className="mx-auto mt-10 max-w-3xl text-center text-sm text-neutral-500">
           <p>
-            Tip: Use the "Get 3 Starter Prompts" button to generate personalized ideas, create a 7-day plan, or chat with the AI Coach for help anytime.
+            {t('quiz.results.tip')}
           </p>
         </footer>
       </div>

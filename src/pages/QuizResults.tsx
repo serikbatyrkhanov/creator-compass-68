@@ -6,6 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft } from "lucide-react";
 import ArchetypeResults from "@/components/ArchetypeResults";
 import type { ArchetypeId, TimeBucket } from "@/components/ArchetypeResults";
+import { useTranslation } from "react-i18next";
 
 interface QuizResult {
   id: string;
@@ -19,6 +20,7 @@ interface QuizResult {
 }
 
 const QuizResults = () => {
+  const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -43,11 +45,11 @@ const QuizResults = () => {
         setResult(data);
       } catch (error) {
         console.error("Error fetching results:", error);
-        toast({
-          title: "Error loading results",
-          description: "Unable to load your quiz results",
-          variant: "destructive"
-        });
+      toast({
+        title: t('quiz.results.errorLoadingResults'),
+        description: t('quiz.results.unableToLoad'),
+        variant: "destructive"
+      });
         navigate("/quiz");
       } finally {
         setLoading(false);
@@ -62,7 +64,7 @@ const QuizResults = () => {
       <div className="min-h-screen flex items-center justify-center bg-[var(--gradient-hero)]">
         <div className="text-center">
           <div className="animate-pulse text-6xl mb-4">✨</div>
-          <p className="text-xl">Analyzing your creator path...</p>
+          <p className="text-xl text-muted-foreground">{t('quiz.results.analyzingPath')}</p>
         </div>
       </div>
     );
@@ -85,7 +87,7 @@ const QuizResults = () => {
           className="mb-4 gap-2"
         >
           <ArrowLeft className="w-4 h-4" />
-          Back to Dashboard
+          {t('quiz.results.backToDashboard')}
         </Button>
 
         <ArchetypeResults
