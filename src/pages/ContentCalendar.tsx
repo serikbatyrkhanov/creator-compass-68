@@ -988,12 +988,6 @@ const ContentCalendar = () => {
                             </div>
                           )}
 
-                          {/* Original AI Task */}
-                          <div className="space-y-1">
-                            <Label className="text-xs font-medium text-muted-foreground">AI Suggestion</Label>
-                            <p className="text-xs text-muted-foreground">{day.task}</p>
-                          </div>
-
                           <div className="pt-2 border-t">
                             <p className="text-xs text-muted-foreground italic">💡 {day.tip}</p>
                           </div>

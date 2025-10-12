@@ -38,7 +38,15 @@ serve(async (req) => {
 The plan should be achievable within ${timeText} total per week.
 Available gear: ${gearText}
 Topics: ${topicsText}
-IMPORTANT: Only create content for these posting days: ${postingDaysText}. For non-posting days, assign planning/research tasks.`;
+IMPORTANT: Only create content for these posting days: ${postingDaysText}. For non-posting days, assign planning/research tasks.
+
+For EACH day provide:
+1. task: The main workflow/process description
+2. postTitle: A catchy, specific title for the actual post content
+3. postDescription: A brief description of what the content will cover (2-3 sentences)
+4. timeEstimate: Time needed
+5. platform: Publishing platform (only for posting days)
+6. tip: Helpful advice for execution`;
 
     const userPrompt = `Create a ${planType} content plan based on these ideas:
 ${ideasText}
@@ -46,10 +54,12 @@ ${ideasText}
 The user posts content on: ${postingDaysText}
 
 For each day (${planDays} days total), provide:
-1. Main task for the day (specific action - actual content creation ONLY on posting days: ${postingDaysText})
-2. Time estimate (in hours)
-3. Platform to post on (ONLY for posting days: ${postingDaysText})
-4. Key tip or note
+1. task: Main task description (specific action - actual content creation ONLY on posting days: ${postingDaysText})
+2. postTitle: An engaging, clickable title for the post content
+3. postDescription: What the content will be about (2-3 sentences)
+4. timeEstimate: Time estimate (in hours)
+5. platform: Platform to post on (ONLY for posting days: ${postingDaysText})
+6. tip: Key tip or note
 
 The total time across all ${planDays} days should fit within ${timeText} per week average.
 Non-posting days should have planning, research, or rest activities.
@@ -84,11 +94,13 @@ Posting days should have actual content creation and publishing tasks.`;
                       day: { type: "string" },
                       dayNumber: { type: "number" },
                       task: { type: "string" },
+                      postTitle: { type: "string" },
+                      postDescription: { type: "string" },
                       timeEstimate: { type: "string" },
                       platform: { type: "string" },
                       tip: { type: "string" }
                     },
-                    required: ["day", "dayNumber", "task", "timeEstimate", "tip"],
+                    required: ["day", "dayNumber", "task", "postTitle", "postDescription", "timeEstimate", "tip"],
                     additionalProperties: false
                   }
                 }
@@ -250,6 +262,8 @@ Posting days should have actual content creation and publishing tasks.`;
             user_id: userId,
             day_number: day.dayNumber,
             task_title: day.task,
+            post_title: day.postTitle || day.task,
+            post_description: day.postDescription || '',
             completed: false
           }));
         

@@ -118,6 +118,8 @@ serve(async (req) => {
         user_id: userId,
         day_number: item.dayNumber,
         task_title: item.task,
+        post_title: item.task,
+        post_description: `Create engaging content about: ${item.task}`,
         completed: false,
         notes: '',
         script_completed: false,
