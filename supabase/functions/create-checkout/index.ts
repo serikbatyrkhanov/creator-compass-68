@@ -25,18 +25,18 @@ serve(async (req) => {
       contentType: req.headers.get("content-type")
     });
 
-    // Get email and name from request body for non-authenticated signups
+    // Get email and user details from request body for non-authenticated signups
     const body = await req.json();
     logStep("Request body received", { body });
     
-    const { email, name } = body;
+    const { email, firstName, lastName, phone } = body;
     
     if (!email) {
       logStep("ERROR: Email is missing from request");
       throw new Error("Email is required");
     }
 
-    logStep("Processing checkout for email", { email });
+    logStep("Processing checkout for email", { email, firstName, lastName, hasPhone: !!phone });
 
     const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
     if (!stripeKey) {
@@ -57,7 +57,15 @@ serve(async (req) => {
       customer = customers.data[0];
       logStep("Existing customer found", { customerId: customer.id });
     } else {
-      customer = await stripe.customers.create({ email });
+      customer = await stripe.customers.create({ 
+        email,
+        name: firstName && lastName ? `${firstName} ${lastName}` : undefined,
+        phone: phone || undefined,
+        metadata: {
+          firstName: firstName || '',
+          lastName: lastName || ''
+        }
+      });
       logStep("New customer created", { customerId: customer.id });
     }
 
@@ -77,7 +85,11 @@ serve(async (req) => {
       subscription_data: {
         trial_period_days: 7,
       },
-      metadata: name ? { name } : {},
+      metadata: {
+        firstName: firstName || '',
+        lastName: lastName || '',
+        phone: phone || ''
+      },
       success_url: `${origin}/checkout-success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/auth`,
     });

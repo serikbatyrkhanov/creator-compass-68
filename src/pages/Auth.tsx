@@ -8,12 +8,14 @@ import { Link, useNavigate } from "react-router-dom";
 import logo from "@/assets/climbley-logo.png";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from "react-i18next";
 
 const Auth = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showResetForm, setShowResetForm] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -42,15 +44,28 @@ const Auth = () => {
     const formData = new FormData(e.currentTarget);
     const email = formData.get("signup-email") as string;
     const password = formData.get("signup-password") as string;
-    const name = formData.get("name") as string;
+    const firstName = formData.get("firstName") as string;
+    const lastName = formData.get("lastName") as string;
+    const phone = formData.get("phone") as string;
 
     try {
       // Store signup credentials for account creation after checkout (using localStorage for cross-tab access)
-      localStorage.setItem('pendingSignup', JSON.stringify({ email, password, name }));
+      localStorage.setItem('pendingSignup', JSON.stringify({ 
+        email, 
+        password, 
+        firstName, 
+        lastName, 
+        phone 
+      }));
 
       // Create checkout session
       const response = await supabase.functions.invoke('create-checkout', {
-        body: { email, name }
+        body: { 
+          email, 
+          firstName, 
+          lastName, 
+          phone 
+        }
       });
 
       if (response.error) {
@@ -280,32 +295,57 @@ const Auth = () => {
               <TabsContent value="signup">
                 <form onSubmit={handleSignUp} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="name">Name</Label>
+                    <Label htmlFor="firstName">{t('auth.firstName')}</Label>
                     <Input
-                      id="name"
-                      name="name"
+                      id="firstName"
+                      name="firstName"
                       type="text"
-                      placeholder="Your name"
+                      placeholder={t('auth.firstName')}
                       required
+                      maxLength={50}
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="signup-email">Email</Label>
+                    <Label htmlFor="lastName">{t('auth.lastName')}</Label>
+                    <Input
+                      id="lastName"
+                      name="lastName"
+                      type="text"
+                      placeholder={t('auth.lastName')}
+                      required
+                      maxLength={50}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="phone">{t('auth.phone')}</Label>
+                    <Input
+                      id="phone"
+                      name="phone"
+                      type="tel"
+                      placeholder={t('auth.phonePattern')}
+                      pattern="[+]?[0-9\s\-()]+"
+                      maxLength={20}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="signup-email">{t('auth.email')}</Label>
                     <Input
                       id="signup-email"
                       name="signup-email"
                       type="email"
                       placeholder="you@example.com"
                       required
+                      maxLength={255}
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="signup-password">Password</Label>
+                    <Label htmlFor="signup-password">{t('auth.password')}</Label>
                     <Input
                       id="signup-password"
                       name="signup-password"
                       type="password"
                       required
+                      minLength={6}
                     />
                   </div>
                   <Button type="submit" className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90 transition-opacity shadow-[var(--shadow-glow)]" disabled={isLoading}>

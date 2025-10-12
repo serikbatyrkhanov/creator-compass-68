@@ -13,8 +13,12 @@ const CheckoutSuccess = () => {
   const [searchParams] = useSearchParams();
   const [status, setStatus] = useState<"processing" | "success" | "error" | "needs-info">("processing");
   const [sessionEmail, setSessionEmail] = useState<string>("");
-  const [sessionName, setSessionName] = useState<string>("");
-  const [formData, setFormData] = useState({ name: "", password: "" });
+  const [formData, setFormData] = useState({ 
+    firstName: "", 
+    lastName: "", 
+    phone: "", 
+    password: "" 
+  });
 
   useEffect(() => {
     const createAccountAndSignIn = async () => {
@@ -26,10 +30,10 @@ const CheckoutSuccess = () => {
         
         if (pendingSignup) {
           // Path 1: localStorage available
-          const { email, password, name } = JSON.parse(pendingSignup);
+          const { email, password, firstName, lastName, phone } = JSON.parse(pendingSignup);
           console.log("Retrieved credentials from localStorage for email:", email);
 
-          await completeSignup(email, password, name);
+          await completeSignup(email, password, firstName, lastName, phone);
         } else {
           // Path 2: Fallback to session_id from URL
           console.log("No localStorage found, attempting session_id fallback");
@@ -56,11 +60,12 @@ const CheckoutSuccess = () => {
             throw new Error("No email found in checkout session. Please contact support.");
           }
 
-          // Show form to collect name and password
+          // Show form to collect required information
           setSessionEmail(sessionData.email);
-          setSessionName(sessionData.metadata?.name || "");
           setFormData({ 
-            name: sessionData.metadata?.name || "", 
+            firstName: sessionData.metadata?.firstName || "", 
+            lastName: sessionData.metadata?.lastName || "",
+            phone: sessionData.metadata?.phone || "",
             password: "" 
           });
           setStatus("needs-info");
@@ -87,7 +92,7 @@ const CheckoutSuccess = () => {
     createAccountAndSignIn();
   }, [navigate, toast, searchParams]);
 
-  const completeSignup = async (email: string, password: string, name: string) => {
+  const completeSignup = async (email: string, password: string, firstName: string, lastName: string, phone?: string) => {
     console.log("Creating Supabase account...");
     const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
       email,
@@ -95,8 +100,9 @@ const CheckoutSuccess = () => {
       options: {
         emailRedirectTo: `${window.location.origin}/dashboard`,
         data: { 
-          name,
-          full_name: name 
+          first_name: firstName,
+          last_name: lastName,
+          phone: phone || null
         },
       },
     });
@@ -142,10 +148,10 @@ const CheckoutSuccess = () => {
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.name || !formData.password) {
+    if (!formData.firstName || !formData.lastName || !formData.password) {
       toast({
         title: "Missing Information",
-        description: "Please provide both name and password.",
+        description: "Please fill in all required fields.",
         variant: "destructive",
       });
       return;
@@ -163,7 +169,7 @@ const CheckoutSuccess = () => {
     setStatus("processing");
     
     try {
-      await completeSignup(sessionEmail, formData.password, formData.name);
+      await completeSignup(sessionEmail, formData.password, formData.firstName, formData.lastName, formData.phone);
     } catch (error: any) {
       console.error("Error in form submit:", error);
       setStatus("error");
@@ -218,14 +224,41 @@ const CheckoutSuccess = () => {
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="name">Name</Label>
+                <Label htmlFor="firstName">First Name</Label>
                 <Input 
-                  id="name" 
+                  id="firstName" 
                   type="text" 
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="Your name"
+                  value={formData.firstName}
+                  onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
+                  placeholder="Your first name"
                   required
+                  maxLength={50}
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="lastName">Last Name</Label>
+                <Input 
+                  id="lastName" 
+                  type="text" 
+                  value={formData.lastName}
+                  onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+                  placeholder="Your last name"
+                  required
+                  maxLength={50}
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="phone">Phone Number (Optional)</Label>
+                <Input 
+                  id="phone" 
+                  type="tel" 
+                  value={formData.phone}
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  placeholder="+1 (555) 123-4567"
+                  pattern="[+]?[0-9\s\-()]+"
+                  maxLength={20}
                 />
               </div>
               
