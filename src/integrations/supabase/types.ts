@@ -255,10 +255,10 @@ export type Database = {
           avatar_url: string | null
           created_at: string
           email: string
-          first_name: string
+          first_name: string | null
           id: string
           instagram_url: string | null
-          last_name: string
+          last_name: string | null
           last_sms_sent_date: string | null
           phone: string | null
           sms_consent: boolean | null
@@ -272,10 +272,10 @@ export type Database = {
           avatar_url?: string | null
           created_at?: string
           email: string
-          first_name: string
+          first_name?: string | null
           id: string
           instagram_url?: string | null
-          last_name: string
+          last_name?: string | null
           last_sms_sent_date?: string | null
           phone?: string | null
           sms_consent?: boolean | null
@@ -289,10 +289,10 @@ export type Database = {
           avatar_url?: string | null
           created_at?: string
           email?: string
-          first_name?: string
+          first_name?: string | null
           id?: string
           instagram_url?: string | null
-          last_name?: string
+          last_name?: string | null
           last_sms_sent_date?: string | null
           phone?: string | null
           sms_consent?: boolean | null
