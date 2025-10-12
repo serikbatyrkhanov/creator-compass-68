@@ -31,10 +31,11 @@ serve(async (req) => {
 Generate exactly 7 unique, engaging, and trending content titles based on the user's topic or niche.
 
 Guidelines:
+- Research and base titles on current Google search trends related to the topic
 - Make titles attention-grabbing and click-worthy
 - Use trending formats like "How to...", "X Ways to...", "Why...", "The Ultimate Guide to..."
 - Mix different content types: educational, entertaining, inspirational, controversial
-- Consider current trends and what performs well on social media
+- Focus on what people are actively searching for right now on Google
 - Make them specific and actionable
 - Vary the length and style
 

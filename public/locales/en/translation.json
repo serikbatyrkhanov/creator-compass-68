@@ -305,11 +305,11 @@
   },
   "trendingTitles": {
     "title": "Trending Title Generator",
-    "description": "Generate 50 viral, trending content titles using AI",
+    "description": "Generate 7 viral, trending content titles using AI",
     "topicLabel": "Your Topic or Niche",
     "topicPlaceholder": "e.g., 'Fitness tips for busy professionals' or 'Tech reviews and gadgets'",
     "generateButton": "Generate Trending Titles",
-    "generating": "Generating 50 Titles...",
+    "generating": "Generating 7 Titles...",
     "generatedTitles": "Generated Titles",
     "titles": "titles",
     "copyAll": "Copy All",
