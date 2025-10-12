@@ -241,7 +241,7 @@ export const TrendingTitlesDialog = ({ open, onOpenChange }: TrendingTitlesDialo
                 </div>
               </div>
 
-              <ScrollArea className="flex-1 rounded-lg border bg-muted/30 p-4 max-h-[400px]">
+              <ScrollArea className="h-[400px] rounded-lg border bg-muted/30 p-4">
                 <div className="space-y-2">
                   {titles.map((title, index) => (
                     <div
