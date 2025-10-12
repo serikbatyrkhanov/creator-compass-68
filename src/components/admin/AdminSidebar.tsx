@@ -1,11 +1,12 @@
 import { NavLink } from "react-router-dom";
-import { LayoutDashboard, Users, FileText, Image, MessageSquare, Newspaper } from "lucide-react";
+import { LayoutDashboard, Users, FileText, Image, MessageSquare, Newspaper, Link2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
   { title: "Dashboard", icon: LayoutDashboard, path: "/admin/dashboard" },
   { title: "Users", icon: Users, path: "/admin/users" },
   { title: "Blog Posts", icon: Newspaper, path: "/admin/blog" },
+  { title: "Referrals", icon: Link2, path: "/admin/referrals" },
   { title: "Slider Images", icon: Image, path: "/admin/images" },
   { title: "Content", icon: FileText, path: "/admin/content" },
   { title: "SMS Test", icon: MessageSquare, path: "/admin/sms-test" },

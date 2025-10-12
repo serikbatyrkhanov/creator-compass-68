@@ -437,6 +437,94 @@ export type Database = {
         }
         Relationships: []
       }
+      referral_links: {
+        Row: {
+          code: string
+          created_at: string
+          created_by: string | null
+          current_uses: number
+          description: string
+          expires_at: string | null
+          id: string
+          is_active: boolean
+          max_uses: number | null
+          metadata: Json | null
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          created_by?: string | null
+          current_uses?: number
+          description: string
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          max_uses?: number | null
+          metadata?: Json | null
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          created_by?: string | null
+          current_uses?: number
+          description?: string
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          max_uses?: number | null
+          metadata?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "referral_links_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      referral_signups: {
+        Row: {
+          conversion_date: string | null
+          converted_to_paid: boolean
+          id: string
+          ip_address: string | null
+          referral_link_id: string
+          signup_date: string
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          conversion_date?: string | null
+          converted_to_paid?: boolean
+          id?: string
+          ip_address?: string | null
+          referral_link_id: string
+          signup_date?: string
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          conversion_date?: string | null
+          converted_to_paid?: boolean
+          id?: string
+          ip_address?: string | null
+          referral_link_id?: string
+          signup_date?: string
+          user_agent?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "referral_signups_referral_link_id_fkey"
+            columns: ["referral_link_id"]
+            isOneToOne: false
+            referencedRelation: "referral_links"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       slider_images: {
         Row: {
           alt_text: string | null

@@ -128,6 +128,27 @@ const CheckoutSuccess = () => {
 
     console.log("Signed in successfully");
 
+    // Track referral signup if referral code exists
+    const referralCode = localStorage.getItem('referralCode');
+    if (referralCode) {
+      try {
+        console.log("Tracking referral signup with code:", referralCode);
+        await supabase.functions.invoke('track-referral-signup', {
+          body: {
+            referralCode,
+            ipAddress: null,
+            userAgent: navigator.userAgent
+          }
+        });
+        localStorage.removeItem('referralCode');
+        localStorage.removeItem('referralTimestamp');
+        console.log("Referral tracked successfully");
+      } catch (refError) {
+        console.error('Failed to track referral:', refError);
+        // Don't fail signup if referral tracking fails
+      }
+    }
+
     // Clear stored credentials
     localStorage.removeItem('pendingSignup');
     console.log("Cleared localStorage");

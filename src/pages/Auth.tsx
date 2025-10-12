@@ -17,8 +17,16 @@ const Auth = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  // Redirect if already authenticated
+  // Redirect if already authenticated and capture referral code
   useEffect(() => {
+    // Capture referral code from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const refCode = urlParams.get('ref');
+    if (refCode) {
+      localStorage.setItem('referralCode', refCode);
+      localStorage.setItem('referralTimestamp', new Date().toISOString());
+    }
+
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {

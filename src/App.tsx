@@ -28,6 +28,7 @@ import AdminUsers from "./pages/admin/AdminUsers";
 import AdminImages from "./pages/admin/AdminImages";
 import AdminSmsTest from "./pages/admin/AdminSmsTest";
 import AdminContent from "./pages/admin/AdminContent";
+import AdminReferrals from "./pages/admin/AdminReferrals";
 import { Navigate } from "react-router-dom";
 
 const queryClient = new QueryClient();
@@ -66,6 +67,7 @@ const App = () => (
               <Route path="blog/new" element={<AdminBlogEditor />} />
               <Route path="blog/edit/:id" element={<AdminBlogEditor />} />
               <Route path="users" element={<AdminUsers />} />
+              <Route path="referrals" element={<AdminReferrals />} />
               <Route path="images" element={<AdminImages />} />
               <Route path="sms-test" element={<AdminSmsTest />} />
               <Route path="content" element={<AdminContent />} />
