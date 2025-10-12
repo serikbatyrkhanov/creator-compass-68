@@ -417,14 +417,20 @@ const Progress = () => {
                         </p>
                         <p className="text-sm text-muted-foreground">Channel</p>
                       </div>
-                      <Button 
-                        variant="outline" 
-                        className="w-full"
-                        onClick={() => window.open(socialProfiles.youtubeUrl!, '_blank')}
+                      <a 
+                        href={socialProfiles.youtubeUrl!} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="block w-full"
                       >
-                        <ExternalLink className="h-4 w-4 mr-2" />
-                        View on YouTube
-                      </Button>
+                        <Button 
+                          variant="outline" 
+                          className="w-full"
+                        >
+                          <ExternalLink className="h-4 w-4 mr-2" />
+                          View on YouTube
+                        </Button>
+                      </a>
                     </CardContent>
                   </Card>
                 )}
@@ -445,14 +451,20 @@ const Progress = () => {
                         </p>
                         <p className="text-sm text-muted-foreground">Profile</p>
                       </div>
-                      <Button 
-                        variant="outline" 
-                        className="w-full"
-                        onClick={() => window.open(socialProfiles.instagramUrl!, '_blank')}
+                      <a 
+                        href={socialProfiles.instagramUrl!} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="block w-full"
                       >
-                        <ExternalLink className="h-4 w-4 mr-2" />
-                        View on Instagram
-                      </Button>
+                        <Button 
+                          variant="outline" 
+                          className="w-full"
+                        >
+                          <ExternalLink className="h-4 w-4 mr-2" />
+                          View on Instagram
+                        </Button>
+                      </a>
                     </CardContent>
                   </Card>
                 )}
@@ -473,14 +485,20 @@ const Progress = () => {
                         </p>
                         <p className="text-sm text-muted-foreground">Profile</p>
                       </div>
-                      <Button 
-                        variant="outline" 
-                        className="w-full"
-                        onClick={() => window.open(socialProfiles.tiktokUrl!, '_blank')}
+                      <a 
+                        href={socialProfiles.tiktokUrl!} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="block w-full"
                       >
-                        <ExternalLink className="h-4 w-4 mr-2" />
-                        View on TikTok
-                      </Button>
+                        <Button 
+                          variant="outline" 
+                          className="w-full"
+                        >
+                          <ExternalLink className="h-4 w-4 mr-2" />
+                          View on TikTok
+                        </Button>
+                      </a>
                     </CardContent>
                   </Card>
                 )}
