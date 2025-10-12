@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { TrendingUp, ArrowLeft, Target, Calendar, Lightbulb, MessageCircle, CheckCircle2, Award, Users, Video, Heart, ExternalLink } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
+import { normalizeExternalUrl, extractUsername } from "@/lib/socialMediaUtils";
 
 interface ProgressStats {
   totalQuizzes: number;
@@ -133,38 +134,6 @@ const Progress = () => {
     }
   };
 
-  const extractUsername = (url: string | null, platform: 'youtube' | 'instagram' | 'tiktok'): string => {
-    if (!url) return 'View Profile';
-    
-    try {
-      const urlObj = new URL(url);
-      const pathname = urlObj.pathname;
-      
-      if (platform === 'youtube') {
-        // Handle @username or /channel/ID or /c/customname
-        if (pathname.includes('/@')) {
-          return pathname.split('/@')[1].split('/')[0];
-        } else if (pathname.includes('/channel/')) {
-          return pathname.split('/channel/')[1].split('/')[0];
-        } else if (pathname.includes('/c/')) {
-          return pathname.split('/c/')[1].split('/')[0];
-        }
-      } else if (platform === 'instagram') {
-        // Handle instagram.com/username
-        const parts = pathname.split('/').filter(Boolean);
-        return parts[0] || 'View Profile';
-      } else if (platform === 'tiktok') {
-        // Handle tiktok.com/@username
-        if (pathname.includes('/@')) {
-          return pathname.split('/@')[1].split('/')[0];
-        }
-      }
-    } catch (e) {
-      console.error('Error parsing URL:', e);
-    }
-    
-    return 'View Profile';
-  };
 
   const completionRate = stats.totalTasks > 0 
     ? Math.round((stats.completedTasks / stats.totalTasks) * 100) 
@@ -418,7 +387,7 @@ const Progress = () => {
                         <p className="text-sm text-muted-foreground">Channel</p>
                       </div>
                       <a 
-                        href={socialProfiles.youtubeUrl!} 
+                        href={normalizeExternalUrl(socialProfiles.youtubeUrl, 'youtube')} 
                         target="_blank" 
                         rel="noopener noreferrer"
                         className="block w-full"
@@ -452,7 +421,7 @@ const Progress = () => {
                         <p className="text-sm text-muted-foreground">Profile</p>
                       </div>
                       <a 
-                        href={socialProfiles.instagramUrl!} 
+                        href={normalizeExternalUrl(socialProfiles.instagramUrl, 'instagram')} 
                         target="_blank" 
                         rel="noopener noreferrer"
                         className="block w-full"
@@ -486,7 +455,7 @@ const Progress = () => {
                         <p className="text-sm text-muted-foreground">Profile</p>
                       </div>
                       <a 
-                        href={socialProfiles.tiktokUrl!} 
+                        href={normalizeExternalUrl(socialProfiles.tiktokUrl, 'tiktok')} 
                         target="_blank" 
                         rel="noopener noreferrer"
                         className="block w-full"

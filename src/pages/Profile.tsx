@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "sonner";
 import { ArrowLeft, Upload, Trash2, Youtube, Music } from "lucide-react";
 import { Instagram } from "lucide-react";
+import { normalizeExternalUrl } from "@/lib/socialMediaUtils";
 
 const timezones = [
   "America/New_York",
@@ -370,12 +371,19 @@ export default function Profile() {
                   type="url"
                   value={youtubeUrl}
                   onChange={(e) => setYoutubeUrl(e.target.value)}
-                  placeholder="https://youtube.com/@channel"
+                  onBlur={(e) => {
+                    const normalized = normalizeExternalUrl(e.target.value, 'youtube');
+                    if (normalized && normalized !== e.target.value) {
+                      setYoutubeUrl(normalized);
+                    }
+                  }}
+                  placeholder="https://youtube.com/@channel or @handle"
                 />
-                <Button onClick={() => handleUpdateProfile("youtube_url", youtubeUrl)}>
+                <Button onClick={() => handleUpdateProfile("youtube_url", normalizeExternalUrl(youtubeUrl, 'youtube'))}>
                   Update
                 </Button>
               </div>
+              <p className="text-xs text-muted-foreground">Tip: You can paste @handle or full URL</p>
             </div>
 
             <div className="space-y-2">
@@ -389,12 +397,19 @@ export default function Profile() {
                   type="url"
                   value={instagramUrl}
                   onChange={(e) => setInstagramUrl(e.target.value)}
-                  placeholder="https://instagram.com/username"
+                  onBlur={(e) => {
+                    const normalized = normalizeExternalUrl(e.target.value, 'instagram');
+                    if (normalized && normalized !== e.target.value) {
+                      setInstagramUrl(normalized);
+                    }
+                  }}
+                  placeholder="https://instagram.com/username or @username"
                 />
-                <Button onClick={() => handleUpdateProfile("instagram_url", instagramUrl)}>
+                <Button onClick={() => handleUpdateProfile("instagram_url", normalizeExternalUrl(instagramUrl, 'instagram'))}>
                   Update
                 </Button>
               </div>
+              <p className="text-xs text-muted-foreground">Tip: You can paste @username or full URL</p>
             </div>
 
             <div className="space-y-2">
@@ -408,12 +423,19 @@ export default function Profile() {
                   type="url"
                   value={tiktokUrl}
                   onChange={(e) => setTiktokUrl(e.target.value)}
-                  placeholder="https://tiktok.com/@username"
+                  onBlur={(e) => {
+                    const normalized = normalizeExternalUrl(e.target.value, 'tiktok');
+                    if (normalized && normalized !== e.target.value) {
+                      setTiktokUrl(normalized);
+                    }
+                  }}
+                  placeholder="https://tiktok.com/@username or @username"
                 />
-                <Button onClick={() => handleUpdateProfile("tiktok_url", tiktokUrl)}>
+                <Button onClick={() => handleUpdateProfile("tiktok_url", normalizeExternalUrl(tiktokUrl, 'tiktok'))}>
                   Update
                 </Button>
               </div>
+              <p className="text-xs text-muted-foreground">Tip: You can paste @username or full URL</p>
             </div>
           </CardContent>
         </Card>
