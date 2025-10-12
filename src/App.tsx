@@ -14,6 +14,7 @@ import QuizResults from "./pages/QuizResults";
 import CheckoutSuccess from "./pages/CheckoutSuccess";
 import ContentCalendar from "./pages/ContentCalendar";
 import Progress from "./pages/Progress";
+import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -36,6 +37,7 @@ const App = () => (
             <Route path="/checkout-success" element={<CheckoutSuccess />} />
             <Route path="/content-calendar" element={<ContentCalendar />} />
             <Route path="/progress" element={<Progress />} />
+            <Route path="/profile" element={<Profile />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

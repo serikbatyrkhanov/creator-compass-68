@@ -12,28 +12,24 @@ import {
   MessageCircle, 
   CheckCircle2,
   Sparkles,
-  Bell,
-  User,
-  Youtube,
-  Instagram as InstagramIcon,
-  Music
+  Settings
 } from "lucide-react";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { AIChatCoach } from "@/components/AIChatCoach";
 import { TrendingTitlesDialog } from "@/components/TrendingTitlesDialog";
 import logo from "@/assets/climbley-logo.png";
 import { useTranslation } from "react-i18next";
 import { LanguageSelector } from "@/components/LanguageSelector";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const Dashboard = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [user, setUser] = useState<any>(null);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [lastQuizResult, setLastQuizResult] = useState<any>(null);
   const [chatOpen, setChatOpen] = useState(false);
   const [trendingTitlesOpen, setTrendingTitlesOpen] = useState(false);
@@ -44,13 +40,6 @@ const Dashboard = () => {
     hasCompletedTask: false,
     hasChatted: false
   });
-  const [smsEnabled, setSmsEnabled] = useState(true);
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [timezone, setTimezone] = useState('America/New_York');
-  const [email, setEmail] = useState('');
-  const [youtubeUrl, setYoutubeUrl] = useState('');
-  const [instagramUrl, setInstagramUrl] = useState('');
-  const [tiktokUrl, setTiktokUrl] = useState('');
 
   useEffect(() => {
     // Check if user is authenticated
@@ -116,23 +105,17 @@ const Dashboard = () => {
           hasChatted: !!messages.data
         });
 
-        // Load SMS notification settings and profile data
+        // Load profile data
         const { data: profileData } = await supabase
           .from('profiles')
-          .select('phone, timezone, sms_notifications_enabled, email, youtube_url, instagram_url, tiktok_url')
+          .select('first_name, last_name, avatar_url')
           .eq('id', session.user.id)
           .single();
         
         if (profileData) {
-          setPhoneNumber(profileData.phone || '');
-          setTimezone(profileData.timezone || 'America/New_York');
-          setSmsEnabled(profileData.sms_notifications_enabled ?? true);
-          setEmail(profileData.email || session.user.email || '');
-          setYoutubeUrl(profileData.youtube_url || '');
-          setInstagramUrl(profileData.instagram_url || '');
-          setTiktokUrl(profileData.tiktok_url || '');
-        } else {
-          setEmail(session.user.email || '');
+          setFirstName(profileData.first_name || '');
+          setLastName(profileData.last_name || '');
+          setAvatarUrl(profileData.avatar_url);
         }
       }
     };
@@ -160,198 +143,6 @@ const Dashboard = () => {
     navigate("/");
   };
 
-  const handleToggleSMS = async (checked: boolean) => {
-    try {
-      const { error } = await supabase
-        .from('profiles')
-        .update({ sms_notifications_enabled: checked })
-        .eq('id', user.id);
-      
-      if (error) throw error;
-      
-      setSmsEnabled(checked);
-      toast({
-        title: checked ? "SMS reminders enabled" : "SMS reminders disabled",
-        description: checked 
-          ? "You'll receive daily reminders at 9:00 AM in your timezone" 
-          : "You won't receive SMS reminders anymore",
-      });
-    } catch (error) {
-      console.error('Error toggling SMS:', error);
-      toast({
-        title: "Error",
-        description: "Failed to update SMS settings",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const handleUpdatePhone = async () => {
-    if (!phoneNumber) {
-      toast({
-        title: "Error",
-        description: "Please enter a phone number",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (!phoneNumber.startsWith('+')) {
-      toast({
-        title: "Error",
-        description: "Phone number must start with + and country code (e.g., +12125551234)",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    try {
-      const { error } = await supabase
-        .from('profiles')
-        .update({ phone: phoneNumber })
-        .eq('id', user.id);
-      
-      if (error) throw error;
-      
-      toast({
-        title: "Phone number updated",
-        description: "Your phone number has been updated successfully",
-      });
-    } catch (error) {
-      console.error('Error updating phone:', error);
-      toast({
-        title: "Error",
-        description: "Failed to update phone number",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const handleTimezoneChange = async (value: string) => {
-    try {
-      const { error } = await supabase
-        .from('profiles')
-        .update({ timezone: value })
-        .eq('id', user.id);
-      
-      if (error) throw error;
-      
-      setTimezone(value);
-      toast({
-        title: "Timezone updated",
-        description: "Your timezone has been updated successfully",
-      });
-    } catch (error) {
-      console.error('Error updating timezone:', error);
-      toast({
-        title: "Error",
-        description: "Failed to update timezone",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const handleUpdateEmail = async () => {
-    if (!email) {
-      toast({
-        title: "Error",
-        description: "Please enter an email address",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    try {
-      const { error } = await supabase
-        .from('profiles')
-        .update({ email: email })
-        .eq('id', user.id);
-      
-      if (error) throw error;
-      
-      toast({
-        title: "Email updated",
-        description: "Your email has been updated successfully",
-      });
-    } catch (error) {
-      console.error('Error updating email:', error);
-      toast({
-        title: "Error",
-        description: "Failed to update email",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const handleUpdateYoutubeUrl = async () => {
-    try {
-      const { error } = await supabase
-        .from('profiles')
-        .update({ youtube_url: youtubeUrl })
-        .eq('id', user.id);
-      
-      if (error) throw error;
-      
-      toast({
-        title: "YouTube URL updated",
-        description: "Your YouTube channel URL has been updated successfully",
-      });
-    } catch (error) {
-      console.error('Error updating YouTube URL:', error);
-      toast({
-        title: "Error",
-        description: "Failed to update YouTube URL",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const handleUpdateInstagramUrl = async () => {
-    try {
-      const { error } = await supabase
-        .from('profiles')
-        .update({ instagram_url: instagramUrl })
-        .eq('id', user.id);
-      
-      if (error) throw error;
-      
-      toast({
-        title: "Instagram URL updated",
-        description: "Your Instagram profile URL has been updated successfully",
-      });
-    } catch (error) {
-      console.error('Error updating Instagram URL:', error);
-      toast({
-        title: "Error",
-        description: "Failed to update Instagram URL",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const handleUpdateTiktokUrl = async () => {
-    try {
-      const { error } = await supabase
-        .from('profiles')
-        .update({ tiktok_url: tiktokUrl })
-        .eq('id', user.id);
-      
-      if (error) throw error;
-      
-      toast({
-        title: "TikTok URL updated",
-        description: "Your TikTok profile URL has been updated successfully",
-      });
-    } catch (error) {
-      console.error('Error updating TikTok URL:', error);
-      toast({
-        title: "Error",
-        description: "Failed to update TikTok URL",
-        variant: "destructive",
-      });
-    }
-  };
-
   if (!user) return null;
 
   return (
@@ -364,9 +155,20 @@ const Dashboard = () => {
           </div>
           <div className="flex items-center gap-4">
             <LanguageSelector />
-            <span className="text-sm text-muted-foreground">
-              {user.email}
-            </span>
+            <div className="flex items-center gap-2">
+              <Avatar className="h-8 w-8 cursor-pointer" onClick={() => navigate("/profile")}>
+                <AvatarImage src={avatarUrl || undefined} />
+                <AvatarFallback>
+                  {firstName?.[0]}{lastName?.[0]}
+                </AvatarFallback>
+              </Avatar>
+              <span className="text-sm text-muted-foreground">
+                {user.email}
+              </span>
+              <Button variant="ghost" size="icon" onClick={() => navigate("/profile")}>
+                <Settings className="h-4 w-4" />
+              </Button>
+            </div>
             <Button variant="ghost" size="sm" onClick={handleSignOut}>
               <LogOut className="h-4 w-4 mr-2" />
               {t('nav.signOut')}
@@ -644,170 +446,6 @@ const Dashboard = () => {
                   <p className="text-sm text-muted-foreground">
                     {t('dashboard.journey.chatCoach.description')}
                   </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Profile Management */}
-          <Card className="border-2">
-            <CardHeader>
-              <div className="flex items-start justify-between">
-                <div className="h-12 w-12 rounded-lg bg-blue-500/10 flex items-center justify-center mb-4">
-                  <User className="h-6 w-6 text-blue-600 dark:text-blue-400" />
-                </div>
-              </div>
-              <CardTitle className="text-blue-700 dark:text-blue-300">👤 Profile Management</CardTitle>
-              <CardDescription>
-                Manage your profile information and social media connections
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              {/* Email */}
-              <div className="space-y-2">
-                <Label>Email Address</Label>
-                <div className="flex gap-2">
-                  <Input 
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="your.email@example.com"
-                    className="flex-1"
-                  />
-                  <Button onClick={handleUpdateEmail}>Update</Button>
-                </div>
-              </div>
-              
-              {/* Phone Number */}
-              <div className="space-y-2">
-                <Label>Phone Number</Label>
-                <div className="flex gap-2">
-                  <Input 
-                    type="tel"
-                    value={phoneNumber}
-                    onChange={(e) => setPhoneNumber(e.target.value)}
-                    placeholder="+1234567890"
-                    className="flex-1"
-                  />
-                  <Button onClick={handleUpdatePhone}>Update</Button>
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  Format: +[country code][number] (e.g., +12125551234)
-                </p>
-              </div>
-              
-              {/* Timezone Selector */}
-              <div className="space-y-2">
-                <Label>Your Timezone</Label>
-                <Select value={timezone} onValueChange={handleTimezoneChange}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="America/New_York">Eastern Time (US & Canada)</SelectItem>
-                    <SelectItem value="America/Chicago">Central Time (US & Canada)</SelectItem>
-                    <SelectItem value="America/Denver">Mountain Time (US & Canada)</SelectItem>
-                    <SelectItem value="America/Los_Angeles">Pacific Time (US & Canada)</SelectItem>
-                    <SelectItem value="America/Anchorage">Alaska</SelectItem>
-                    <SelectItem value="Pacific/Honolulu">Hawaii</SelectItem>
-                    <SelectItem value="Europe/London">London</SelectItem>
-                    <SelectItem value="Europe/Paris">Paris/Berlin/Rome</SelectItem>
-                    <SelectItem value="Europe/Moscow">Moscow</SelectItem>
-                    <SelectItem value="Asia/Dubai">Dubai</SelectItem>
-                    <SelectItem value="Asia/Kolkata">India</SelectItem>
-                    <SelectItem value="Asia/Shanghai">China</SelectItem>
-                    <SelectItem value="Asia/Tokyo">Tokyo</SelectItem>
-                    <SelectItem value="Australia/Sydney">Sydney</SelectItem>
-                    <SelectItem value="Pacific/Auckland">Auckland</SelectItem>
-                  </SelectContent>
-                </Select>
-                <p className="text-xs text-muted-foreground">
-                  Used for SMS reminders and local time calculations
-                </p>
-              </div>
-
-              {/* Social Media Connections */}
-              <div className="pt-4 border-t">
-                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                  <Sparkles className="h-5 w-5 text-primary" />
-                  Social Media Profiles
-                </h3>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Connect your social media profiles to track real-time statistics in Progress section
-                </p>
-                
-                {/* YouTube URL */}
-                <div className="space-y-2 mb-4">
-                  <Label className="flex items-center gap-2">
-                    <Youtube className="h-4 w-4 text-red-600" />
-                    YouTube Channel URL
-                  </Label>
-                  <div className="flex gap-2">
-                    <Input 
-                      type="url"
-                      value={youtubeUrl}
-                      onChange={(e) => setYoutubeUrl(e.target.value)}
-                      placeholder="https://youtube.com/@yourchannel"
-                      className="flex-1"
-                    />
-                    <Button onClick={handleUpdateYoutubeUrl}>Update</Button>
-                  </div>
-                </div>
-
-                {/* Instagram URL */}
-                <div className="space-y-2 mb-4">
-                  <Label className="flex items-center gap-2">
-                    <InstagramIcon className="h-4 w-4 text-pink-600" />
-                    Instagram Profile URL
-                  </Label>
-                  <div className="flex gap-2">
-                    <Input 
-                      type="url"
-                      value={instagramUrl}
-                      onChange={(e) => setInstagramUrl(e.target.value)}
-                      placeholder="https://instagram.com/yourprofile"
-                      className="flex-1"
-                    />
-                    <Button onClick={handleUpdateInstagramUrl}>Update</Button>
-                  </div>
-                </div>
-
-                {/* TikTok URL */}
-                <div className="space-y-2">
-                  <Label className="flex items-center gap-2">
-                    <Music className="h-4 w-4 text-black dark:text-white" />
-                    TikTok Profile URL
-                  </Label>
-                  <div className="flex gap-2">
-                    <Input 
-                      type="url"
-                      value={tiktokUrl}
-                      onChange={(e) => setTiktokUrl(e.target.value)}
-                      placeholder="https://tiktok.com/@yourprofile"
-                      className="flex-1"
-                    />
-                    <Button onClick={handleUpdateTiktokUrl}>Update</Button>
-                  </div>
-                </div>
-              </div>
-
-              {/* SMS Notifications */}
-              <div className="pt-4 border-t">
-                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                  <Bell className="h-5 w-5 text-primary" />
-                  Notifications
-                </h3>
-                <div className="flex items-center justify-between">
-                  <div className="space-y-0.5">
-                    <Label className="text-base">Daily Task Reminders</Label>
-                    <p className="text-sm text-muted-foreground">
-                      Get SMS reminders at 9:00 AM for your tasks
-                    </p>
-                  </div>
-                  <Switch 
-                    checked={smsEnabled}
-                    onCheckedChange={handleToggleSMS}
-                  />
                 </div>
               </div>
             </CardContent>

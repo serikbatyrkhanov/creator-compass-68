@@ -252,6 +252,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          avatar_url: string | null
           created_at: string
           email: string
           first_name: string
@@ -260,6 +261,7 @@ export type Database = {
           last_name: string
           last_sms_sent_date: string | null
           phone: string | null
+          sms_consent: boolean | null
           sms_notifications_enabled: boolean | null
           tiktok_url: string | null
           timezone: string | null
@@ -267,6 +269,7 @@ export type Database = {
           youtube_url: string | null
         }
         Insert: {
+          avatar_url?: string | null
           created_at?: string
           email: string
           first_name: string
@@ -275,6 +278,7 @@ export type Database = {
           last_name: string
           last_sms_sent_date?: string | null
           phone?: string | null
+          sms_consent?: boolean | null
           sms_notifications_enabled?: boolean | null
           tiktok_url?: string | null
           timezone?: string | null
@@ -282,6 +286,7 @@ export type Database = {
           youtube_url?: string | null
         }
         Update: {
+          avatar_url?: string | null
           created_at?: string
           email?: string
           first_name?: string
@@ -290,6 +295,7 @@ export type Database = {
           last_name?: string
           last_sms_sent_date?: string | null
           phone?: string | null
+          sms_consent?: boolean | null
           sms_notifications_enabled?: boolean | null
           tiktok_url?: string | null
           timezone?: string | null

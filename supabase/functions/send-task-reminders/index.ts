@@ -60,8 +60,9 @@ Deno.serve(async (req) => {
     // Get all users eligible for SMS reminders
     const { data: profiles, error: profilesError } = await supabase
       .from('profiles')
-      .select('id, phone, timezone, first_name, last_name, sms_notifications_enabled, last_sms_sent_date')
+      .select('id, phone, timezone, first_name, last_name, sms_notifications_enabled, sms_consent, last_sms_sent_date')
       .eq('sms_notifications_enabled', true)
+      .eq('sms_consent', true)
       .not('phone', 'is', null);
 
     if (profilesError) {
