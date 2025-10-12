@@ -20,7 +20,7 @@ serve(async (req) => {
       );
     }
 
-    console.log("Generating 50 trending titles for prompt:", prompt);
+    console.log("Generating 7 trending titles for prompt:", prompt);
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
@@ -28,7 +28,7 @@ serve(async (req) => {
     }
 
     const systemPrompt = `You are a creative content strategist specialized in generating viral, trending content titles. 
-Generate exactly 50 unique, engaging, and trending content titles based on the user's topic or niche.
+Generate exactly 7 unique, engaging, and trending content titles based on the user's topic or niche.
 
 Guidelines:
 - Make titles attention-grabbing and click-worthy
@@ -38,7 +38,7 @@ Guidelines:
 - Make them specific and actionable
 - Vary the length and style
 
-Return ONLY a JSON array of 50 title strings, nothing else.`;
+Return ONLY a JSON array of 7 title strings, nothing else.`;
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -92,12 +92,12 @@ Return ONLY a JSON array of 50 title strings, nothing else.`;
         throw new Error("Response is not an array");
       }
       
-      // Ensure we have exactly 50 titles
-      if (titles.length < 50) {
-        console.warn(`Only ${titles.length} titles generated, expected 50`);
+      // Ensure we have exactly 7 titles
+      if (titles.length < 7) {
+        console.warn(`Only ${titles.length} titles generated, expected 7`);
       }
       
-      titles = titles.slice(0, 50); // Take only first 50
+      titles = titles.slice(0, 7); // Take only first 7
       
     } catch (parseError) {
       console.error("Failed to parse titles:", parseError);
@@ -106,7 +106,7 @@ Return ONLY a JSON array of 50 title strings, nothing else.`;
         .split('\n')
         .map((line: string) => line.trim())
         .filter((line: string) => line.length > 0 && !line.startsWith('#') && !line.startsWith('```'))
-        .slice(0, 50);
+        .slice(0, 7);
     }
 
     console.log(`Successfully generated ${titles.length} titles`);
