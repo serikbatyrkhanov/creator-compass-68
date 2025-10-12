@@ -207,8 +207,8 @@ export const TrendingTitlesDialog = ({ open, onOpenChange }: TrendingTitlesDialo
               <div className="space-y-3 flex-1 flex flex-col min-h-0">
               <div className="flex items-center justify-between flex-wrap gap-2">
                 <div className="flex items-center gap-2">
-                  <h3 className="text-sm font-semibold">{t("trendingTitles.generatedTitlesLabel")}</h3>
-                  <Badge variant="secondary">{titles.length} {t("trendingTitles.titlesCount")}</Badge>
+                  <h3 className="text-sm font-semibold">{t("trendingTitles.generatedTitles")}</h3>
+                  <Badge variant="secondary">{titles.length} {t("trendingTitles.titles")}</Badge>
                 </div>
                 <div className="flex gap-2">
                   <Button
@@ -234,14 +234,14 @@ export const TrendingTitlesDialog = ({ open, onOpenChange }: TrendingTitlesDialo
                     ) : (
                       <>
                         <Calendar className="h-3 w-3" />
-                        {t("trendingTitles.generatePlansButton")}
+                        {t("trendingTitles.generatePlans")}
                       </>
                     )}
                   </Button>
                 </div>
               </div>
 
-              <ScrollArea className="flex-1 rounded-lg border bg-muted/30 p-4">
+              <ScrollArea className="flex-1 rounded-lg border bg-muted/30 p-4 max-h-[400px]">
                 <div className="space-y-2">
                   {titles.map((title, index) => (
                     <div
