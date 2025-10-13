@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -12,10 +12,10 @@ interface PostingFrequencySelectorProps {
 }
 
 export const PostingFrequencySelector = ({ userId, onUpdate }: PostingFrequencySelectorProps) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { toast } = useToast();
   
-  const DAYS_OF_WEEK = [
+  const DAYS_OF_WEEK = useMemo(() => [
     { value: 'monday', label: t('postingScheduleCard.monday') },
     { value: 'tuesday', label: t('postingScheduleCard.tuesday') },
     { value: 'wednesday', label: t('postingScheduleCard.wednesday') },
@@ -23,7 +23,7 @@ export const PostingFrequencySelector = ({ userId, onUpdate }: PostingFrequencyS
     { value: 'friday', label: t('postingScheduleCard.friday') },
     { value: 'saturday', label: t('postingScheduleCard.saturday') },
     { value: 'sunday', label: t('postingScheduleCard.sunday') }
-  ];
+  ], [t, i18n.language]);
   const [selectedDays, setSelectedDays] = useState<string[]>([
     'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'
   ]);
