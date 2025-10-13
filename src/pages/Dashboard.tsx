@@ -199,7 +199,7 @@ const Dashboard = () => {
           {/* Welcome Section */}
           <div className="animate-fade-in">
             <h1 className="text-4xl font-bold mb-2">
-              {t('dashboard.welcome')}, {user.user_metadata?.name || "Creator"}! 👋
+              {t('dashboard.welcome')}, {firstName || user.user_metadata?.first_name || user.user_metadata?.name || "Creator"}! 👋
             </h1>
             <p className="text-muted-foreground text-lg">
               {t('dashboard.subtitle')}

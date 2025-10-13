@@ -21,20 +21,29 @@ export default function AdminReferrals() {
 
   const fetchData = async () => {
     try {
-      // Fetch referral links
+      // Fetch referral links with signup counts
       const { data: linksData, error: linksError } = await supabase
         .from('referral_links')
-        .select('*')
+        .select(`
+          *,
+          referral_signups(count)
+        `)
         .order('created_at', { ascending: false });
 
       if (linksError) throw linksError;
 
-      setLinks(linksData || []);
+      // Process the data to flatten the count
+      const processedLinks = linksData?.map(link => ({
+        ...link,
+        signup_count: link.referral_signups?.[0]?.count || 0
+      }));
+
+      setLinks(processedLinks || []);
 
       // Calculate stats
-      const totalLinks = linksData?.length || 0;
-      const activeLinks = linksData?.filter(l => l.is_active).length || 0;
-      const totalSignups = linksData?.reduce((sum, l) => sum + l.current_uses, 0) || 0;
+      const totalLinks = processedLinks?.length || 0;
+      const activeLinks = processedLinks?.filter(l => l.is_active).length || 0;
+      const totalSignups = processedLinks?.reduce((sum, l) => sum + (l.signup_count || 0), 0) || 0;
 
       // Fetch conversion stats
       const { data: statsData, error: statsError } = await supabase.functions.invoke('get-referral-stats');

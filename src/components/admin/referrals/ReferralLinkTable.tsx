@@ -18,6 +18,7 @@ interface ReferralLink {
   expires_at: string | null;
   max_uses: number | null;
   current_uses: number;
+  signup_count?: number;
 }
 
 interface ReferralLinkTableProps {
@@ -126,7 +127,7 @@ export function ReferralLinkTable({ links, onUpdate }: ReferralLinkTableProps) {
               <TableCell>
                 <Badge variant={status.variant}>{status.label}</Badge>
               </TableCell>
-              <TableCell>{link.current_uses}</TableCell>
+              <TableCell>{link.signup_count || 0}</TableCell>
               <TableCell>{format(new Date(link.created_at), "MMM d, yyyy")}</TableCell>
               <TableCell>
                 {link.expires_at ? format(new Date(link.expires_at), "MMM d, yyyy") : "Never"}

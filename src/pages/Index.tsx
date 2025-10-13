@@ -54,6 +54,18 @@ const Index = () => {
     t
   } = useTranslation();
   const [currentSlide, setCurrentSlide] = useState(0);
+  
+  // Capture referral code from URL
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const refCode = urlParams.get('ref');
+    if (refCode) {
+      localStorage.setItem('referralCode', refCode);
+      localStorage.setItem('referralTimestamp', new Date().toISOString());
+      console.log('Referral code captured on Index page:', refCode);
+    }
+  }, []);
+
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide(prev => (prev + 1) % sliderImages.length);
