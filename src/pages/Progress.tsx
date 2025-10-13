@@ -388,9 +388,24 @@ const Progress = () => {
                         </p>
                         <p className="text-sm text-muted-foreground">Channel</p>
                       </div>
+                      
+                      {/* Embedded YouTube iframe */}
+                      <div className="aspect-video w-full rounded-lg overflow-hidden bg-black">
+                        <iframe
+                          width="100%"
+                          height="100%"
+                          src={`https://www.youtube.com/embed?listType=user_uploads&list=${extractUsername(socialProfiles.youtubeUrl, 'youtube')}`}
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                          className="w-full h-full"
+                        />
+                      </div>
+                      
+                      {/* Fallback button to open channel directly */}
                       <Button 
                         asChild
                         variant="outline" 
+                        size="sm"
                         className="w-full"
                       >
                         <a 
@@ -403,7 +418,7 @@ const Progress = () => {
                           }}
                         >
                           <ExternalLink className="h-4 w-4 mr-2" />
-                          View on YouTube
+                          Open Full Channel
                         </a>
                       </Button>
                     </CardContent>
