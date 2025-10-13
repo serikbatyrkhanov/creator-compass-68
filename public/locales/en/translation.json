@@ -120,6 +120,13 @@
       "completed": "Completed",
       "viewResults": "View Results"
     },
+    "educationalPosts": {
+      "title": "Educational Posts from Climbley",
+      "description": "Learn strategies and insights to grow your content",
+      "readMore": "Read More",
+      "viewAll": "View All Posts",
+      "noPosts": "No posts available yet"
+    },
     "quickActions": {
       "title": "Quick Actions",
       "retakeQuiz": "Retake Quiz",

@@ -12,7 +12,8 @@ import {
   MessageCircle, 
   CheckCircle2,
   Sparkles,
-  Settings
+  Settings,
+  BookOpen
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { AIChatCoach } from "@/components/AIChatCoach";
@@ -119,6 +120,19 @@ const Dashboard = () => {
           setAvatarUrl(profileData.avatar_url);
         }
       }
+
+      // Fetch featured blog posts
+      const { data: postsData } = await supabase
+        .from('blog_posts')
+        .select('id, title, slug, excerpt, cover_image_url, published_at, is_featured')
+        .eq('status', 'published')
+        .order('is_featured', { ascending: false })
+        .order('published_at', { ascending: false })
+        .limit(2);
+      
+      if (postsData) {
+        setBlogPosts(postsData);
+      }
     };
 
     checkAuth();
@@ -214,6 +228,76 @@ const Dashboard = () => {
                 >
                   {t('dashboard.lastQuizResult.viewResults')}
                 </Button>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Educational Posts from Climbley */}
+          {blogPosts.length > 0 && (
+            <Card className="border-2 bg-gradient-to-br from-blue-50 to-white dark:from-blue-950/20 dark:to-background animate-fade-in">
+              <CardHeader>
+                <div className="flex items-start justify-between">
+                  <div>
+                    <div className="h-12 w-12 rounded-lg bg-blue-500/10 flex items-center justify-center mb-4">
+                      <BookOpen className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                    </div>
+                    <CardTitle className="text-blue-700 dark:text-blue-300">{t('dashboard.educationalPosts.title')}</CardTitle>
+                    <CardDescription>
+                      {t('dashboard.educationalPosts.description')}
+                    </CardDescription>
+                  </div>
+                  <Button 
+                    variant="outline" 
+                    onClick={() => navigate("/blog")}
+                    className="border-blue-200 text-blue-700 hover:bg-blue-50 dark:border-blue-800 dark:text-blue-300 dark:hover:bg-blue-950/50"
+                  >
+                    {t('dashboard.educationalPosts.viewAll')}
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {blogPosts.map((post) => (
+                    <Card 
+                      key={post.id} 
+                      className="cursor-pointer hover:shadow-lg transition-all border-blue-100 dark:border-blue-900/50"
+                      onClick={() => navigate(`/blog/${post.slug}`)}
+                    >
+                      {post.cover_image_url && (
+                        <img
+                          src={post.cover_image_url}
+                          alt={post.title}
+                          className="w-full h-40 object-cover rounded-t-lg"
+                        />
+                      )}
+                      <CardHeader className="p-4">
+                        <div className="flex items-start justify-between gap-2">
+                          <CardTitle className="text-base line-clamp-2 flex-1">{post.title}</CardTitle>
+                          {post.is_featured && (
+                            <Sparkles className="h-4 w-4 text-yellow-500 flex-shrink-0" />
+                          )}
+                        </div>
+                        <CardDescription className="text-sm line-clamp-2">
+                          {post.excerpt || "Read more to discover valuable insights..."}
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent className="p-4 pt-0">
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="text-muted-foreground">
+                            {new Date(post.published_at).toLocaleDateString()}
+                          </span>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="h-auto p-0 hover:bg-transparent text-blue-600 dark:text-blue-400"
+                          >
+                            {t('dashboard.educationalPosts.readMore')} →
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
               </CardContent>
             </Card>
           )}

@@ -122,6 +122,13 @@
       "planContent": "Планировать контент",
       "viewProgress": "Посмотреть прогресс"
     },
+    "educationalPosts": {
+      "title": "Образовательные посты от Climbley",
+      "description": "Изучайте стратегии и идеи для развития контента",
+      "readMore": "Читать далее",
+      "viewAll": "Все посты",
+      "noPosts": "Посты пока недоступны"
+    },
     "lastQuizResult": {
       "title": "Последний результат теста",
       "yourArchetype": "Ваш архетип:",
