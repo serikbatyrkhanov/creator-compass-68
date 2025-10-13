@@ -55,6 +55,7 @@ export type Database = {
           excerpt: string | null
           id: string
           is_featured: boolean | null
+          language: string
           published_at: string | null
           slug: string
           status: string | null
@@ -70,6 +71,7 @@ export type Database = {
           excerpt?: string | null
           id?: string
           is_featured?: boolean | null
+          language?: string
           published_at?: string | null
           slug: string
           status?: string | null
@@ -85,6 +87,7 @@ export type Database = {
           excerpt?: string | null
           id?: string
           is_featured?: boolean | null
+          language?: string
           published_at?: string | null
           slug?: string
           status?: string | null

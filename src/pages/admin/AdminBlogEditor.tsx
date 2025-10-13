@@ -30,6 +30,7 @@ export default function AdminBlogEditor() {
   const [status, setStatus] = useState("draft");
   const [isFeatured, setIsFeatured] = useState(false);
   const [authorId, setAuthorId] = useState("");
+  const [language, setLanguage] = useState("en");
 
   useEffect(() => {
     const getAuthorId = async () => {
@@ -71,6 +72,7 @@ export default function AdminBlogEditor() {
       setCoverImage(data.cover_image_url || "");
       setStatus(data.status);
       setIsFeatured(data.is_featured);
+      setLanguage(data.language || "en");
     }
   };
 
@@ -120,6 +122,7 @@ export default function AdminBlogEditor() {
       status: publishNow ? 'published' : status,
       is_featured: isFeatured,
       published_at: publishNow ? new Date().toISOString() : null,
+      language,
     };
 
     try {
@@ -240,6 +243,25 @@ export default function AdminBlogEditor() {
                 Featured Post
               </Label>
             </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="language">Language *</Label>
+            <Select value={language} onValueChange={setLanguage}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="en">
+                  <span className="mr-2">🇬🇧</span>
+                  English
+                </SelectItem>
+                <SelectItem value="ru">
+                  <span className="mr-2">🇷🇺</span>
+                  Русский
+                </SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="space-y-2">

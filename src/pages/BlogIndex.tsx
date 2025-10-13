@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ArrowLeft, Search, Clock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { useTranslation } from "react-i18next";
 
 interface BlogPost {
   id: string;
@@ -20,19 +21,21 @@ interface BlogPost {
 
 export default function BlogIndex() {
   const navigate = useNavigate();
+  const { i18n } = useTranslation();
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchPosts();
-  }, []);
+  }, [i18n.language]);
 
   const fetchPosts = async () => {
     const { data, error } = await supabase
       .from('blog_posts')
       .select('id, title, slug, excerpt, cover_image_url, published_at, view_count, is_featured')
       .eq('status', 'published')
+      .eq('language', i18n.language)
       .order('published_at', { ascending: false });
 
     if (!error && data) {

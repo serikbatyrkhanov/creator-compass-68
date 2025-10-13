@@ -24,7 +24,7 @@ import { LanguageSelector } from "@/components/LanguageSelector";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const Dashboard = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [user, setUser] = useState<any>(null);
@@ -126,6 +126,7 @@ const Dashboard = () => {
         .from('blog_posts')
         .select('id, title, slug, excerpt, cover_image_url, published_at, is_featured')
         .eq('status', 'published')
+        .eq('language', i18n.language)
         .order('is_featured', { ascending: false })
         .order('published_at', { ascending: false })
         .limit(3);
@@ -147,7 +148,7 @@ const Dashboard = () => {
     });
 
     return () => subscription.unsubscribe();
-  }, [navigate]);
+  }, [navigate, i18n.language]);
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
