@@ -3,6 +3,7 @@ import { ArrowRight, Target, TrendingUp, Calendar, Bell } from "lucide-react";
 import { Link } from "react-router-dom";
 import logo from "@/assets/climbley-logo-updated.png";
 import { LanguageSelector } from "@/components/LanguageSelector";
+import { useTranslation } from "react-i18next";
 import slider1 from "@/assets/slider/1.jpg";
 import slider2 from "@/assets/slider/2.jpg";
 import slider4 from "@/assets/slider/4.jpg";
@@ -13,6 +14,8 @@ import slider11 from "@/assets/slider/11.jpg";
 import slider13 from "@/assets/slider/13.jpg";
 
 const LearnMore = () => {
+  const { t } = useTranslation();
+  
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted">
       {/* Navigation */}
@@ -24,7 +27,7 @@ const LearnMore = () => {
           <LanguageSelector />
           <Link to="/auth">
             <Button variant="outline" className="rounded-full">
-              Start Free Trial
+              {t('learnMore.nav.startTrial')}
             </Button>
           </Link>
         </div>
@@ -34,10 +37,10 @@ const LearnMore = () => {
       <section className="container mx-auto px-4 py-16 lg:py-24">
         <div className="max-w-4xl mx-auto text-center space-y-8">
           <h1 className="text-4xl lg:text-6xl font-bold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
-            Climbley — Your Personal AI Producer
+            {t('learnMore.hero.title')}
           </h1>
           <p className="text-xl lg:text-2xl text-muted-foreground">
-            Stop overthinking. Start building. Finally achieve the consistency that successful creators have.
+            {t('learnMore.hero.subtitle')}
           </p>
         </div>
       </section>
@@ -57,17 +60,17 @@ const LearnMore = () => {
       <section className="container mx-auto px-4 py-16 lg:py-24">
         <div className="max-w-4xl mx-auto space-y-8">
           <h2 className="text-3xl lg:text-5xl font-bold">
-            Does This Sound Familiar?
+            {t('learnMore.problem1.title')}
           </h2>
           <div className="prose prose-lg lg:prose-xl max-w-none">
             <p className="text-lg lg:text-xl text-muted-foreground leading-relaxed">
-              You've got ideas. Real ones. You know you should be creating content, building an audience, maybe even growing your business through it. But here's what actually happens: you record one video, feel good about it, then... nothing for three weeks.
+              {t('learnMore.problem1.text1')}
             </p>
             <p className="text-lg lg:text-xl text-muted-foreground leading-relaxed">
-              You sit down to create and immediately hit a wall: "What should I even post about?" An hour later, you're still staring at a blank screen. Meanwhile, you're watching creators with half your expertise grow their audiences simply because they show up consistently.
+              {t('learnMore.problem1.text2')}
             </p>
             <p className="text-lg lg:text-xl text-muted-foreground leading-relaxed">
-              The frustration is real. And it's not your fault.
+              {t('learnMore.problem1.text3')}
             </p>
           </div>
         </div>
@@ -88,13 +91,13 @@ const LearnMore = () => {
       <section className="container mx-auto px-4 py-16 lg:py-24">
         <div className="max-w-4xl mx-auto space-y-8">
           <h2 className="text-3xl lg:text-5xl font-bold">
-            Here's the Real Problem
+            {t('learnMore.problem2.title')}
           </h2>
           <p className="text-lg lg:text-xl text-muted-foreground leading-relaxed">
-            Most people think the hard part of content creation is coming up with ideas or being creative. It's not. The real challenge is organization, planning, and maintaining consistency long enough to see results.
+            {t('learnMore.problem2.text')}
           </p>
           <p className="text-2xl lg:text-3xl font-semibold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-            That's exactly what Climbley solves.
+            {t('learnMore.problem2.tagline')}
           </p>
         </div>
       </section>
@@ -114,10 +117,10 @@ const LearnMore = () => {
       <section className="container mx-auto px-4 py-16 lg:py-24 bg-gradient-to-b from-background to-muted/30">
         <div className="max-w-4xl mx-auto space-y-8">
           <h2 className="text-3xl lg:text-5xl font-bold">
-            Meet Your Personal Producer
+            {t('learnMore.solution.title')}
           </h2>
           <p className="text-lg lg:text-xl text-muted-foreground leading-relaxed">
-            Think of Climbley as the producer you'd hire if you had a team — except it's AI-powered, always available, and fits in your pocket. It builds your content strategy, tracks your progress, and keeps you accountable when motivation fades.
+            {t('learnMore.solution.text')}
           </p>
         </div>
       </section>
@@ -137,7 +140,7 @@ const LearnMore = () => {
       <section className="container mx-auto px-4 py-16 lg:py-24">
         <div className="max-w-4xl mx-auto space-y-12">
           <h2 className="text-3xl lg:text-5xl font-bold text-center">
-            Here's How It Works
+            {t('learnMore.howItWorks.title')}
           </h2>
           
           <div className="grid gap-8">
@@ -148,9 +151,9 @@ const LearnMore = () => {
                 </div>
               </div>
               <div className="space-y-2">
-                <h3 className="text-2xl font-bold">🎯 Discover Your Niche</h3>
+                <h3 className="text-2xl font-bold">{t('learnMore.howItWorks.step1.title')}</h3>
                 <p className="text-lg text-muted-foreground">
-                  A guided quiz helps you identify where your content fits and who it's really for. No more guessing.
+                  {t('learnMore.howItWorks.step1.description')}
                 </p>
               </div>
             </div>
@@ -162,9 +165,9 @@ const LearnMore = () => {
                 </div>
               </div>
               <div className="space-y-2">
-                <h3 className="text-2xl font-bold">🧠 Your Weekly Content Plan</h3>
+                <h3 className="text-2xl font-bold">{t('learnMore.howItWorks.step2.title')}</h3>
                 <p className="text-lg text-muted-foreground">
-                  Climbley generates a complete content calendar with video prompts, hooks, and post ideas tailored to your platforms. You wake up knowing exactly what to create.
+                  {t('learnMore.howItWorks.step2.description')}
                 </p>
               </div>
             </div>
@@ -176,9 +179,9 @@ const LearnMore = () => {
                 </div>
               </div>
               <div className="space-y-2">
-                <h3 className="text-2xl font-bold">📈 Visual Progress Tracking</h3>
+                <h3 className="text-2xl font-bold">{t('learnMore.howItWorks.step3.title')}</h3>
                 <p className="text-lg text-muted-foreground">
-                  Watch your growth, engagement, and consistency improve with a clean dashboard that shows you what's working.
+                  {t('learnMore.howItWorks.step3.description')}
                 </p>
               </div>
             </div>
@@ -190,16 +193,16 @@ const LearnMore = () => {
                 </div>
               </div>
               <div className="space-y-2">
-                <h3 className="text-2xl font-bold">🔔 Smart Accountability</h3>
+                <h3 className="text-2xl font-bold">{t('learnMore.howItWorks.step4.title')}</h3>
                 <p className="text-lg text-muted-foreground">
-                  Gentle reminders nudge you when it's time to shoot or post — so you never lose momentum.
+                  {t('learnMore.howItWorks.step4.description')}
                 </p>
               </div>
             </div>
           </div>
 
           <p className="text-lg lg:text-xl text-center text-muted-foreground pt-8">
-            No more Sunday night panic about Monday's content. No more weeks of silence. Just a clear system that keeps you moving forward.
+            {t('learnMore.howItWorks.summary')}
           </p>
         </div>
       </section>
@@ -219,17 +222,17 @@ const LearnMore = () => {
       <section className="container mx-auto px-4 py-16 lg:py-24">
         <div className="max-w-4xl mx-auto space-y-8">
           <h2 className="text-3xl lg:text-5xl font-bold">
-            Why This Matters Now
+            {t('learnMore.whyNow.title')}
           </h2>
           <div className="prose prose-lg lg:prose-xl max-w-none">
             <p className="text-lg lg:text-xl text-muted-foreground leading-relaxed">
-              Your content is your currency in today's world. Whether you're a plumber, a fitness coach, a financial advisor, or running a cleaning company — people want to see what you do before they trust you. They want to learn from you, understand your approach, and feel confident you're the right choice.
+              {t('learnMore.whyNow.text1')}
             </p>
             <p className="text-lg lg:text-xl text-muted-foreground leading-relaxed">
-              That's how clients find you. That's how opportunities appear. That's how your income grows.
+              {t('learnMore.whyNow.text2')}
             </p>
             <p className="text-lg lg:text-xl text-muted-foreground leading-relaxed">
-              Being excellent at your craft isn't enough anymore. You need to show it. Share it. Build an audience around it.
+              {t('learnMore.whyNow.text3')}
             </p>
           </div>
         </div>
@@ -250,34 +253,34 @@ const LearnMore = () => {
       <section className="container mx-auto px-4 py-16 lg:py-24 bg-muted/30">
         <div className="max-w-4xl mx-auto space-y-12">
           <h2 className="text-3xl lg:text-5xl font-bold text-center">
-            Common Questions
+            {t('learnMore.faq.title')}
           </h2>
           
           <div className="space-y-8">
             <div className="space-y-4">
               <h3 className="text-2xl font-bold">
-                Do I need experience creating content?
+                {t('learnMore.faq.q1.question')}
               </h3>
               <p className="text-lg text-muted-foreground">
-                Not at all. Climbley adapts to your level — whether you're posting your first video or your hundredth.
+                {t('learnMore.faq.q1.answer')}
               </p>
             </div>
 
             <div className="space-y-4">
               <h3 className="text-2xl font-bold">
-                What platforms does it support?
+                {t('learnMore.faq.q2.question')}
               </h3>
               <p className="text-lg text-muted-foreground">
-                Currently YouTube, Instagram, and TikTok, with more platforms coming soon.
+                {t('learnMore.faq.q2.answer')}
               </p>
             </div>
 
             <div className="space-y-4">
               <h3 className="text-2xl font-bold">
-                How much does it cost?
+                {t('learnMore.faq.q3.question')}
               </h3>
               <p className="text-lg text-muted-foreground">
-                $9.99/month — less than a couple of coffees. Cancel anytime, no strings attached.
+                {t('learnMore.faq.q3.answer')}
               </p>
             </div>
           </div>
@@ -299,13 +302,13 @@ const LearnMore = () => {
       <section className="container mx-auto px-4 py-16 lg:py-24">
         <div className="max-w-4xl mx-auto space-y-8">
           <h2 className="text-3xl lg:text-5xl font-bold text-center">
-            Stop Overthinking. Start Building.
+            {t('learnMore.finalCta.title')}
           </h2>
           <p className="text-lg lg:text-xl text-muted-foreground text-center leading-relaxed">
-            Climbley helps you find your voice, maintain consistency, and actually grow your audience — without burning out trying.
+            {t('learnMore.finalCta.subtitle')}
           </p>
           <p className="text-xl lg:text-2xl font-semibold text-center">
-            The creators winning right now aren't necessarily more talented. They're just more consistent. And now you can be too.
+            {t('learnMore.finalCta.quote')}
           </p>
         </div>
       </section>
@@ -325,16 +328,16 @@ const LearnMore = () => {
       <section className="container mx-auto px-4 py-16 lg:py-24">
         <div className="max-w-2xl mx-auto text-center p-12 rounded-3xl bg-gradient-to-r from-primary/10 via-secondary/10 to-accent/10 border-2 border-primary/20 shadow-2xl">
           <h3 className="text-2xl lg:text-3xl font-bold mb-6">
-            👉 Start your free trial today and take your next step to the top.
+            {t('learnMore.finalCta.button')}
           </h3>
           <Link to="/auth">
             <Button size="lg" className="rounded-full gap-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:opacity-90 transition-opacity text-white shadow-lg shadow-purple-500/50 text-lg px-8 py-6 h-auto">
-              Start Your 7-Day Free Trial
+              {t('learnMore.finalCta.action')}
               <ArrowRight className="h-5 w-5" />
             </Button>
           </Link>
           <p className="text-sm text-muted-foreground mt-4">
-            No credit card required. Cancel anytime.
+            {t('learnMore.finalCta.disclaimer')}
           </p>
         </div>
       </section>
@@ -343,7 +346,7 @@ const LearnMore = () => {
       <footer className="container mx-auto px-4 py-8 border-t border-border mt-20">
         <div className="flex flex-col items-center gap-2 text-sm text-muted-foreground">
           <img src={logo} alt="Climbley" className="h-6 w-auto" />
-          <span>Climbley © 2025</span>
+          <span>{t('learnMore.footer.copyright')}</span>
         </div>
       </footer>
     </div>

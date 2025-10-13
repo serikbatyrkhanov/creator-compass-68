@@ -666,5 +666,81 @@
     "password": "Choose a Password",
     "createAccount": "Create Account",
     "error": "Error creating account"
+  },
+  "learnMore": {
+    "nav": {
+      "startTrial": "Start Free Trial"
+    },
+    "hero": {
+      "title": "Climbley — Your Personal AI Producer",
+      "subtitle": "Stop overthinking. Start building. Finally achieve the consistency that successful creators have."
+    },
+    "problem1": {
+      "title": "Does This Sound Familiar?",
+      "text1": "You've got ideas. Real ones. You know you should be creating content, building an audience, maybe even growing your business through it. But here's what actually happens: you record one video, feel good about it, then... nothing for three weeks.",
+      "text2": "You sit down to create and immediately hit a wall: \"What should I even post about?\" An hour later, you're still staring at a blank screen. Meanwhile, you're watching creators with half your expertise grow their audiences simply because they show up consistently.",
+      "text3": "The frustration is real. And it's not your fault."
+    },
+    "problem2": {
+      "title": "Here's the Real Problem",
+      "text": "Most people think the hard part of content creation is coming up with ideas or being creative. It's not. The real challenge is organization, planning, and maintaining consistency long enough to see results.",
+      "tagline": "That's exactly what Climbley solves."
+    },
+    "solution": {
+      "title": "Meet Your Personal Producer",
+      "text": "Think of Climbley as the producer you'd hire if you had a team — except it's AI-powered, always available, and fits in your pocket. It builds your content strategy, tracks your progress, and keeps you accountable when motivation fades."
+    },
+    "howItWorks": {
+      "title": "Here's How It Works",
+      "step1": {
+        "title": "🎯 Discover Your Niche",
+        "description": "A guided quiz helps you identify where your content fits and who it's really for. No more guessing."
+      },
+      "step2": {
+        "title": "🧠 Your Weekly Content Plan",
+        "description": "Climbley generates a complete content calendar with video prompts, hooks, and post ideas tailored to your platforms. You wake up knowing exactly what to create."
+      },
+      "step3": {
+        "title": "📈 Visual Progress Tracking",
+        "description": "Watch your growth, engagement, and consistency improve with a clean dashboard that shows you what's working."
+      },
+      "step4": {
+        "title": "🔔 Smart Accountability",
+        "description": "Gentle reminders nudge you when it's time to shoot or post — so you never lose momentum."
+      },
+      "summary": "No more Sunday night panic about Monday's content. No more weeks of silence. Just a clear system that keeps you moving forward."
+    },
+    "whyNow": {
+      "title": "Why This Matters Now",
+      "text1": "Your content is your currency in today's world. Whether you're a plumber, a fitness coach, a financial advisor, or running a cleaning company — people want to see what you do before they trust you. They want to learn from you, understand your approach, and feel confident you're the right choice.",
+      "text2": "That's how clients find you. That's how opportunities appear. That's how your income grows.",
+      "text3": "Being excellent at your craft isn't enough anymore. You need to show it. Share it. Build an audience around it."
+    },
+    "faq": {
+      "title": "Common Questions",
+      "q1": {
+        "question": "Do I need experience creating content?",
+        "answer": "Not at all. Climbley adapts to your level — whether you're posting your first video or your hundredth."
+      },
+      "q2": {
+        "question": "What platforms does it support?",
+        "answer": "Currently YouTube, Instagram, and TikTok, with more platforms coming soon."
+      },
+      "q3": {
+        "question": "How much does it cost?",
+        "answer": "$9.99/month — less than a couple of coffees. Cancel anytime, no strings attached."
+      }
+    },
+    "finalCta": {
+      "title": "Stop Overthinking. Start Building.",
+      "subtitle": "Climbley helps you find your voice, maintain consistency, and actually grow your audience — without burning out trying.",
+      "quote": "The creators winning right now aren't necessarily more talented. They're just more consistent. And now you can be too.",
+      "button": "👉 Start your free trial today and take your next step to the top.",
+      "action": "Start Your 7-Day Free Trial",
+      "disclaimer": "No credit card required. Cancel anytime."
+    },
+    "footer": {
+      "copyright": "Climbley © 2025"
+    }
   }
 }
