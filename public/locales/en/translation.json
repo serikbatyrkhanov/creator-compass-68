@@ -442,7 +442,6 @@
       "Q7_resources": {
         "text": "What gear/resources do you have today?",
         "options": {
-          "Q7A1": "Smartphone only",
           "Q7A2": "Good lighting / mic",
           "Q7A3": "Screen capture setup",
           "Q7A4": "Camera + lenses",

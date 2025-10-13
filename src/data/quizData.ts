@@ -122,7 +122,6 @@ export const quizQuestions: Array<{
     type: "multi_select" as const,
     maxSelect: 3,
     options: [
-      { id: "Q7A1", labelKey: "quiz.questions.Q7_resources.options.Q7A1", meta: { gear: "phone" } },
       { id: "Q7A2", labelKey: "quiz.questions.Q7_resources.options.Q7A2", meta: { gear: "basic_studio" } },
       { id: "Q7A3", labelKey: "quiz.questions.Q7_resources.options.Q7A3", meta: { gear: "screen" } },
       { id: "Q7A4", labelKey: "quiz.questions.Q7_resources.options.Q7A4", meta: { gear: "camera" } },
