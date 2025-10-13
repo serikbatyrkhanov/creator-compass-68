@@ -397,6 +397,10 @@ const Progress = () => {
                           href={normalizeExternalUrl(socialProfiles.youtubeUrl, 'youtube')} 
                           target="_blank" 
                           rel="noopener noreferrer"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            window.open(normalizeExternalUrl(socialProfiles.youtubeUrl, 'youtube'), '_blank', 'noopener,noreferrer');
+                          }}
                         >
                           <ExternalLink className="h-4 w-4 mr-2" />
                           View on YouTube
@@ -431,6 +435,10 @@ const Progress = () => {
                           href={normalizeExternalUrl(socialProfiles.instagramUrl, 'instagram')} 
                           target="_blank" 
                           rel="noopener noreferrer"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            window.open(normalizeExternalUrl(socialProfiles.instagramUrl, 'instagram'), '_blank', 'noopener,noreferrer');
+                          }}
                         >
                           <ExternalLink className="h-4 w-4 mr-2" />
                           View on Instagram
@@ -465,6 +473,10 @@ const Progress = () => {
                           href={normalizeExternalUrl(socialProfiles.tiktokUrl, 'tiktok')} 
                           target="_blank" 
                           rel="noopener noreferrer"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            window.open(normalizeExternalUrl(socialProfiles.tiktokUrl, 'tiktok'), '_blank', 'noopener,noreferrer');
+                          }}
                         >
                           <ExternalLink className="h-4 w-4 mr-2" />
                           View on TikTok

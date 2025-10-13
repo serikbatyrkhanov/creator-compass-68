@@ -11,10 +11,30 @@ const addTargetBlankToExternalLinks = (html: string): string => {
   const links = doc.querySelectorAll('a');
   
   links.forEach(link => {
-    const href = link.getAttribute('href');
-    if (href && (href.startsWith('http://') || href.startsWith('https://'))) {
-      link.setAttribute('target', '_blank');
-      link.setAttribute('rel', 'noopener noreferrer');
+    let href = link.getAttribute('href');
+    if (!href) return;
+    
+    // Normalize protocol-relative and www.* links
+    if (href.startsWith('//')) {
+      href = 'https:' + href;
+    } else if (href.startsWith('www.')) {
+      href = 'https://' + href;
+    }
+    
+    // Skip internal links (relative paths and anchors)
+    if (href.startsWith('/') || href.startsWith('#')) return;
+    
+    try {
+      const url = new URL(href, window.location.origin);
+      // Only modify external links (different origin)
+      if (url.origin !== window.location.origin) {
+        link.setAttribute('href', url.toString());
+        link.setAttribute('target', '_blank');
+        link.setAttribute('rel', 'noopener noreferrer');
+      }
+    } catch (e) {
+      // If URL parsing fails, skip this link
+      console.warn('Failed to parse URL:', href);
     }
   });
   
@@ -100,6 +120,37 @@ export default function BlogPost() {
     DOMPurify.sanitize(post.content)
   );
 
+  const handleContentClick = (e: React.MouseEvent) => {
+    const target = e.target as Element;
+    const anchor = target.closest('a');
+    
+    if (anchor) {
+      let href = anchor.getAttribute('href');
+      if (!href) return;
+      
+      // Normalize protocol-relative and www.* links
+      if (href.startsWith('//')) {
+        href = 'https:' + href;
+      } else if (href.startsWith('www.')) {
+        href = 'https://' + href;
+      }
+      
+      // Skip internal links
+      if (href.startsWith('/') || href.startsWith('#')) return;
+      
+      try {
+        const url = new URL(href, window.location.origin);
+        // Force external links to open in new tab
+        if (url.origin !== window.location.origin) {
+          e.preventDefault();
+          window.open(url.toString(), '_blank', 'noopener,noreferrer');
+        }
+      } catch (err) {
+        console.warn('Failed to process link:', href);
+      }
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-4xl mx-auto px-4 py-8">
@@ -155,6 +206,7 @@ export default function BlogPost() {
                      prose-pre:bg-muted prose-pre:text-foreground
                      prose-blockquote:border-l-primary prose-blockquote:text-muted-foreground
                      prose-img:rounded-lg prose-img:shadow-lg"
+            onClick={handleContentClick}
             dangerouslySetInnerHTML={{ __html: sanitizedContent }}
           />
         </article>
