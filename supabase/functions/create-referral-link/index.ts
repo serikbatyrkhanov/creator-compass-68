@@ -86,8 +86,8 @@ serve(async (req) => {
 
     logStep("Referral link created successfully", { id: data.id });
 
-    const origin = req.headers.get("origin") || "https://climbley.lovable.app";
-    const fullUrl = `${origin}?ref=${code}`;
+    const PRODUCTION_DOMAIN = "https://climbley.com";
+    const fullUrl = `${PRODUCTION_DOMAIN}?ref=${code}`;
 
     return new Response(JSON.stringify({
       success: true,

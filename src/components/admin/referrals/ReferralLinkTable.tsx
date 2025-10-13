@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
+import { PRODUCTION_DOMAIN } from "@/lib/constants";
 
 interface ReferralLink {
   id: string;
@@ -30,7 +31,7 @@ export function ReferralLinkTable({ links, onUpdate }: ReferralLinkTableProps) {
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const copyToClipboard = (code: string) => {
-    const url = `${window.location.origin}?ref=${code}`;
+    const url = `${PRODUCTION_DOMAIN}?ref=${code}`;
     navigator.clipboard.writeText(url);
     toast({
       title: "Copied!",

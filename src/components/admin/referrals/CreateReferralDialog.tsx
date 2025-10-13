@@ -11,6 +11,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
+import { PRODUCTION_DOMAIN } from "@/lib/constants";
 
 interface CreateReferralDialogProps {
   open: boolean;
@@ -92,7 +93,7 @@ export function CreateReferralDialog({ open, onOpenChange, onSuccess }: CreateRe
     }
   };
 
-  const previewUrl = code ? `${window.location.origin}?ref=${code}` : "";
+  const previewUrl = code ? `${PRODUCTION_DOMAIN}?ref=${code}` : "";
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
