@@ -93,57 +93,84 @@ const CheckoutSuccess = () => {
   }, [navigate, toast, searchParams]);
 
   const completeSignup = async (email: string, password: string, firstName: string, lastName: string, phone?: string) => {
-    console.log("Creating Supabase account with data:", {
-      email,
-      firstName,
-      lastName,
-      phone: phone || '(none)',
-      hasPassword: !!password
-    });
-
-    const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo: `${window.location.origin}/dashboard`,
-        data: { 
-          first_name: firstName,
-          last_name: lastName,
-          phone: phone || null,
-          name: `${firstName} ${lastName}`.trim()
-        },
-      },
-    });
-
-    if (signUpError) {
-      console.error("Sign up error details:", {
-        message: signUpError.message,
-        status: signUpError.status,
-        name: signUpError.name
-      });
-      throw signUpError;
-    }
-
-    console.log("Account created successfully:", {
-      userId: signUpData.user?.id,
-      email: signUpData.user?.email
-    });
-
-    // Sign in immediately (auto-confirm is enabled)
-    console.log("Signing in...");
+    console.log("Starting authentication process for:", email);
+    
+    // Step 1: Try to sign in first (handles existing users)
     const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
-    if (signInError) {
-      console.error("Sign in error:", signInError);
+    let userId: string;
+    let isNewUser = false;
+    
+    if (!signInError && signInData.user) {
+      // User already exists - signed in successfully
+      console.log("Existing user signed in successfully:", {
+        userId: signInData.user.id,
+        email: signInData.user.email
+      });
+      userId = signInData.user.id;
+    } else if (signInError?.message.includes("Invalid login credentials")) {
+      // User doesn't exist - create new account
+      console.log("Creating new Supabase account with data:", {
+        email,
+        firstName,
+        lastName,
+        phone: phone || '(none)'
+      });
+      
+      const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/dashboard`,
+          data: { 
+            first_name: firstName,
+            last_name: lastName,
+            phone: phone || null,
+            name: `${firstName} ${lastName}`.trim()
+          },
+        },
+      });
+
+      if (signUpError) {
+        console.error("Sign up error details:", {
+          message: signUpError.message,
+          status: signUpError.status,
+          name: signUpError.name
+        });
+        throw signUpError;
+      }
+
+      console.log("Account created successfully:", {
+        userId: signUpData.user?.id,
+        email: signUpData.user?.email
+      });
+      
+      userId = signUpData.user!.id;
+      isNewUser = true;
+      
+      // Sign in the newly created user
+      console.log("Signing in new user...");
+      const { error: newUserSignInError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      
+      if (newUserSignInError) {
+        console.error("Sign in error:", newUserSignInError);
+        throw newUserSignInError;
+      }
+      
+      console.log("New user signed in successfully");
+    } else {
+      // Some other authentication error
+      console.error("Authentication error:", signInError);
       throw signInError;
     }
 
-    console.log("Signed in successfully");
-
-    // Track referral signup if referral code exists
+    // Step 2: Track referral signup if referral code exists
     const referralCode = localStorage.getItem('referralCode');
     if (referralCode) {
       try {
@@ -160,22 +187,28 @@ const CheckoutSuccess = () => {
         console.log("Referral tracked successfully");
       } catch (refError) {
         console.error('Failed to track referral:', refError);
-        // Don't fail signup if referral tracking fails
+        // Don't fail the flow if referral tracking fails
       }
+    } else {
+      console.log("No referral code found in localStorage");
     }
 
-    // Clear stored credentials
+    // Step 3: Clear stored credentials
     localStorage.removeItem('pendingSignup');
     console.log("Cleared localStorage");
 
     setStatus("success");
     
+    const welcomeMessage = isNewUser 
+      ? "Your 7-day free trial has started. No charges for 7 days."
+      : "Welcome back! Your subscription has been updated.";
+    
     toast({
-      title: "Welcome to Climbley!",
-      description: "Your 7-day free trial has started. No charges for 7 days.",
+      title: isNewUser ? "Welcome to Climbley!" : "Subscription Updated!",
+      description: welcomeMessage,
     });
 
-    // Redirect to dashboard
+    // Step 4: Redirect to dashboard
     setTimeout(() => {
       navigate("/dashboard");
     }, 2000);
