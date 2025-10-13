@@ -33,6 +33,49 @@ interface RichTextEditorProps {
   onImageUpload: (file: File) => Promise<string>;
 }
 
+const convertYouTubeUrlToEmbed = (url: string): string => {
+  try {
+    // Normalize protocol
+    let normalizedUrl = url;
+    if (url.startsWith('//')) {
+      normalizedUrl = 'https:' + url;
+    } else if (url.startsWith('www.')) {
+      normalizedUrl = 'https://' + url;
+    } else if (!url.startsWith('http://') && !url.startsWith('https://')) {
+      normalizedUrl = 'https://' + url;
+    }
+    
+    const urlObj = new URL(normalizedUrl);
+    const hostname = urlObj.hostname.toLowerCase();
+    
+    // Already an embed URL
+    if (urlObj.pathname.startsWith('/embed/')) {
+      return normalizedUrl;
+    }
+    
+    // Handle youtu.be short URLs
+    if (hostname === 'youtu.be') {
+      const videoId = urlObj.pathname.substring(1).split('/')[0].split('?')[0];
+      if (videoId) {
+        return `https://www.youtube.com/embed/${videoId}`;
+      }
+    }
+    
+    // Handle youtube.com/watch?v= URLs
+    if (hostname === 'youtube.com' || hostname === 'www.youtube.com') {
+      const videoId = urlObj.searchParams.get('v');
+      if (videoId) {
+        return `https://www.youtube.com/embed/${videoId}`;
+      }
+    }
+    
+    // Return original if not a video URL
+    return normalizedUrl;
+  } catch (e) {
+    return url;
+  }
+};
+
 export function RichTextEditor({ content, onChange, onImageUpload }: RichTextEditorProps) {
   const [showLinkDialog, setShowLinkDialog] = useState(false);
   const [showImageDialog, setShowImageDialog] = useState(false);
@@ -84,7 +127,12 @@ export function RichTextEditor({ content, onChange, onImageUpload }: RichTextEdi
 
   const insertLink = () => {
     if (linkUrl) {
-      editor.chain().focus().setLink({ href: linkUrl }).run();
+      // Convert YouTube URLs to embed format
+      const finalUrl = linkUrl.includes('youtube.com') || linkUrl.includes('youtu.be')
+        ? convertYouTubeUrlToEmbed(linkUrl)
+        : linkUrl;
+      
+      editor.chain().focus().setLink({ href: finalUrl }).run();
       setLinkUrl('');
       setShowLinkDialog(false);
     }

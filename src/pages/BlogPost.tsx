@@ -5,6 +5,42 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, Calendar, Eye } from "lucide-react";
 import DOMPurify from "dompurify";
 
+const convertYouTubeToEmbed = (url: URL): string => {
+  const hostname = url.hostname.toLowerCase();
+  
+  // Already an embed URL - return as is
+  if (url.pathname.startsWith('/embed/')) {
+    return url.toString();
+  }
+  
+  // Handle youtu.be short URLs
+  if (hostname === 'youtu.be') {
+    const videoId = url.pathname.substring(1).split('/')[0].split('?')[0];
+    if (videoId) {
+      return `https://www.youtube.com/embed/${videoId}`;
+    }
+  }
+  
+  // Handle youtube.com/watch?v= URLs
+  if ((hostname === 'youtube.com' || hostname === 'www.youtube.com')) {
+    const videoId = url.searchParams.get('v');
+    if (videoId) {
+      return `https://www.youtube.com/embed/${videoId}`;
+    }
+    
+    // Keep channel/user URLs as regular links (not embeddable)
+    if (url.pathname.startsWith('/@') || 
+        url.pathname.startsWith('/channel/') ||
+        url.pathname.startsWith('/c/') ||
+        url.pathname.startsWith('/user/')) {
+      return url.toString();
+    }
+  }
+  
+  // Return original URL if no conversion applies
+  return url.toString();
+};
+
 const addTargetBlankToExternalLinks = (html: string): string => {
   const parser = new DOMParser();
   const doc = parser.parseFromString(html, 'text/html');
@@ -28,7 +64,12 @@ const addTargetBlankToExternalLinks = (html: string): string => {
       const url = new URL(href, window.location.origin);
       // Only modify external links (different origin)
       if (url.origin !== window.location.origin) {
-        link.setAttribute('href', url.toString());
+        // Convert YouTube URLs to embed format
+        const finalUrl = url.hostname.includes('youtube.com') || url.hostname === 'youtu.be'
+          ? convertYouTubeToEmbed(url)
+          : url.toString();
+        
+        link.setAttribute('href', finalUrl);
         link.setAttribute('target', '_blank');
         link.setAttribute('rel', 'noopener noreferrer');
       }
@@ -143,7 +184,13 @@ export default function BlogPost() {
         // Force external links to open in new tab
         if (url.origin !== window.location.origin) {
           e.preventDefault();
-          window.open(url.toString(), '_blank', 'noopener,noreferrer');
+          
+          // Convert YouTube URLs to embed format before opening
+          const finalUrl = url.hostname.includes('youtube.com') || url.hostname === 'youtu.be'
+            ? convertYouTubeToEmbed(url)
+            : url.toString();
+          
+          window.open(finalUrl, '_blank', 'noopener,noreferrer');
         }
       } catch (err) {
         console.warn('Failed to process link:', href);
