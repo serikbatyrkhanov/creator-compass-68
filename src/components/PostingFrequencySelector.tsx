@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
@@ -10,18 +11,19 @@ interface PostingFrequencySelectorProps {
   onUpdate?: (days: string[]) => void;
 }
 
-const DAYS_OF_WEEK = [
-  { value: 'monday', label: 'Monday' },
-  { value: 'tuesday', label: 'Tuesday' },
-  { value: 'wednesday', label: 'Wednesday' },
-  { value: 'thursday', label: 'Thursday' },
-  { value: 'friday', label: 'Friday' },
-  { value: 'saturday', label: 'Saturday' },
-  { value: 'sunday', label: 'Sunday' }
-];
-
 export const PostingFrequencySelector = ({ userId, onUpdate }: PostingFrequencySelectorProps) => {
+  const { t } = useTranslation();
   const { toast } = useToast();
+  
+  const DAYS_OF_WEEK = [
+    { value: 'monday', label: t('postingScheduleCard.monday') },
+    { value: 'tuesday', label: t('postingScheduleCard.tuesday') },
+    { value: 'wednesday', label: t('postingScheduleCard.wednesday') },
+    { value: 'thursday', label: t('postingScheduleCard.thursday') },
+    { value: 'friday', label: t('postingScheduleCard.friday') },
+    { value: 'saturday', label: t('postingScheduleCard.saturday') },
+    { value: 'sunday', label: t('postingScheduleCard.sunday') }
+  ];
   const [selectedDays, setSelectedDays] = useState<string[]>([
     'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'
   ]);
@@ -60,8 +62,8 @@ export const PostingFrequencySelector = ({ userId, onUpdate }: PostingFrequencyS
 
     if (newDays.length === 0) {
       toast({
-        title: "Select at least one day",
-        description: "You must post on at least one day per week",
+        title: t('postingScheduleCard.selectAtLeastOne'),
+        description: t('postingScheduleCard.mustPostOneDay'),
         variant: "destructive"
       });
       return;
@@ -76,9 +78,9 @@ export const PostingFrequencySelector = ({ userId, onUpdate }: PostingFrequencyS
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Posting Schedule</CardTitle>
+        <CardTitle>{t('postingScheduleCard.title')}</CardTitle>
         <CardDescription>
-          Select which days you want to post content
+          {t('postingScheduleCard.description')}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -100,7 +102,7 @@ export const PostingFrequencySelector = ({ userId, onUpdate }: PostingFrequencyS
           ))}
         </div>
         <p className="text-xs text-muted-foreground mt-4">
-          Posting {selectedDays.length} {selectedDays.length === 1 ? 'day' : 'days'} per week
+          {t('postingScheduleCard.postingDaysPerWeek', { count: selectedDays.length })}
         </p>
       </CardContent>
     </Card>

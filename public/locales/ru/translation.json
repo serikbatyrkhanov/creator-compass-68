@@ -668,6 +668,75 @@
     "createAccount": "Создать аккаунт",
     "error": "Ошибка создания аккаунта"
   },
+  "postingScheduleCard": {
+    "title": "График публикации",
+    "description": "Выберите, в какие дни вы хотите публиковать контент",
+    "monday": "Понедельник",
+    "tuesday": "Вторник",
+    "wednesday": "Среда",
+    "thursday": "Четверг",
+    "friday": "Пятница",
+    "saturday": "Суббота",
+    "sunday": "Воскресенье",
+    "selectAtLeastOne": "Выберите хотя бы один день",
+    "mustPostOneDay": "Вы должны публиковать хотя бы один день в неделю",
+    "postingDaysPerWeek_one": "Публикация {{count}} день в неделю",
+    "postingDaysPerWeek_few": "Публикация {{count}} дня в неделю",
+    "postingDaysPerWeek_many": "Публикация {{count}} дней в неделю",
+    "postingDaysPerWeek_other": "Публикация {{count}} дней в неделю"
+  },
+  "platforms": {
+    "tiktok": "TikTok",
+    "instagram": "Instagram Reels/Пост",
+    "youtube": "YouTube видео"
+  },
+  "taskCard": {
+    "postTitle": "Заголовок поста",
+    "postTitlePlaceholder": "Введите заголовок поста...",
+    "description": "Описание",
+    "descriptionPlaceholder": "О чем будет этот контент...",
+    "progressSteps": "Шаги прогресса",
+    "workOnScript": "Работа над сценарием/планом",
+    "shootVideo": "Снять видео / Сделать фото",
+    "editContent": "Редактировать контент",
+    "published": "Опубликовано",
+    "stepsCompleted": "{{completed}}/4 шагов выполнено",
+    "quickNotes": "Быстрые заметки",
+    "saving": "Сохранение...",
+    "saved": "Сохранено",
+    "notesPlaceholder": "Добавьте заметки, идеи или напоминания...",
+    "edit": "Редактировать",
+    "done": "Готово",
+    "complete": "Завершить",
+    "selectPlatform": "Выберите платформу"
+  },
+  "editDialog": {
+    "title": "Редактировать детали задачи",
+    "description": "Настройте детали вашего поста, отслеживайте прогресс и добавляйте заметки",
+    "postTitle": "Заголовок поста",
+    "postDescription": "Описание",
+    "originalAiTask": "Оригинальная AI-задача",
+    "quickNotes": "Быстрые заметки",
+    "progressTracking": "Отслеживание прогресса",
+    "cancel": "Отмена",
+    "saveChanges": "Сохранить изменения"
+  },
+  "deleteDialog": {
+    "title": "Удалить план контента?",
+    "description": "Это навсегда удалит этот план контента и все его задачи. Это действие не может быть отменено.",
+    "cancel": "Отмена",
+    "confirm": "Удалить план"
+  },
+  "calendarToasts": {
+    "timeUpdated": "Оценка времени обновлена",
+    "timeSet": "Установлено на {{time}}",
+    "timeReset": "Сброшено на значение по умолчанию",
+    "timeUpdateFailed": "Не удалось обновить оценку времени",
+    "platformUpdated": "Платформа обновлена",
+    "platformChangedTo": "Изменено на {{platform}}",
+    "platformUpdateFailed": "Не удалось обновить платформу",
+    "tryAgain": "Пожалуйста, попробуйте снова"
+  },
   "learnMore": {
     "nav": {
       "startTrial": "Начать бесплатную пробную версию"

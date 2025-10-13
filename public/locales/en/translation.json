@@ -667,6 +667,73 @@
     "createAccount": "Create Account",
     "error": "Error creating account"
   },
+  "postingScheduleCard": {
+    "title": "Posting Schedule",
+    "description": "Select which days you want to post content",
+    "monday": "Monday",
+    "tuesday": "Tuesday",
+    "wednesday": "Wednesday",
+    "thursday": "Thursday",
+    "friday": "Friday",
+    "saturday": "Saturday",
+    "sunday": "Sunday",
+    "selectAtLeastOne": "Select at least one day",
+    "mustPostOneDay": "You must post on at least one day per week",
+    "postingDaysPerWeek_one": "Posting {{count}} day per week",
+    "postingDaysPerWeek_other": "Posting {{count}} days per week"
+  },
+  "platforms": {
+    "tiktok": "TikTok",
+    "instagram": "Instagram Reels/Post",
+    "youtube": "YouTube video"
+  },
+  "taskCard": {
+    "postTitle": "Post Title",
+    "postTitlePlaceholder": "Enter post title...",
+    "description": "Description",
+    "descriptionPlaceholder": "What will this content be about...",
+    "progressSteps": "Progress Steps",
+    "workOnScript": "Work on Script/Plan",
+    "shootVideo": "Shoot Video / Take Photo",
+    "editContent": "Edit Content",
+    "published": "Published",
+    "stepsCompleted": "{{completed}}/4 steps completed",
+    "quickNotes": "Quick Notes",
+    "saving": "Saving...",
+    "saved": "Saved",
+    "notesPlaceholder": "Add notes, ideas, or reminders...",
+    "edit": "Edit",
+    "done": "Done",
+    "complete": "Complete",
+    "selectPlatform": "Select platform"
+  },
+  "editDialog": {
+    "title": "Edit Task Details",
+    "description": "Customize your post details, track progress, and add notes",
+    "postTitle": "Post Title",
+    "postDescription": "Description",
+    "originalAiTask": "Original AI Task",
+    "quickNotes": "Quick Notes",
+    "progressTracking": "Progress Tracking",
+    "cancel": "Cancel",
+    "saveChanges": "Save Changes"
+  },
+  "deleteDialog": {
+    "title": "Delete Content Plan?",
+    "description": "This will permanently delete this content plan and all its tasks. This action cannot be undone.",
+    "cancel": "Cancel",
+    "confirm": "Delete Plan"
+  },
+  "calendarToasts": {
+    "timeUpdated": "Time estimate updated",
+    "timeSet": "Set to {{time}}",
+    "timeReset": "Reset to default",
+    "timeUpdateFailed": "Failed to update time estimate",
+    "platformUpdated": "Platform updated",
+    "platformChangedTo": "Changed to {{platform}}",
+    "platformUpdateFailed": "Failed to update platform",
+    "tryAgain": "Please try again"
+  },
   "learnMore": {
     "nav": {
       "startTrial": "Start Free Trial"
