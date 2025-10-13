@@ -52,6 +52,8 @@ export function RichTextEditor({ content, onChange, onImageUpload }: RichTextEdi
         openOnClick: false,
         HTMLAttributes: {
           class: 'text-primary underline',
+          target: '_blank',
+          rel: 'noopener noreferrer',
         },
       }),
     ],

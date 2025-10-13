@@ -5,6 +5,22 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, Calendar, Eye } from "lucide-react";
 import DOMPurify from "dompurify";
 
+const addTargetBlankToExternalLinks = (html: string): string => {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, 'text/html');
+  const links = doc.querySelectorAll('a');
+  
+  links.forEach(link => {
+    const href = link.getAttribute('href');
+    if (href && (href.startsWith('http://') || href.startsWith('https://'))) {
+      link.setAttribute('target', '_blank');
+      link.setAttribute('rel', 'noopener noreferrer');
+    }
+  });
+  
+  return doc.body.innerHTML;
+};
+
 interface BlogPost {
   id: string;
   title: string;
@@ -80,7 +96,9 @@ export default function BlogPost() {
     return null;
   }
 
-  const sanitizedContent = DOMPurify.sanitize(post.content);
+  const sanitizedContent = addTargetBlankToExternalLinks(
+    DOMPurify.sanitize(post.content)
+  );
 
   return (
     <div className="min-h-screen bg-background">

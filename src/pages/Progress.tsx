@@ -388,20 +388,20 @@ const Progress = () => {
                         </p>
                         <p className="text-sm text-muted-foreground">Channel</p>
                       </div>
-                      <a 
-                        href={normalizeExternalUrl(socialProfiles.youtubeUrl, 'youtube')} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="block w-full"
+                      <Button 
+                        asChild
+                        variant="outline" 
+                        className="w-full"
                       >
-                        <Button 
-                          variant="outline" 
-                          className="w-full"
+                        <a 
+                          href={normalizeExternalUrl(socialProfiles.youtubeUrl, 'youtube')} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
                         >
                           <ExternalLink className="h-4 w-4 mr-2" />
                           View on YouTube
-                        </Button>
-                      </a>
+                        </a>
+                      </Button>
                     </CardContent>
                   </Card>
                 )}
@@ -422,20 +422,20 @@ const Progress = () => {
                         </p>
                         <p className="text-sm text-muted-foreground">Profile</p>
                       </div>
-                      <a 
-                        href={normalizeExternalUrl(socialProfiles.instagramUrl, 'instagram')} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="block w-full"
+                      <Button 
+                        asChild
+                        variant="outline" 
+                        className="w-full"
                       >
-                        <Button 
-                          variant="outline" 
-                          className="w-full"
+                        <a 
+                          href={normalizeExternalUrl(socialProfiles.instagramUrl, 'instagram')} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
                         >
                           <ExternalLink className="h-4 w-4 mr-2" />
                           View on Instagram
-                        </Button>
-                      </a>
+                        </a>
+                      </Button>
                     </CardContent>
                   </Card>
                 )}
@@ -456,20 +456,20 @@ const Progress = () => {
                         </p>
                         <p className="text-sm text-muted-foreground">Profile</p>
                       </div>
-                      <a 
-                        href={normalizeExternalUrl(socialProfiles.tiktokUrl, 'tiktok')} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="block w-full"
+                      <Button 
+                        asChild
+                        variant="outline" 
+                        className="w-full"
                       >
-                        <Button 
-                          variant="outline" 
-                          className="w-full"
+                        <a 
+                          href={normalizeExternalUrl(socialProfiles.tiktokUrl, 'tiktok')} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
                         >
                           <ExternalLink className="h-4 w-4 mr-2" />
                           View on TikTok
-                        </Button>
-                      </a>
+                        </a>
+                      </Button>
                     </CardContent>
                   </Card>
                 )}
