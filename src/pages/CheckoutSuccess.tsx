@@ -93,7 +93,14 @@ const CheckoutSuccess = () => {
   }, [navigate, toast, searchParams]);
 
   const completeSignup = async (email: string, password: string, firstName: string, lastName: string, phone?: string) => {
-    console.log("Creating Supabase account...");
+    console.log("Creating Supabase account with data:", {
+      email,
+      firstName,
+      lastName,
+      phone: phone || '(none)',
+      hasPassword: !!password
+    });
+
     const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
       email,
       password,
@@ -102,17 +109,25 @@ const CheckoutSuccess = () => {
         data: { 
           first_name: firstName,
           last_name: lastName,
-          phone: phone || null
+          phone: phone || null,
+          name: `${firstName} ${lastName}`.trim()
         },
       },
     });
 
     if (signUpError) {
-      console.error("Sign up error:", signUpError);
+      console.error("Sign up error details:", {
+        message: signUpError.message,
+        status: signUpError.status,
+        name: signUpError.name
+      });
       throw signUpError;
     }
 
-    console.log("Account created successfully:", signUpData.user?.id);
+    console.log("Account created successfully:", {
+      userId: signUpData.user?.id,
+      email: signUpData.user?.email
+    });
 
     // Sign in immediately (auto-confirm is enabled)
     console.log("Signing in...");
@@ -278,7 +293,6 @@ const CheckoutSuccess = () => {
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                   placeholder="+1 (555) 123-4567"
-                  pattern="[+]?[0-9\s\-()]+"
                   maxLength={20}
                 />
               </div>
