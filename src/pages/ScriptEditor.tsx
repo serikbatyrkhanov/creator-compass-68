@@ -51,40 +51,12 @@ const ScriptEditor = () => {
   useEffect(() => {
     if (!canvasRef.current) return;
 
-    const dpr = window.devicePixelRatio || 1;
-    const logicalWidth = 1200;
-    const logicalHeight = 1600;
-
     const fabricCanvas = new Canvas(canvasRef.current, {
-      width: logicalWidth,
-      height: logicalHeight,
+      width: 1200,
+      height: 1600,
       backgroundColor: "#fff",
+      enableRetinaScaling: true,
     });
-
-    // Scale canvas for high-DPI displays (Retina, etc.)
-    if (dpr !== 1) {
-      const canvasElement = canvasRef.current;
-      
-      // Set actual pixel dimensions
-      canvasElement.width = logicalWidth * dpr;
-      canvasElement.height = logicalHeight * dpr;
-      
-      // Set CSS dimensions (visual size)
-      canvasElement.style.width = `${logicalWidth}px`;
-      canvasElement.style.height = `${logicalHeight}px`;
-      
-      // Scale the 2D context
-      const ctx = canvasElement.getContext('2d');
-      if (ctx) {
-        ctx.scale(dpr, dpr);
-      }
-      
-      // Reset Fabric.js dimensions to logical size
-      fabricCanvas.setDimensions({
-        width: logicalWidth,
-        height: logicalHeight
-      });
-    }
 
     // Initialize the freeDrawingBrush right after canvas creation
     if (fabricCanvas.freeDrawingBrush) {
@@ -344,6 +316,7 @@ const ScriptEditor = () => {
         format: "png",
         quality: 1.0,
         multiplier: 2,
+        enableRetinaScaling: true,
       });
 
       const pdf = new jsPDF({
