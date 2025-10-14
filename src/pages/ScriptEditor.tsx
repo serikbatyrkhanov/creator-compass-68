@@ -125,9 +125,13 @@ const ScriptEditor = () => {
       }
 
       if (data?.content) {
-        canvas.loadFromJSON(data.content as string | Record<string, any>, () => {
+        try {
+          await canvas.loadFromJSON(data.content as string | Record<string, any>);
           canvas.renderAll();
-        });
+          console.log("Document loaded successfully");
+        } catch (loadError) {
+          console.error("Error loading canvas JSON:", loadError);
+        }
       }
     };
 
