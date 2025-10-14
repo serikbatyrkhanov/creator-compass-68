@@ -1101,7 +1101,7 @@ const ContentCalendar = () => {
                                     className="h-7 gap-1 text-xs"
                                   >
                                     <Edit2 className="h-3 w-3" />
-                                    Edit Script
+                                    {t("taskCard.editScript")}
                                   </Button>
                                 </div>
                                 <div className="flex items-center space-x-2">
