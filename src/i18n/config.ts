@@ -16,15 +16,10 @@ i18n
     },
     backend: {
       loadPath: '/locales/{{lng}}/{{ns}}.json',
-      queryStringParams: { v: Date.now().toString() },
-      reloadInterval: false,
     },
     detection: {
       order: ['localStorage', 'navigator'],
       caches: ['localStorage'],
-    },
-    react: {
-      useSuspense: false,
     },
   });
 
