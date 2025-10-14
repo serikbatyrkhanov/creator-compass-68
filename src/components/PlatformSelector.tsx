@@ -12,11 +12,11 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
 const platforms = [
-  { code: 'youtube_video', nameKey: 'platform.selector.youtube_video', icon: '🎥' },
-  { code: 'youtube_shorts', nameKey: 'platform.selector.youtube_shorts', icon: '📱' },
-  { code: 'instagram_post', nameKey: 'platform.selector.instagram_post', icon: '📸' },
-  { code: 'instagram_reels', nameKey: 'platform.selector.instagram_reels', icon: '🎬' },
-  { code: 'tiktok', nameKey: 'platform.selector.tiktok', icon: '🎵' },
+  { code: 'youtube_video', nameKey: 'platform.selector.youtube_video' },
+  { code: 'youtube_shorts', nameKey: 'platform.selector.youtube_shorts' },
+  { code: 'instagram_post', nameKey: 'platform.selector.instagram_post' },
+  { code: 'instagram_reels', nameKey: 'platform.selector.instagram_reels' },
+  { code: 'tiktok', nameKey: 'platform.selector.tiktok' },
 ];
 
 export const PlatformSelector = () => {
@@ -64,9 +64,10 @@ export const PlatformSelector = () => {
         
         if (error) throw error;
         
+        const platformName = platforms.find(p => p.code === value)?.nameKey;
         toast({
           title: t('common.saved'),
-          description: `${t('platform.selector.label')}: ${t(platforms.find(p => p.code === value)?.nameKey || '')}`,
+          description: platformName ? `${t('platform.selector.label')}: ${t(platformName)}` : t('platform.selector.label'),
         });
       } catch (error) {
         console.error('Error updating platform preference:', error);
@@ -90,18 +91,12 @@ export const PlatformSelector = () => {
       <SelectTrigger className="w-[200px] bg-background/50 backdrop-blur-sm border-primary/20">
         <Video className="w-4 h-4 mr-2" />
         <SelectValue placeholder={t('platform.selector.label')}>
-          {selectedPlatform && (
-            <>
-              <span className="mr-2">{selectedPlatform.icon}</span>
-              {t(selectedPlatform.nameKey)}
-            </>
-          )}
+          {selectedPlatform ? t(selectedPlatform.nameKey) : t('platform.selector.label')}
         </SelectValue>
       </SelectTrigger>
-      <SelectContent>
+      <SelectContent className="bg-card z-50">
         {platforms.map((p) => (
           <SelectItem key={p.code} value={p.code}>
-            <span className="mr-2">{p.icon}</span>
             {t(p.nameKey)}
           </SelectItem>
         ))}
