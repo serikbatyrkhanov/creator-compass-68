@@ -670,7 +670,7 @@ const ScriptEditor = () => {
       </div>
 
       {/* Canvas Area */}
-      <div className={`${taskDetails ? 'pt-56' : 'pt-32'} pb-10 bg-muted min-h-screen flex justify-center items-start`}
+      <div className={`${taskDetails ? 'pt-56' : 'pt-32'} pb-10 bg-muted min-h-screen flex justify-center items-start`}>
         <div className="mt-8 shadow-2xl rounded-lg overflow-hidden">
           <canvas ref={canvasRef} />
         </div>
