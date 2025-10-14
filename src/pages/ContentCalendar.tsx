@@ -1021,6 +1021,14 @@ const ContentCalendar = () => {
                                     tasks: p.tasks.map(t => t.id === dayTask.id ? { ...t, post_title: newTitle } : t)
                                   })));
                                   
+                                  // Also update selectedPlan state
+                                  if (selectedPlan) {
+                                    setSelectedPlan(prev => prev ? ({
+                                      ...prev,
+                                      tasks: prev.tasks.map(t => t.id === dayTask.id ? { ...t, post_title: newTitle } : t)
+                                    }) : null);
+                                  }
+                                  
                                   // Debounced save to database
                                   debouncedPostFieldSave(dayTask.id, 'post_title', newTitle);
                                 }}
@@ -1044,6 +1052,14 @@ const ContentCalendar = () => {
                                     ...p,
                                     tasks: p.tasks.map(t => t.id === dayTask.id ? { ...t, post_description: newDesc } : t)
                                   })));
+                                  
+                                  // Also update selectedPlan state
+                                  if (selectedPlan) {
+                                    setSelectedPlan(prev => prev ? ({
+                                      ...prev,
+                                      tasks: prev.tasks.map(t => t.id === dayTask.id ? { ...t, post_description: newDesc } : t)
+                                    }) : null);
+                                  }
                                   
                                   // Debounced save to database
                                   debouncedPostFieldSave(dayTask.id, 'post_description', newDesc);
