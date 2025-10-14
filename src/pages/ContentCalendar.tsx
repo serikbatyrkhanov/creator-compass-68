@@ -83,10 +83,45 @@ const ContentCalendar = () => {
   const [notesSaving, setNotesSaving] = useState<{ [key: string]: boolean }>({});
   const [notesSaved, setNotesSaved] = useState<{ [key: string]: boolean }>({});
   const notesTimeouts = useRef<{ [key: string]: NodeJS.Timeout }>({});
+  const postFieldTimeouts = useRef<{ [key: string]: NodeJS.Timeout }>({});
 
   useEffect(() => {
     fetchPlans();
   }, []);
+
+  // Debounced save for post title and description
+  const debouncedPostFieldSave = useCallback(async (taskId: string, field: 'post_title' | 'post_description', value: string) => {
+    const timeoutKey = `${taskId}-${field}`;
+    
+    if (postFieldTimeouts.current[timeoutKey]) {
+      clearTimeout(postFieldTimeouts.current[timeoutKey]);
+    }
+    
+    postFieldTimeouts.current[timeoutKey] = setTimeout(async () => {
+      try {
+        const { error } = await supabase
+          .from("plan_tasks")
+          .update({ [field]: value })
+          .eq("id", taskId);
+        
+        if (error) {
+          console.error(`Failed to save ${field}:`, error);
+          toast({
+            title: t("errors.saveFailed"),
+            description: `Could not update ${field.replace('_', ' ')}. Please try again.`,
+            variant: "destructive"
+          });
+        }
+      } catch (err) {
+        console.error(`Error saving ${field}:`, err);
+        toast({
+          title: t("errors.saveFailed"),
+          description: "An unexpected error occurred.",
+          variant: "destructive"
+        });
+      }
+    }, 1000);
+  }, [toast, t]);
 
   const fetchPlans = async () => {
     try {
@@ -966,11 +1001,15 @@ const ContentCalendar = () => {
                                 value={dayTask.post_title || ""}
                                 onChange={(e) => {
                                   const newTitle = e.target.value;
-                                  supabase.from("plan_tasks").update({ post_title: newTitle }).eq("id", dayTask.id);
+                                  
+                                  // Update local state immediately (optimistic update)
                                   setPlans(plans.map(p => ({
                                     ...p,
                                     tasks: p.tasks.map(t => t.id === dayTask.id ? { ...t, post_title: newTitle } : t)
                                   })));
+                                  
+                                  // Debounced save to database
+                                  debouncedPostFieldSave(dayTask.id, 'post_title', newTitle);
                                 }}
                                 placeholder={t("taskCard.postTitlePlaceholder")}
                                 className="text-sm"
@@ -986,11 +1025,15 @@ const ContentCalendar = () => {
                                 value={dayTask.post_description || ""}
                                 onChange={(e) => {
                                   const newDesc = e.target.value;
-                                  supabase.from("plan_tasks").update({ post_description: newDesc }).eq("id", dayTask.id);
+                                  
+                                  // Update local state immediately (optimistic update)
                                   setPlans(plans.map(p => ({
                                     ...p,
                                     tasks: p.tasks.map(t => t.id === dayTask.id ? { ...t, post_description: newDesc } : t)
                                   })));
+                                  
+                                  // Debounced save to database
+                                  debouncedPostFieldSave(dayTask.id, 'post_description', newDesc);
                                 }}
                                 placeholder={t("taskCard.descriptionPlaceholder")}
                                 className="text-xs min-h-[60px] resize-none"
