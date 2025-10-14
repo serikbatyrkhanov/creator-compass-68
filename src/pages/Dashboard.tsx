@@ -11,7 +11,7 @@ import {
   FileCheck, 
   MessageCircle, 
   CheckCircle2,
-  Sparkles,
+  Flame,
   Settings,
   BookOpen
 } from "lucide-react";
@@ -274,7 +274,7 @@ const Dashboard = () => {
             <Card className="border-2 hover:shadow-lg transition-all cursor-pointer flex flex-col" onClick={() => setTrendingTitlesOpen(true)}>
               <CardHeader>
                 <div className="h-12 w-12 rounded-lg bg-purple-500/10 flex items-center justify-center mb-4">
-                  <Sparkles className="h-6 w-6 text-purple-600" />
+                  <Flame className="h-6 w-6 text-purple-600" />
                 </div>
                 <CardTitle>{t('calendar.trending')}</CardTitle>
                 <CardDescription>
