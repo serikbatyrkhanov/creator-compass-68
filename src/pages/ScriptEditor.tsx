@@ -188,7 +188,7 @@ export default function ScriptEditor() {
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => navigate(-1)}
+              onClick={() => navigate('/content-calendar')}
             >
               <ArrowLeft className="h-4 w-4" />
             </Button>
