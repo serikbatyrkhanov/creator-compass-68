@@ -12,9 +12,9 @@ serve(async (req) => {
   }
 
   try {
-    const { archetype, topics, timeBucket, gear, selectedIdeas, quizResponseId, postingDays, duration = 7 } = await req.json();
+    const { archetype, topics, timeBucket, gear, selectedIdeas, quizResponseId, postingDays, duration = 7, language = 'en', preferredPlatform } = await req.json();
     
-    console.log('[GENERATE-PLAN] Starting generation', { archetype, timeBucket, ideasCount: selectedIdeas?.length, postingDays, duration });
+    console.log('[GENERATE-PLAN] Starting generation', { archetype, timeBucket, ideasCount: selectedIdeas?.length, postingDays, duration, language, preferredPlatform });
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
@@ -34,36 +34,59 @@ serve(async (req) => {
     const planDays = duration || 7;
     const planType = planDays <= 7 ? '7-day weekly' : '30-day monthly';
     
+    // Platform-specific guidelines
+    const getPlatformGuidelines = (platform: string | null) => {
+      if (!platform) return '';
+      const guidelines: { [key: string]: string } = {
+        youtube_video: 'Long-form content (8-20+ min), educational/entertainment value, strong thumbnails, SEO titles',
+        youtube_shorts: '15-60 sec vertical, hook in first 3 seconds, trending music, fast-paced editing',
+        instagram_post: 'Static image carousel, captions with hashtags, aesthetic focus, engagement prompts',
+        instagram_reels: '15-90 sec vertical, trending audio, quick cuts, native editing, text overlays',
+        tiktok: '15-60 sec vertical, trending sounds, native TikTok editing style, authentic/raw feel'
+      };
+      return guidelines[platform] || '';
+    };
+    
+    const platformGuidelines = preferredPlatform ? `\nPlatform focus: ${preferredPlatform}\nPlatform requirements: ${getPlatformGuidelines(preferredPlatform)}` : '';
+    const languageInstruction = language === 'ru' ? 'Russian' : 'English';
+    
     const systemPrompt = `You are an expert content planning coach. Create a realistic ${planType} content creation schedule for a ${archetype} creator.
+
+CRITICAL: Generate ALL text (tasks, titles, descriptions, tips) in ${languageInstruction}.
+Language: ${language}${platformGuidelines}
+
 The plan should be achievable within ${timeText} total per week.
 Available gear: ${gearText}
 Topics: ${topicsText}
 IMPORTANT: Only create content for these posting days: ${postingDaysText}. For non-posting days, assign planning/research tasks.
 
 For EACH day provide:
-1. task: The main workflow/process description
-2. postTitle: A catchy, specific title for the actual post content
-3. postDescription: A brief description of what the content will cover (2-3 sentences)
+1. task: The main workflow/process description (in ${languageInstruction})
+2. postTitle: A catchy, specific title for the actual post content (in ${languageInstruction})
+3. postDescription: A brief description of what the content will cover - 2-3 sentences (in ${languageInstruction})
 4. timeEstimate: Time needed
 5. platform: Publishing platform (only for posting days)
-6. tip: Helpful advice for execution`;
+6. tip: Helpful advice for execution (in ${languageInstruction})`;
 
     const userPrompt = `Create a ${planType} content plan based on these ideas:
 ${ideasText}
 
 The user posts content on: ${postingDaysText}
+${preferredPlatform ? `\nPreferred platform: ${preferredPlatform}` : ''}
+
+CRITICAL: Write EVERYTHING in ${languageInstruction}. All tasks, titles, descriptions, and tips must be in ${languageInstruction}.
 
 For each day (${planDays} days total), provide:
-1. task: Main task description (specific action - actual content creation ONLY on posting days: ${postingDaysText})
-2. postTitle: An engaging, clickable title for the post content
-3. postDescription: What the content will be about (2-3 sentences)
+1. task: Main task description in ${languageInstruction} (specific action - actual content creation ONLY on posting days: ${postingDaysText})
+2. postTitle: An engaging, clickable title for the post content in ${languageInstruction}
+3. postDescription: What the content will be about (2-3 sentences) in ${languageInstruction}
 4. timeEstimate: Time estimate (in hours)
-5. platform: Platform to post on (ONLY for posting days: ${postingDaysText})
-6. tip: Key tip or note
+5. platform: Platform to post on (ONLY for posting days: ${postingDaysText})${preferredPlatform ? ` - prefer ${preferredPlatform}` : ''}
+6. tip: Key tip or note in ${languageInstruction}
 
 The total time across all ${planDays} days should fit within ${timeText} per week average.
-Non-posting days should have planning, research, or rest activities.
-Posting days should have actual content creation and publishing tasks.`;
+Non-posting days should have planning, research, or rest activities in ${languageInstruction}.
+Posting days should have actual content creation and publishing tasks in ${languageInstruction}.`;
 
     // Call Lovable AI with structured output
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {

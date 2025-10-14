@@ -20,6 +20,7 @@ import { format, addDays, parseISO, startOfWeek, getMonth, getYear, startOfMonth
 import { enUS, ru } from "date-fns/locale";
 import { PostingFrequencySelector } from "@/components/PostingFrequencySelector";
 import { LanguageSelector } from "@/components/LanguageSelector";
+import { PlatformSelector } from "@/components/PlatformSelector";
 
 interface PlanTask {
   id: string;
@@ -82,6 +83,7 @@ const ContentCalendar = () => {
   const [postingDays, setPostingDays] = useState<string[]>(['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']);
   const [notesSaving, setNotesSaving] = useState<{ [key: string]: boolean }>({});
   const [notesSaved, setNotesSaved] = useState<{ [key: string]: boolean }>({});
+  const [preferredPlatform, setPreferredPlatform] = useState<string | null>(null);
   const notesTimeouts = useRef<{ [key: string]: NodeJS.Timeout }>({});
   const postFieldTimeouts = useRef<{ [key: string]: NodeJS.Timeout }>({});
 
@@ -144,6 +146,17 @@ const ContentCalendar = () => {
 
       if (quizResponse?.posting_days) {
         setPostingDays(quizResponse.posting_days);
+      }
+
+      // Fetch user's preferred platform
+      const { data: profileData } = await supabase
+        .from("profiles")
+        .select("preferred_platform")
+        .eq("id", user.id)
+        .single();
+
+      if (profileData?.preferred_platform) {
+        setPreferredPlatform(profileData.preferred_platform);
       }
 
       // Fetch plans with their tasks
@@ -434,7 +447,9 @@ const ContentCalendar = () => {
           selectedTopics: quizResponse.selected_topics || [],
           targetAudience: quizResponse.target_audience || "",
           postingDays: currentPostingDays,
-          duration: 7
+          duration: 7,
+          language: i18n.language,
+          preferredPlatform: preferredPlatform
         },
         headers: {
           Authorization: `Bearer ${session?.access_token}`
@@ -716,6 +731,7 @@ const ContentCalendar = () => {
               </div>
             </div>
             <div className="flex items-center gap-4">
+              <PlatformSelector />
               <LanguageSelector />
               <Button onClick={generateNewPlan} disabled={generatingPlan}>
                 <img src={logo} alt="" className="h-4 w-4 mr-2" />
