@@ -1,25 +1,28 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Canvas, Textbox, Circle, Image as FabricImage } from "fabric";
+import { useEditor, EditorContent } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import Image from "@tiptap/extension-image";
 import jsPDF from "jspdf";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
-import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import {
   ArrowLeft,
-  Type,
   Image as ImageIcon,
-  Pen,
   Save,
   Download,
   Loader2,
   Trash2,
   Upload,
-  CheckCircle2,
   Sparkles,
+  Bold,
+  Italic,
+  List,
+  Heading2,
 } from "lucide-react";
 import { format } from "date-fns";
 import { useTranslation } from "react-i18next";
@@ -29,16 +32,12 @@ const ScriptEditor = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { t } = useTranslation();
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
-  const [canvas, setCanvas] = useState<Canvas | null>(null);
-  const [drawMode, setDrawMode] = useState(false);
   const [saving, setSaving] = useState(false);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
-  const [brushColor, setBrushColor] = useState("#8B5CF6");
-  const [brushSize, setBrushSize] = useState(5);
   const [imageUrl, setImageUrl] = useState("");
-  const [showImageInput, setShowImageInput] = useState(false);
+  const [showImageDialog, setShowImageDialog] = useState(false);
   const [userId, setUserId] = useState<string>("");
   const [taskDetails, setTaskDetails] = useState<{
     post_title: string;
@@ -46,30 +45,33 @@ const ScriptEditor = () => {
     platform: string | null;
   } | null>(null);
   const [generatingScript, setGeneratingScript] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Initialize canvas
-  useEffect(() => {
-    if (!canvasRef.current) return;
-
-    const fabricCanvas = new Canvas(canvasRef.current, {
-      width: 1200,
-      height: 1600,
-      backgroundColor: "#fff",
-      enableRetinaScaling: true,
-    });
-
-    // Initialize the freeDrawingBrush right after canvas creation
-    if (fabricCanvas.freeDrawingBrush) {
-      fabricCanvas.freeDrawingBrush.color = brushColor;
-      fabricCanvas.freeDrawingBrush.width = brushSize;
-    }
-
-    setCanvas(fabricCanvas);
-
-    return () => {
-      fabricCanvas.dispose();
-    };
-  }, []);
+  // Initialize Tiptap editor
+  const editor = useEditor({
+    extensions: [
+      StarterKit.configure({
+        heading: {
+          levels: [2, 3],
+        },
+      }),
+      Image.configure({
+        HTMLAttributes: {
+          class: 'rounded-lg max-w-full h-auto my-4',
+        },
+      }),
+    ],
+    content: '',
+    editorProps: {
+      attributes: {
+        class: 'prose prose-lg max-w-none focus:outline-none min-h-[600px] p-8 bg-background',
+      },
+    },
+    onUpdate: ({ editor }) => {
+      // Trigger auto-save on content change
+      debouncedAutoSave();
+    },
+  });
 
   // Get current user
   useEffect(() => {
@@ -109,9 +111,10 @@ const ScriptEditor = () => {
 
   // Load existing document
   useEffect(() => {
-    if (!canvas || !taskId || !userId) return;
+    if (!editor || !taskId || !userId) return;
 
     const loadDocument = async () => {
+      setIsLoading(true);
       const { data, error } = await supabase
         .from("script_documents")
         .select("content")
@@ -121,42 +124,54 @@ const ScriptEditor = () => {
 
       if (error) {
         console.error("Error loading document:", error);
+        setIsLoading(false);
         return;
       }
 
       if (data?.content) {
         try {
-          await canvas.loadFromJSON(data.content as string | Record<string, any>);
-          canvas.renderAll();
+          // Check if content is HTML string (new format) or Canvas JSON (old format)
+          if (typeof data.content === 'string') {
+            // New format: HTML string
+            editor.commands.setContent(data.content);
+          } else if (data.content && typeof data.content === 'object') {
+            // Old format: Canvas JSON - extract text from objects
+            const canvasObjects = (data.content as any).objects || [];
+            let extractedText = '';
+            
+            canvasObjects.forEach((obj: any) => {
+              if (obj.type === 'textbox' || obj.type === 'text') {
+                extractedText += obj.text + '\n\n';
+              }
+            });
+            
+            if (extractedText) {
+              editor.commands.setContent(`<p>${extractedText.replace(/\n/g, '<br>')}</p>`);
+              toast({
+                title: "Canvas data converted",
+                description: "Your previous script has been converted to text format",
+              });
+            }
+          }
           console.log("Document loaded successfully");
         } catch (loadError) {
-          console.error("Error loading canvas JSON:", loadError);
+          console.error("Error loading document:", loadError);
         }
       }
+      setIsLoading(false);
     };
 
     loadDocument();
-  }, [canvas, taskId, userId]);
-
-  // Update drawing mode
-  useEffect(() => {
-    if (!canvas) return;
-    
-    canvas.isDrawingMode = drawMode;
-    if (drawMode && canvas.freeDrawingBrush) {
-      canvas.freeDrawingBrush.color = brushColor;
-      canvas.freeDrawingBrush.width = brushSize;
-    }
-  }, [canvas, drawMode, brushColor, brushSize]);
+  }, [editor, taskId, userId]);
 
   // Auto-save function
   const autoSave = useCallback(async () => {
-    if (!canvas || !taskId || !userId) return;
+    if (!editor || !taskId || !userId || isLoading) return;
 
     setSaving(true);
 
     try {
-      const canvasJSON = canvas.toJSON();
+      const htmlContent = editor.getHTML();
 
       const { error } = await supabase
         .from("script_documents")
@@ -164,7 +179,7 @@ const ScriptEditor = () => {
           {
             task_id: taskId,
             user_id: userId,
-            content: canvasJSON,
+            content: htmlContent,
             last_edited_at: new Date().toISOString(),
           },
           {
@@ -175,10 +190,6 @@ const ScriptEditor = () => {
       if (error) throw error;
 
       setLastSaved(new Date());
-      toast({
-        title: t("scriptEditor.documentSaved"),
-        duration: 2000,
-      });
     } catch (error) {
       console.error("Save error:", error);
       toast({
@@ -189,53 +200,18 @@ const ScriptEditor = () => {
     } finally {
       setSaving(false);
     }
-  }, [canvas, taskId, userId, toast]);
+  }, [editor, taskId, userId, isLoading, toast, t]);
 
-  // Trigger auto-save on canvas changes
-  useEffect(() => {
-    if (!canvas) return;
-
-    let saveTimeout: NodeJS.Timeout;
-
-    const handleChange = () => {
-      clearTimeout(saveTimeout);
-      saveTimeout = setTimeout(() => {
-        autoSave();
-      }, 3000);
-    };
-
-    canvas.on("object:modified", handleChange);
-    canvas.on("object:added", handleChange);
-    canvas.on("object:removed", handleChange);
-
-    return () => {
-      clearTimeout(saveTimeout);
-      canvas.off("object:modified", handleChange);
-      canvas.off("object:added", handleChange);
-      canvas.off("object:removed", handleChange);
-    };
-  }, [canvas, autoSave]);
-
-  const addTextBlock = () => {
-    if (!canvas) return;
-
-    const text = new Textbox("Type here...", {
-      left: 100,
-      top: 100,
-      width: 400,
-      fontSize: 18,
-      fill: "#000",
-      fontFamily: "Inter, sans-serif",
-      editable: true,
-    });
-
-    canvas.add(text);
-    canvas.setActiveObject(text);
-    canvas.renderAll();
-  };
+  // Debounced auto-save
+  const debouncedAutoSave = useCallback(() => {
+    const timeoutId = setTimeout(() => {
+      autoSave();
+    }, 2000);
+    return () => clearTimeout(timeoutId);
+  }, [autoSave]);
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!canvas || !e.target.files?.[0]) return;
+    if (!editor || !e.target.files?.[0]) return;
 
     const file = e.target.files[0];
     
@@ -254,11 +230,8 @@ const ScriptEditor = () => {
         .from("blog-images")
         .getPublicUrl(data.path);
 
-      FabricImage.fromURL(publicUrl).then((img) => {
-        img.scaleToWidth(400);
-        canvas.add(img);
-        canvas.renderAll();
-      });
+      // Insert image into editor
+      editor.chain().focus().setImage({ src: publicUrl }).run();
 
       toast({
         title: t("scriptEditor.imageUploaded"),
@@ -275,61 +248,54 @@ const ScriptEditor = () => {
   };
 
   const addImageFromUrl = () => {
-    if (!canvas || !imageUrl) return;
+    if (!editor || !imageUrl) return;
 
-    FabricImage.fromURL(imageUrl).then((img) => {
-      img.scaleToWidth(400);
-      canvas.add(img);
-      canvas.renderAll();
-      setImageUrl("");
-      setShowImageInput(false);
-      
-      toast({
-        title: t("scriptEditor.imageAdded"),
-        description: t("scriptEditor.imageAdded"),
-      });
+    editor.chain().focus().setImage({ src: imageUrl }).run();
+    setImageUrl("");
+    setShowImageDialog(false);
+    
+    toast({
+      title: t("scriptEditor.imageAdded"),
     });
   };
 
   const deleteSelected = () => {
-    if (!canvas) return;
-    
-    const activeObjects = canvas.getActiveObjects();
-    canvas.remove(...activeObjects);
-    canvas.discardActiveObject();
-    canvas.renderAll();
-  };
-
-  const clearDrawings = () => {
-    if (!canvas) return;
-    
-    const objects = canvas.getObjects();
-    objects.forEach((obj) => {
-      if (obj.type === "path") {
-        canvas.remove(obj);
-      }
-    });
-    canvas.renderAll();
+    if (!editor) return;
+    editor.chain().focus().deleteSelection().run();
   };
 
   const exportToPDF = async () => {
-    if (!canvas) return;
+    if (!editor) return;
 
     try {
-      const dataURL = canvas.toDataURL({
-        format: "png",
-        quality: 1.0,
-        multiplier: 2,
-        enableRetinaScaling: true,
+      // Create a temporary div to render the HTML content
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = editor.getHTML();
+      tempDiv.style.position = 'absolute';
+      tempDiv.style.left = '-9999px';
+      tempDiv.style.width = '800px';
+      tempDiv.style.padding = '40px';
+      tempDiv.style.backgroundColor = 'white';
+      tempDiv.style.fontFamily = 'Inter, sans-serif';
+      document.body.appendChild(tempDiv);
+
+      // Use html2canvas to convert to image
+      const html2canvas = (await import('html2canvas')).default;
+      const canvas = await html2canvas(tempDiv, {
+        scale: 2,
+        backgroundColor: '#ffffff',
       });
 
+      document.body.removeChild(tempDiv);
+
+      const imgData = canvas.toDataURL('image/png');
       const pdf = new jsPDF({
-        orientation: "portrait",
-        unit: "px",
-        format: [1200, 1600],
+        orientation: 'portrait',
+        unit: 'px',
+        format: [canvas.width / 2, canvas.height / 2],
       });
 
-      pdf.addImage(dataURL, "PNG", 0, 0, 1200, 1600);
+      pdf.addImage(imgData, 'PNG', 0, 0, canvas.width / 2, canvas.height / 2);
       pdf.save(`script-${taskId}.pdf`);
 
       toast({
@@ -346,48 +312,8 @@ const ScriptEditor = () => {
     }
   };
 
-  const loadDemo = () => {
-    if (!canvas) return;
-
-    // Clear existing content
-    canvas.clear();
-    canvas.backgroundColor = "#fff";
-
-    // Add demo text block
-    const demoText = new Textbox(
-      "Hook: Did you know 90% of people struggle with consistency?\n\nBody: Here's my 3-step system...\n\nCTA: Follow for more tips!",
-      {
-        left: 100,
-        top: 100,
-        width: 600,
-        fontSize: 18,
-        fill: "#000",
-        fontFamily: "Inter",
-      }
-    );
-    canvas.add(demoText);
-
-    // Add demo circle
-    const demoCircle = new Circle({
-      left: 750,
-      top: 200,
-      radius: 50,
-      fill: "transparent",
-      stroke: "#EC4899",
-      strokeWidth: 3,
-    });
-    canvas.add(demoCircle);
-
-    canvas.renderAll();
-
-    toast({
-      title: t("scriptEditor.demoLoaded"),
-      description: t("scriptEditor.demoLoadedDesc"),
-    });
-  };
-
   const generateAIScript = async () => {
-    if (!taskDetails) {
+    if (!taskDetails || !editor) {
       toast({
         title: t("scriptEditor.errorGenerating"),
         description: t("scriptEditor.tryAgain"),
@@ -411,22 +337,13 @@ const ScriptEditor = () => {
 
       const scriptText = data.script;
 
-      // Add script as text block to canvas
-      if (canvas) {
-        const scriptBlock = new Textbox(scriptText, {
-          left: 50,
-          top: 50,
-          width: 1100,
-          fontSize: 16,
-          fill: "#000",
-          fontFamily: "Inter, sans-serif",
-          editable: true,
-        });
+      // Insert script as formatted HTML into editor
+      const formattedScript = scriptText
+        .split('\n\n')
+        .map((paragraph: string) => `<p>${paragraph.replace(/\n/g, '<br>')}</p>`)
+        .join('');
 
-        canvas.add(scriptBlock);
-        canvas.setActiveObject(scriptBlock);
-        canvas.renderAll();
-      }
+      editor.chain().focus().clearContent().insertContent(formattedScript).run();
 
       toast({
         title: t("scriptEditor.suggestionGenerated"),
@@ -444,13 +361,160 @@ const ScriptEditor = () => {
     }
   };
 
+  if (!editor) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-20">
+      {/* Fixed Toolbar */}
+      <div className="fixed top-0 left-0 right-0 z-50 bg-background border-b">
+        <div className="container mx-auto px-4 py-3">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => navigate("/content-calendar")}
+                className="gap-2"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                {t("scriptEditor.back")}
+              </Button>
+              <h1 className="text-lg font-semibold">{t("scriptEditor.title")}</h1>
+            </div>
+
+            <div className="flex items-center gap-2">
+              {/* Text Formatting */}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => editor.chain().focus().toggleBold().run()}
+                className={editor.isActive('bold') ? 'bg-accent' : ''}
+              >
+                <Bold className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => editor.chain().focus().toggleItalic().run()}
+                className={editor.isActive('italic') ? 'bg-accent' : ''}
+              >
+                <Italic className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+                className={editor.isActive('heading', { level: 2 }) ? 'bg-accent' : ''}
+              >
+                <Heading2 className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => editor.chain().focus().toggleBulletList().run()}
+                className={editor.isActive('bulletList') ? 'bg-accent' : ''}
+              >
+                <List className="h-4 w-4" />
+              </Button>
+
+              <div className="h-6 w-px bg-border mx-1" />
+
+              {/* Image Upload */}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <Upload className="h-4 w-4" />
+              </Button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+                className="hidden"
+              />
+
+              {/* Image from URL */}
+              <Dialog open={showImageDialog} onOpenChange={setShowImageDialog}>
+                <DialogTrigger asChild>
+                  <Button variant="ghost" size="sm">
+                    <ImageIcon className="h-4 w-4" />
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>{t("scriptEditor.imageUrl")}</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    <Input
+                      placeholder="https://example.com/image.jpg"
+                      value={imageUrl}
+                      onChange={(e) => setImageUrl(e.target.value)}
+                    />
+                    <Button onClick={addImageFromUrl} className="w-full">
+                      {t("scriptEditor.addImage")}
+                    </Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
+
+              <div className="h-6 w-px bg-border mx-1" />
+
+              {/* Delete */}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={deleteSelected}
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+
+              {/* Save */}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={autoSave}
+                disabled={saving}
+              >
+                {saving ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Save className="h-4 w-4" />
+                )}
+              </Button>
+
+              {/* Export PDF */}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={exportToPDF}
+              >
+                <Download className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+
+          {/* Save Status */}
+          {lastSaved && (
+            <div className="text-xs text-muted-foreground mt-2 text-center">
+              {t("scriptEditor.lastSaved")}: {format(lastSaved, "HH:mm:ss")}
+            </div>
+          )}
+        </div>
+      </div>
+
       {/* Task Info Card */}
       {taskDetails && (
-        <div className="fixed top-16 left-0 right-0 z-40 bg-background border-b">
+        <div className="fixed top-[73px] left-0 right-0 z-40 bg-background border-b">
           <div className="container mx-auto px-4 py-4">
-            <div className="bg-card border rounded-lg p-4 space-y-2">
+            <div className="bg-card border rounded-lg p-4">
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1 space-y-2">
                   <div>
@@ -499,198 +563,12 @@ const ScriptEditor = () => {
         </div>
       )}
 
-      {/* Toolbar */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-card border-b shadow-sm">
-        <div className="container mx-auto px-4 py-3 flex items-center justify-between flex-wrap gap-2">
-          <div className="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => navigate("/content-calendar")}
-            >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              {t("scriptEditor.backToCalendar")}
-            </Button>
-            <div className="h-6 w-px bg-border" />
-            <h1 className="text-lg font-semibold">{t("scriptEditor.title")}</h1>
-          </div>
-
-          <div className="flex items-center gap-2 flex-wrap">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={addTextBlock}
-              className="gap-2"
-            >
-              <Type className="h-4 w-4" />
-              {t("scriptEditor.addText")}
-            </Button>
-
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setShowImageInput(!showImageInput)}
-              className="gap-2"
-            >
-              <ImageIcon className="h-4 w-4" />
-              {t("scriptEditor.insertImage")}
-            </Button>
-
-            <Button
-              variant={drawMode ? "default" : "outline"}
-              size="sm"
-              onClick={() => setDrawMode(!drawMode)}
-              className="gap-2"
-            >
-              <Pen className="h-4 w-4" />
-              {drawMode ? t("scriptEditor.stopDrawing") : t("scriptEditor.draw")}
-            </Button>
-
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={deleteSelected}
-              className="gap-2"
-            >
-              <Trash2 className="h-4 w-4" />
-              {t("scriptEditor.delete")}
-            </Button>
-
-            <div className="h-6 w-px bg-border" />
-
-            <Button
-              size="sm"
-              onClick={autoSave}
-              disabled={saving}
-              className="gap-2 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
-            >
-              {saving ? (
-                <>
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  {t("scriptEditor.saving")}
-                </>
-              ) : (
-                <>
-                  <Save className="h-4 w-4" />
-                  {t("scriptEditor.save")}
-                </>
-              )}
-            </Button>
-
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={exportToPDF}
-              className="gap-2"
-            >
-              <Download className="h-4 w-4" />
-              {t("scriptEditor.exportPdf")}
-            </Button>
-
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={loadDemo}
-              className="gap-2"
-            >
-              {t("scriptEditor.loadDemo")}
-            </Button>
-          </div>
-        </div>
-
-        {/* Image URL Input */}
-        {showImageInput && (
-          <div className="border-t bg-muted/50 px-4 py-3">
-            <div className="flex items-center gap-2 max-w-2xl">
-              <Label className="text-sm whitespace-nowrap">{t("scriptEditor.imageUrl")}:</Label>
-              <Input
-                type="url"
-                placeholder={t("scriptEditor.imageUrlPlaceholder")}
-                value={imageUrl}
-                onChange={(e) => setImageUrl(e.target.value)}
-                className="flex-1"
-              />
-              <Button onClick={addImageFromUrl} size="sm">
-                {t("scriptEditor.add")}
-              </Button>
-              <Label htmlFor="image-upload" className="cursor-pointer">
-                <Button variant="outline" size="sm" asChild>
-                  <span className="gap-2">
-                    <Upload className="h-4 w-4" />
-                    {t("scriptEditor.upload")}
-                  </span>
-                </Button>
-              </Label>
-              <input
-                id="image-upload"
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={handleImageUpload}
-              />
-            </div>
-          </div>
-        )}
-
-        {/* Drawing Tools */}
-        {drawMode && (
-          <div className="border-t bg-muted/50 px-4 py-2 flex items-center gap-4 flex-wrap">
-            <div className="flex items-center gap-2">
-              <Label className="text-xs">{t("scriptEditor.color")}:</Label>
-              <div className="flex gap-1">
-                {["#8B5CF6", "#EC4899", "#000000", "#3B82F6", "#10B981"].map(
-                  (color) => (
-                    <button
-                      key={color}
-                      onClick={() => setBrushColor(color)}
-                      className={`w-6 h-6 rounded-full border-2 ${
-                        brushColor === color
-                          ? "border-primary"
-                          : "border-border"
-                      }`}
-                      style={{ backgroundColor: color }}
-                    />
-                  )
-                )}
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <Label className="text-xs">{t("scriptEditor.brushSize")}:</Label>
-              <Slider
-                value={[brushSize]}
-                onValueChange={([size]) => setBrushSize(size)}
-                min={2}
-                max={20}
-                step={1}
-                className="w-32"
-              />
-              <span className="text-xs text-muted-foreground">{brushSize}px</span>
-            </div>
-
-            <Button variant="ghost" size="sm" onClick={clearDrawings}>
-              {t("scriptEditor.clearDrawings")}
-            </Button>
-          </div>
-        )}
-      </div>
-
-      {/* Canvas Area */}
-      <div className={`${taskDetails ? 'pt-56' : 'pt-32'} pb-10 bg-muted min-h-screen flex justify-center items-start`}>
-        <div className="mt-8 shadow-2xl rounded-lg overflow-hidden">
-          <canvas ref={canvasRef} />
+      {/* Editor Area */}
+      <div className={`container mx-auto px-4 ${taskDetails ? 'mt-[250px]' : 'mt-[90px]'}`}>
+        <div className="bg-card border rounded-lg shadow-sm">
+          <EditorContent editor={editor} />
         </div>
       </div>
-
-      {/* Save Indicator */}
-      {lastSaved && (
-        <div className="fixed bottom-4 right-4 bg-card shadow-lg rounded-full px-4 py-2 flex items-center gap-2 animate-in fade-in slide-in-from-bottom-2">
-          <CheckCircle2 className="h-4 w-4 text-green-500" />
-          <span className="text-xs text-muted-foreground">
-            Saved {format(lastSaved, "h:mm a")}
-          </span>
-        </div>
-      )}
     </div>
   );
 };
