@@ -528,6 +528,47 @@ export type Database = {
           },
         ]
       }
+      script_documents: {
+        Row: {
+          content: Json | null
+          created_at: string | null
+          id: string
+          last_edited_at: string | null
+          task_id: string
+          title: string
+          user_id: string
+          version: number | null
+        }
+        Insert: {
+          content?: Json | null
+          created_at?: string | null
+          id?: string
+          last_edited_at?: string | null
+          task_id: string
+          title?: string
+          user_id: string
+          version?: number | null
+        }
+        Update: {
+          content?: Json | null
+          created_at?: string | null
+          id?: string
+          last_edited_at?: string | null
+          task_id?: string
+          title?: string
+          user_id?: string
+          version?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "script_documents_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: true
+            referencedRelation: "plan_tasks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       slider_images: {
         Row: {
           alt_text: string | null

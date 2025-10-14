@@ -1007,18 +1007,30 @@ const ContentCalendar = () => {
                             <div className="pt-2 border-t space-y-2">
                               <Label className="text-xs font-semibold">{t("taskCard.progressSteps")}</Label>
                               <div className="space-y-2">
-                                <div className="flex items-center space-x-2">
-                                  <Checkbox
-                                    id={`script-${dayTask.id}`}
-                                    checked={dayTask.script_completed}
-                                    onCheckedChange={() => toggleProgressCheckbox(dayTask.id, 'script_completed', dayTask.script_completed)}
-                                  />
-                                  <label
-                                    htmlFor={`script-${dayTask.id}`}
-                                    className="text-xs font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                                <div className="flex items-center justify-between space-x-2">
+                                  <div className="flex items-center space-x-2">
+                                    <Checkbox
+                                      id={`script-${dayTask.id}`}
+                                      checked={dayTask.script_completed}
+                                      onCheckedChange={() => toggleProgressCheckbox(dayTask.id, 'script_completed', dayTask.script_completed)}
+                                    />
+                                    <label
+                                      htmlFor={`script-${dayTask.id}`}
+                                      className="text-xs font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                                    >
+                                      {t("taskCard.workOnScript")}
+                                    </label>
+                                  </div>
+                                  
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() => navigate(`/script-editor/${dayTask.id}`)}
+                                    className="h-7 gap-1 text-xs"
                                   >
-                                    {t("taskCard.workOnScript")}
-                                  </label>
+                                    <Edit2 className="h-3 w-3" />
+                                    Edit Script
+                                  </Button>
                                 </div>
                                 <div className="flex items-center space-x-2">
                                   <Checkbox
