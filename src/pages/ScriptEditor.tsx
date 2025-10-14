@@ -48,6 +48,12 @@ const ScriptEditor = () => {
       backgroundColor: "#fff",
     });
 
+    // Initialize the freeDrawingBrush right after canvas creation
+    if (fabricCanvas.freeDrawingBrush) {
+      fabricCanvas.freeDrawingBrush.color = brushColor;
+      fabricCanvas.freeDrawingBrush.width = brushSize;
+    }
+
     setCanvas(fabricCanvas);
 
     return () => {
@@ -98,7 +104,7 @@ const ScriptEditor = () => {
     if (!canvas) return;
     
     canvas.isDrawingMode = drawMode;
-    if (drawMode) {
+    if (drawMode && canvas.freeDrawingBrush) {
       canvas.freeDrawingBrush.color = brushColor;
       canvas.freeDrawingBrush.width = brushSize;
     }
