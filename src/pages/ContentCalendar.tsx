@@ -1003,7 +1003,7 @@ const ContentCalendar = () => {
                                   const newTitle = e.target.value;
                                   
                                   // Update local state immediately (optimistic update)
-                                  setPlans(plans.map(p => ({
+                                  setPlans(prevPlans => prevPlans.map(p => ({
                                     ...p,
                                     tasks: p.tasks.map(t => t.id === dayTask.id ? { ...t, post_title: newTitle } : t)
                                   })));
@@ -1027,7 +1027,7 @@ const ContentCalendar = () => {
                                   const newDesc = e.target.value;
                                   
                                   // Update local state immediately (optimistic update)
-                                  setPlans(plans.map(p => ({
+                                  setPlans(prevPlans => prevPlans.map(p => ({
                                     ...p,
                                     tasks: p.tasks.map(t => t.id === dayTask.id ? { ...t, post_description: newDesc } : t)
                                   })));
