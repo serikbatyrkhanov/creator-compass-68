@@ -741,6 +741,19 @@
     },
     "footer": {
       "copyright": "Climbley © 2025"
+      }
     }
+  },
+  "profile": {
+    "smsNotifications": "SMS уведомления",
+    "emailNotifications": "Email уведомления",
+    "emailNotificationsDesc": "Получайте ежедневные напоминания о ваших задачах по электронной почте",
+    "emailConsent": "Я согласен получать email уведомления от Climbley о моих задачах и напоминаниях",
+    "enableEmail": "Включить Email уведомления",
+    "agreeEmailFirst": "Сначала согласитесь получать email",
+    "notificationTime": "Время уведомлений",
+    "notificationTimeDesc": "Выберите время, когда хотите получать ежедневные напоминания (применяется к SMS и email)",
+    "preferredTime": "Предпочтительное время",
+    "inYourTimezone": "в вашем часовом поясе"
   }
 }

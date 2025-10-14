@@ -11,6 +11,7 @@ interface Profile {
   timezone: string;
   first_name: string;
   last_name: string;
+  notification_time: string;
 }
 
 interface ContentPlan {
@@ -60,7 +61,7 @@ Deno.serve(async (req) => {
     // Get all users eligible for SMS reminders
     const { data: profiles, error: profilesError } = await supabase
       .from('profiles')
-      .select('id, phone, timezone, first_name, last_name, sms_notifications_enabled, sms_consent, last_sms_sent_date')
+      .select('id, phone, timezone, first_name, last_name, sms_notifications_enabled, sms_consent, last_sms_sent_date, notification_time')
       .eq('sms_notifications_enabled', true)
       .eq('sms_consent', true)
       .not('phone', 'is', null);
@@ -85,23 +86,28 @@ Deno.serve(async (req) => {
           continue;
         }
 
-        // Calculate user's local time
-        const userLocalTime = new Date().toLocaleString('en-US', {
-          timeZone: profile.timezone || 'America/New_York',
-          hour12: false,
-          hour: '2-digit',
-          minute: '2-digit',
-        });
+      // Get user's notification time preference
+      const notificationTime = profile.notification_time || '09:00:00';
+      const [notifHour, notifMinute] = notificationTime.split(':').map(Number);
 
-        const userHour = parseInt(userLocalTime.split(':')[0]);
-        const userMinute = parseInt(userLocalTime.split(':')[1]);
+      // Calculate user's local time
+      const userLocalTime = new Date().toLocaleString('en-US', {
+        timeZone: profile.timezone || 'America/New_York',
+        hour12: false,
+        hour: '2-digit',
+        minute: '2-digit',
+      });
 
-        // Only send at 9 AM (between 9:00 and 9:59)
-        if (userHour !== 9) {
-          console.log(`[SEND-TASK-REMINDERS] Not 9 AM for user ${profile.id} (current hour: ${userHour})`);
-          skippedCount++;
-          continue;
-        }
+      const [userHourStr, userMinuteStr] = userLocalTime.split(':');
+      const userHour = parseInt(userHourStr);
+      const userMinute = parseInt(userMinuteStr);
+
+      // Check if it's the user's notification time (±5 min buffer)
+      if (userHour !== notifHour || Math.abs(userMinute - notifMinute) > 5) {
+        console.log(`[SEND-TASK-REMINDERS] Not notification time for user ${profile.id} (user time: ${userHour}:${userMinute}, notif time: ${notifHour}:${notifMinute})`);
+        skippedCount++;
+        continue;
+      }
 
         console.log(`[SEND-TASK-REMINDERS] Processing user ${profile.id} at ${userHour}:${userMinute} in ${profile.timezone}`);
 

@@ -819,5 +819,17 @@
     "footer": {
       "copyright": "Climbley © 2025"
     }
+  },
+  "profile": {
+    "smsNotifications": "SMS Notifications",
+    "emailNotifications": "Email Notifications",
+    "emailNotificationsDesc": "Receive daily reminders about your content tasks via email",
+    "emailConsent": "I agree to receive email notifications from Climbley about my content tasks and reminders",
+    "enableEmail": "Enable Email Notifications",
+    "agreeEmailFirst": "Please agree to receive emails first",
+    "notificationTime": "Notification Time",
+    "notificationTimeDesc": "Choose what time you want to receive your daily reminders (applies to both SMS and email)",
+    "preferredTime": "Preferred Time",
+    "inYourTimezone": "in your timezone"
   }
 }

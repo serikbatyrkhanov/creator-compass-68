@@ -346,11 +346,15 @@ export type Database = {
           avatar_url: string | null
           created_at: string
           email: string
+          email_consent: boolean | null
+          email_notifications_enabled: boolean | null
           first_name: string | null
           id: string
           instagram_url: string | null
+          last_email_sent_date: string | null
           last_name: string | null
           last_sms_sent_date: string | null
+          notification_time: string | null
           phone: string | null
           preferred_platform: string | null
           sms_consent: boolean | null
@@ -364,11 +368,15 @@ export type Database = {
           avatar_url?: string | null
           created_at?: string
           email: string
+          email_consent?: boolean | null
+          email_notifications_enabled?: boolean | null
           first_name?: string | null
           id: string
           instagram_url?: string | null
+          last_email_sent_date?: string | null
           last_name?: string | null
           last_sms_sent_date?: string | null
+          notification_time?: string | null
           phone?: string | null
           preferred_platform?: string | null
           sms_consent?: boolean | null
@@ -382,11 +390,15 @@ export type Database = {
           avatar_url?: string | null
           created_at?: string
           email?: string
+          email_consent?: boolean | null
+          email_notifications_enabled?: boolean | null
           first_name?: string | null
           id?: string
           instagram_url?: string | null
+          last_email_sent_date?: string | null
           last_name?: string | null
           last_sms_sent_date?: string | null
+          notification_time?: string | null
           phone?: string | null
           preferred_platform?: string | null
           sms_consent?: boolean | null

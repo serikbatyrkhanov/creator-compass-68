@@ -50,6 +50,9 @@ export default function Profile() {
   // SMS settings
   const [smsConsent, setSmsConsent] = useState(false);
   const [smsEnabled, setSmsEnabled] = useState(false);
+  const [emailConsent, setEmailConsent] = useState(false);
+  const [emailEnabled, setEmailEnabled] = useState(false);
+  const [notificationTime, setNotificationTime] = useState("09:00");
 
   useEffect(() => {
     loadProfile();
@@ -81,8 +84,11 @@ export default function Profile() {
         setYoutubeUrl(profile.youtube_url || "");
         setInstagramUrl(profile.instagram_url || "");
         setTiktokUrl(profile.tiktok_url || "");
-        setSmsConsent(profile.sms_consent || false);
-        setSmsEnabled(profile.sms_notifications_enabled || false);
+      setSmsConsent(profile.sms_consent || false);
+      setSmsEnabled(profile.sms_notifications_enabled || false);
+      setEmailConsent(profile.email_consent || false);
+      setEmailEnabled(profile.email_notifications_enabled || false);
+      setNotificationTime(profile.notification_time?.substring(0, 5) || "09:00");
       }
     } catch (error: any) {
       console.error("Error loading profile:", error);
@@ -223,6 +229,29 @@ export default function Profile() {
     }
     setSmsEnabled(checked);
     await handleUpdateProfile("sms_notifications_enabled", checked);
+  };
+
+  const handleEmailConsentChange = async (checked: boolean) => {
+    setEmailConsent(checked);
+    if (!checked) {
+      setEmailEnabled(false);
+      await handleUpdateProfile("email_notifications_enabled", false);
+    }
+    await handleUpdateProfile("email_consent", checked);
+  };
+
+  const handleEmailEnabledChange = async (checked: boolean) => {
+    if (!emailConsent) {
+      toast.error("Please agree to receive email notifications first");
+      return;
+    }
+    setEmailEnabled(checked);
+    await handleUpdateProfile("email_notifications_enabled", checked);
+  };
+
+  const handleNotificationTimeChange = async (time: string) => {
+    setNotificationTime(time);
+    await handleUpdateProfile("notification_time", time + ":00");
   };
 
   if (loading) {
@@ -473,6 +502,69 @@ export default function Profile() {
                 onCheckedChange={handleSmsEnabledChange}
                 disabled={!smsConsent || !phone}
               />
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Email Notifications */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Email Notifications</CardTitle>
+            <CardDescription>
+              Receive daily reminders about your content tasks via email
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="email-consent"
+                checked={emailConsent}
+                onCheckedChange={handleEmailConsentChange}
+              />
+              <Label htmlFor="email-consent" className="text-sm font-normal">
+                I agree to receive email notifications from Climbley about my content tasks and reminders
+              </Label>
+            </div>
+
+            <div className="flex items-center justify-between">
+              <div className="space-y-0.5">
+                <Label>Enable Email Notifications</Label>
+                <p className="text-sm text-muted-foreground">
+                  {!emailConsent && "Please agree to receive emails first"}
+                </p>
+              </div>
+              <Switch
+                checked={emailEnabled}
+                onCheckedChange={handleEmailEnabledChange}
+                disabled={!emailConsent}
+              />
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Notification Time Preference */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Notification Time</CardTitle>
+            <CardDescription>
+              Choose what time you want to receive your daily reminders (applies to both SMS and email)
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              <Label htmlFor="notification-time">Preferred Time</Label>
+              <div className="flex gap-2 items-center">
+                <Input
+                  id="notification-time"
+                  type="time"
+                  value={notificationTime}
+                  onChange={(e) => handleNotificationTimeChange(e.target.value)}
+                  className="w-40"
+                />
+                <span className="text-sm text-muted-foreground">
+                  in your timezone ({timezone})
+                </span>
+              </div>
             </div>
           </CardContent>
         </Card>
