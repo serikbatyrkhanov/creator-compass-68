@@ -15,6 +15,9 @@ verify_jwt = false
 [functions.generate-trending-titles]
 verify_jwt = false
 
+[functions.generate-script-suggestion]
+verify_jwt = false
+
 [functions.generate-plans-from-titles]
 verify_jwt = false
 

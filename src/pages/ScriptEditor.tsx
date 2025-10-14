@@ -19,13 +19,16 @@ import {
   Trash2,
   Upload,
   CheckCircle2,
+  Sparkles,
 } from "lucide-react";
 import { format } from "date-fns";
+import { useTranslation } from "react-i18next";
 
 const ScriptEditor = () => {
   const { taskId } = useParams<{ taskId: string }>();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useTranslation();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   
   const [canvas, setCanvas] = useState<Canvas | null>(null);
@@ -37,6 +40,12 @@ const ScriptEditor = () => {
   const [imageUrl, setImageUrl] = useState("");
   const [showImageInput, setShowImageInput] = useState(false);
   const [userId, setUserId] = useState<string>("");
+  const [taskDetails, setTaskDetails] = useState<{
+    post_title: string;
+    post_description: string;
+    platform: string | null;
+  } | null>(null);
+  const [generatingScript, setGeneratingScript] = useState(false);
 
   // Initialize canvas
   useEffect(() => {
@@ -71,6 +80,31 @@ const ScriptEditor = () => {
     };
     getCurrentUser();
   }, []);
+
+  // Load task details
+  useEffect(() => {
+    if (!taskId || !userId) return;
+
+    const loadTaskDetails = async () => {
+      const { data, error } = await supabase
+        .from("plan_tasks")
+        .select("post_title, post_description, platform")
+        .eq("id", taskId)
+        .eq("user_id", userId)
+        .single();
+
+      if (error) {
+        console.error("Error loading task:", error);
+        return;
+      }
+
+      if (data) {
+        setTaskDetails(data);
+      }
+    };
+
+    loadTaskDetails();
+  }, [taskId, userId]);
 
   // Load existing document
   useEffect(() => {
@@ -137,14 +171,14 @@ const ScriptEditor = () => {
 
       setLastSaved(new Date());
       toast({
-        title: "✅ Document saved successfully!",
+        title: t("scriptEditor.documentSaved"),
         duration: 2000,
       });
     } catch (error) {
       console.error("Save error:", error);
       toast({
-        title: "Error saving document",
-        description: "Please try again",
+        title: t("scriptEditor.errorSaving"),
+        description: t("scriptEditor.tryAgain"),
         variant: "destructive",
       });
     } finally {
@@ -222,14 +256,14 @@ const ScriptEditor = () => {
       });
 
       toast({
-        title: "Image uploaded",
-        description: "Image added to canvas",
+        title: t("scriptEditor.imageUploaded"),
+        description: t("scriptEditor.imageAdded"),
       });
     } catch (error) {
       console.error("Upload error:", error);
       toast({
-        title: "Error uploading image",
-        description: "Please try again",
+        title: t("scriptEditor.errorUploading"),
+        description: t("scriptEditor.tryAgain"),
         variant: "destructive",
       });
     }
@@ -246,8 +280,8 @@ const ScriptEditor = () => {
       setShowImageInput(false);
       
       toast({
-        title: "Image added",
-        description: "Image added to canvas",
+        title: t("scriptEditor.imageAdded"),
+        description: t("scriptEditor.imageAdded"),
       });
     });
   };
@@ -293,14 +327,14 @@ const ScriptEditor = () => {
       pdf.save(`script-${taskId}.pdf`);
 
       toast({
-        title: "PDF exported!",
-        description: "Your script has been downloaded.",
+        title: t("scriptEditor.pdfExported"),
+        description: t("scriptEditor.pdfExportDesc"),
       });
     } catch (error) {
       console.error("Export error:", error);
       toast({
-        title: "Error exporting PDF",
-        description: "Please try again",
+        title: t("scriptEditor.errorExporting"),
+        description: t("scriptEditor.tryAgain"),
         variant: "destructive",
       });
     }
@@ -341,13 +375,124 @@ const ScriptEditor = () => {
     canvas.renderAll();
 
     toast({
-      title: "Demo loaded!",
-      description: "Try editing, moving, or drawing on the canvas.",
+      title: t("scriptEditor.demoLoaded"),
+      description: t("scriptEditor.demoLoadedDesc"),
     });
+  };
+
+  const generateAIScript = async () => {
+    if (!taskDetails) {
+      toast({
+        title: t("scriptEditor.errorGenerating"),
+        description: t("scriptEditor.tryAgain"),
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setGeneratingScript(true);
+
+    try {
+      const { data, error } = await supabase.functions.invoke("generate-script-suggestion", {
+        body: {
+          title: taskDetails.post_title,
+          description: taskDetails.post_description,
+          platform: taskDetails.platform || "YouTube",
+        },
+      });
+
+      if (error) throw error;
+
+      const scriptText = data.script;
+
+      // Add script as text block to canvas
+      if (canvas) {
+        const scriptBlock = new Textbox(scriptText, {
+          left: 50,
+          top: 50,
+          width: 1100,
+          fontSize: 16,
+          fill: "#000",
+          fontFamily: "Inter, sans-serif",
+          editable: true,
+        });
+
+        canvas.add(scriptBlock);
+        canvas.setActiveObject(scriptBlock);
+        canvas.renderAll();
+      }
+
+      toast({
+        title: t("scriptEditor.suggestionGenerated"),
+        description: t("scriptEditor.editSuggestion"),
+      });
+    } catch (error) {
+      console.error("Script generation error:", error);
+      toast({
+        title: t("scriptEditor.errorGenerating"),
+        description: t("scriptEditor.tryAgain"),
+        variant: "destructive",
+      });
+    } finally {
+      setGeneratingScript(false);
+    }
   };
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Task Info Card */}
+      {taskDetails && (
+        <div className="fixed top-16 left-0 right-0 z-40 bg-background border-b">
+          <div className="container mx-auto px-4 py-4">
+            <div className="bg-card border rounded-lg p-4 space-y-2">
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex-1 space-y-2">
+                  <div>
+                    <Label className="text-xs text-muted-foreground">
+                      {t("scriptEditor.scriptTitle")}
+                    </Label>
+                    <p className="font-medium">{taskDetails.post_title}</p>
+                  </div>
+                  <div>
+                    <Label className="text-xs text-muted-foreground">
+                      {t("scriptEditor.scriptDescription")}
+                    </Label>
+                    <p className="text-sm text-muted-foreground">
+                      {taskDetails.post_description}
+                    </p>
+                  </div>
+                  {taskDetails.platform && (
+                    <div>
+                      <Label className="text-xs text-muted-foreground">
+                        {t("scriptEditor.platform")}
+                      </Label>
+                      <p className="text-sm">{taskDetails.platform}</p>
+                    </div>
+                  )}
+                </div>
+                <Button
+                  onClick={generateAIScript}
+                  disabled={generatingScript}
+                  className="gap-2 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+                >
+                  {generatingScript ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      {t("scriptEditor.generating")}
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="h-4 w-4" />
+                      {t("scriptEditor.generateSuggestion")}
+                    </>
+                  )}
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Toolbar */}
       <div className="fixed top-0 left-0 right-0 z-50 bg-card border-b shadow-sm">
         <div className="container mx-auto px-4 py-3 flex items-center justify-between flex-wrap gap-2">
@@ -358,10 +503,10 @@ const ScriptEditor = () => {
               onClick={() => navigate("/content-calendar")}
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Calendar
+              {t("scriptEditor.backToCalendar")}
             </Button>
             <div className="h-6 w-px bg-border" />
-            <h1 className="text-lg font-semibold">Script Editor</h1>
+            <h1 className="text-lg font-semibold">{t("scriptEditor.title")}</h1>
           </div>
 
           <div className="flex items-center gap-2 flex-wrap">
@@ -372,7 +517,7 @@ const ScriptEditor = () => {
               className="gap-2"
             >
               <Type className="h-4 w-4" />
-              Add Text
+              {t("scriptEditor.addText")}
             </Button>
 
             <Button
@@ -382,7 +527,7 @@ const ScriptEditor = () => {
               className="gap-2"
             >
               <ImageIcon className="h-4 w-4" />
-              Insert Image
+              {t("scriptEditor.insertImage")}
             </Button>
 
             <Button
@@ -392,7 +537,7 @@ const ScriptEditor = () => {
               className="gap-2"
             >
               <Pen className="h-4 w-4" />
-              {drawMode ? "Stop Drawing" : "Draw"}
+              {drawMode ? t("scriptEditor.stopDrawing") : t("scriptEditor.draw")}
             </Button>
 
             <Button
@@ -402,7 +547,7 @@ const ScriptEditor = () => {
               className="gap-2"
             >
               <Trash2 className="h-4 w-4" />
-              Delete
+              {t("scriptEditor.delete")}
             </Button>
 
             <div className="h-6 w-px bg-border" />
@@ -416,12 +561,12 @@ const ScriptEditor = () => {
               {saving ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin" />
-                  Saving...
+                  {t("scriptEditor.saving")}
                 </>
               ) : (
                 <>
                   <Save className="h-4 w-4" />
-                  Save
+                  {t("scriptEditor.save")}
                 </>
               )}
             </Button>
@@ -433,7 +578,7 @@ const ScriptEditor = () => {
               className="gap-2"
             >
               <Download className="h-4 w-4" />
-              Export PDF
+              {t("scriptEditor.exportPdf")}
             </Button>
 
             <Button
@@ -442,7 +587,7 @@ const ScriptEditor = () => {
               onClick={loadDemo}
               className="gap-2"
             >
-              Load Demo
+              {t("scriptEditor.loadDemo")}
             </Button>
           </div>
         </div>
@@ -451,22 +596,22 @@ const ScriptEditor = () => {
         {showImageInput && (
           <div className="border-t bg-muted/50 px-4 py-3">
             <div className="flex items-center gap-2 max-w-2xl">
-              <Label className="text-sm whitespace-nowrap">Image URL:</Label>
+              <Label className="text-sm whitespace-nowrap">{t("scriptEditor.imageUrl")}:</Label>
               <Input
                 type="url"
-                placeholder="https://example.com/image.jpg"
+                placeholder={t("scriptEditor.imageUrlPlaceholder")}
                 value={imageUrl}
                 onChange={(e) => setImageUrl(e.target.value)}
                 className="flex-1"
               />
               <Button onClick={addImageFromUrl} size="sm">
-                Add
+                {t("scriptEditor.add")}
               </Button>
               <Label htmlFor="image-upload" className="cursor-pointer">
                 <Button variant="outline" size="sm" asChild>
                   <span className="gap-2">
                     <Upload className="h-4 w-4" />
-                    Upload
+                    {t("scriptEditor.upload")}
                   </span>
                 </Button>
               </Label>
@@ -485,7 +630,7 @@ const ScriptEditor = () => {
         {drawMode && (
           <div className="border-t bg-muted/50 px-4 py-2 flex items-center gap-4 flex-wrap">
             <div className="flex items-center gap-2">
-              <Label className="text-xs">Color:</Label>
+              <Label className="text-xs">{t("scriptEditor.color")}:</Label>
               <div className="flex gap-1">
                 {["#8B5CF6", "#EC4899", "#000000", "#3B82F6", "#10B981"].map(
                   (color) => (
@@ -505,7 +650,7 @@ const ScriptEditor = () => {
             </div>
 
             <div className="flex items-center gap-2">
-              <Label className="text-xs">Size:</Label>
+              <Label className="text-xs">{t("scriptEditor.brushSize")}:</Label>
               <Slider
                 value={[brushSize]}
                 onValueChange={([size]) => setBrushSize(size)}
@@ -518,14 +663,14 @@ const ScriptEditor = () => {
             </div>
 
             <Button variant="ghost" size="sm" onClick={clearDrawings}>
-              Clear Drawings
+              {t("scriptEditor.clearDrawings")}
             </Button>
           </div>
         )}
       </div>
 
       {/* Canvas Area */}
-      <div className="pt-32 pb-10 bg-muted min-h-screen flex justify-center items-start">
+      <div className={`${taskDetails ? 'pt-56' : 'pt-32'} pb-10 bg-muted min-h-screen flex justify-center items-start`}
         <div className="mt-8 shadow-2xl rounded-lg overflow-hidden">
           <canvas ref={canvasRef} />
         </div>
