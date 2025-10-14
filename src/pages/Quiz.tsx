@@ -13,6 +13,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "react-i18next";
 import { LanguageSelector } from "@/components/LanguageSelector";
+import { PlatformSelector } from "@/components/PlatformSelector";
 
 const Quiz = () => {
   const { t } = useTranslation();
@@ -206,6 +207,7 @@ const Quiz = () => {
             </Button>
             <div className="inline-flex items-center gap-2 mb-4">
               <LanguageSelector />
+              <PlatformSelector />
             </div>
             <div className="inline-flex items-center gap-2 bg-primary/10 px-4 py-2 rounded-full mb-4">
               <img src={logo} alt="Climbley" className="w-4 h-4" />

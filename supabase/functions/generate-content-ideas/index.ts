@@ -12,9 +12,9 @@ serve(async (req) => {
   }
 
   try {
-    const { archetype, topics, timeBucket, gear, targetAudience, quizResponseId } = await req.json();
+    const { archetype, topics, timeBucket, gear, targetAudience, quizResponseId, preferredPlatform, language } = await req.json();
     
-    console.log('[GENERATE-IDEAS] Starting generation', { archetype, topics, timeBucket });
+    console.log('[GENERATE-IDEAS] Starting generation', { archetype, topics, timeBucket, preferredPlatform, language });
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
@@ -25,23 +25,42 @@ serve(async (req) => {
     const topicsText = topics?.join(', ') || 'general content';
     const gearText = gear?.join(', ') || 'basic equipment';
     const timeText = timeBucket || '1-5 hours per week';
+    const targetLanguage = language === 'ru' ? 'Russian' : 'English';
+    
+    // Platform-specific guidelines
+    const platformGuidelines: Record<string, string> = {
+      youtube_video: 'YouTube Video (8-20+ min): Long-form educational/entertainment content. Focus on thumbnails, strong hooks, and in-depth value. Keywords and SEO are important.',
+      youtube_shorts: 'YouTube Shorts (15-60 sec): Vertical short-form content. Hook in first 3 seconds. Trending music/sounds. Quick, punchy delivery.',
+      instagram_post: 'Instagram Post: Static image carousel or single image. Aesthetic focus. Strong captions with hashtags. Visual storytelling.',
+      instagram_reels: 'Instagram Reels (15-90 sec): Vertical short-form with trending audio. Quick cuts, on-trend transitions. Highly visual.',
+      tiktok: 'TikTok (15-60 sec): Vertical short-form. Native editing style essential. Trending sounds/challenges. Authentic, raw feel preferred over polished.'
+    };
+    
+    const platformContext = preferredPlatform && platformGuidelines[preferredPlatform] 
+      ? `\nPlatform focus: ${platformGuidelines[preferredPlatform]}`
+      : '\nPlatform focus: General multi-platform approach';
     
     const systemPrompt = `You are an expert content creator coach. Generate specific, actionable content ideas for a ${archetype} creator.
 Focus on practical, platform-specific ideas that can be executed with ${gearText} in ${timeText}.
 Target audience: ${targetAudience || 'general audience'}.
-Topics: ${topicsText}.`;
+Topics: ${topicsText}.${platformContext}
 
-    const userPrompt = `Generate 3 unique content ideas for this creator. Each idea should be:
+CRITICAL: Generate ALL content (titles, descriptions, steps) in ${targetLanguage}. Do not mix languages.`;
+
+    const userPrompt = `Generate 3 unique content ideas optimized for ${preferredPlatform ? platformGuidelines[preferredPlatform] : 'general platforms'}. Each idea should be:
 1. Specific and actionable
 2. Optimized for their archetype (${archetype})
 3. Executable within their time constraints (${timeText})
 4. Suitable for their topics: ${topicsText}
+5. Formatted appropriately for ${preferredPlatform || 'multiple platforms'}
 
 For each idea, provide:
-- A catchy title
-- Platform recommendations (2-3 best platforms)
-- Quick execution steps (3-4 steps)
-- Expected effort (time estimate)`;
+- A catchy title (in ${targetLanguage})
+- Platform recommendations (prioritize ${preferredPlatform || 'versatile platforms'})
+- Quick execution steps (3-4 steps, in ${targetLanguage})
+- Expected effort (time estimate)
+
+Remember: ALL text must be in ${targetLanguage}.`;
 
     // Call Lovable AI with structured output
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {

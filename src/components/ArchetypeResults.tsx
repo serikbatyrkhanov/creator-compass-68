@@ -227,7 +227,7 @@ const ArchetypeCard: React.FC<ArchetypeCardProps> = ({
   selectedTopics,
   targetAudience
 }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const recPlatforms = pickPlatforms(profile.platforms, time, extras);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [planDialogOpen, setPlanDialogOpen] = useState(false);
@@ -235,7 +235,32 @@ const ArchetypeCard: React.FC<ArchetypeCardProps> = ({
   const [plan, setPlan] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [planLoading, setPlanLoading] = useState(false);
+  const [preferredPlatform, setPreferredPlatform] = useState<string | null>(null);
   const { toast } = useToast();
+
+  // Fetch user's preferred platform
+  React.useEffect(() => {
+    const fetchPlatform = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          const { data } = await supabase
+            .from('profiles')
+            .select('preferred_platform')
+            .eq('id', user.id)
+            .maybeSingle();
+          
+          if (data?.preferred_platform) {
+            setPreferredPlatform(data.preferred_platform);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching platform preference:', error);
+      }
+    };
+    
+    fetchPlatform();
+  }, []);
 
   const generateIdeas = async () => {
     setLoading(true);
@@ -249,7 +274,9 @@ const ArchetypeCard: React.FC<ArchetypeCardProps> = ({
           timeBucket: time,
           gear: extras || [],
           targetAudience: targetAudience || 'general audience',
-          quizResponseId
+          quizResponseId,
+          preferredPlatform,
+          language: i18n.language
         }
       });
 

@@ -610,6 +610,16 @@
     "instagram": "Instagram Reels/Пост",
     "youtube": "YouTube видео"
   },
+  "platform": {
+    "selector": {
+      "label": "Платформа/Формат",
+      "youtube_video": "YouTube Видео",
+      "youtube_shorts": "YouTube Shorts",
+      "instagram_post": "Instagram Пост",
+      "instagram_reels": "Instagram Reels",
+      "tiktok": "TikTok"
+    }
+  },
   "taskCard": {
     "postTitle": "Заголовок поста",
     "postTitlePlaceholder": "Введите заголовок поста...",

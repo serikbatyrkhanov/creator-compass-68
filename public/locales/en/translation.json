@@ -687,6 +687,16 @@
     "instagram": "Instagram Reels/Post",
     "youtube": "YouTube video"
   },
+  "platform": {
+    "selector": {
+      "label": "Platform/Format",
+      "youtube_video": "YouTube Video",
+      "youtube_shorts": "YouTube Shorts",
+      "instagram_post": "Instagram Post",
+      "instagram_reels": "Instagram Reels",
+      "tiktok": "TikTok"
+    }
+  },
   "taskCard": {
     "postTitle": "Post Title",
     "postTitlePlaceholder": "Enter post title...",

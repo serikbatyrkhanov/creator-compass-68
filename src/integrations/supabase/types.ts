@@ -352,6 +352,7 @@ export type Database = {
           last_name: string | null
           last_sms_sent_date: string | null
           phone: string | null
+          preferred_platform: string | null
           sms_consent: boolean | null
           sms_notifications_enabled: boolean | null
           tiktok_url: string | null
@@ -369,6 +370,7 @@ export type Database = {
           last_name?: string | null
           last_sms_sent_date?: string | null
           phone?: string | null
+          preferred_platform?: string | null
           sms_consent?: boolean | null
           sms_notifications_enabled?: boolean | null
           tiktok_url?: string | null
@@ -386,6 +388,7 @@ export type Database = {
           last_name?: string | null
           last_sms_sent_date?: string | null
           phone?: string | null
+          preferred_platform?: string | null
           sms_consent?: boolean | null
           sms_notifications_enabled?: boolean | null
           tiktok_url?: string | null

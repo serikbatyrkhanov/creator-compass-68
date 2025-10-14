@@ -21,6 +21,7 @@ import { TrendingTitlesDialog } from "@/components/TrendingTitlesDialog";
 import logo from "@/assets/climbley-logo.png";
 import { useTranslation } from "react-i18next";
 import { LanguageSelector } from "@/components/LanguageSelector";
+import { PlatformSelector } from "@/components/PlatformSelector";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const Dashboard = () => {
@@ -171,6 +172,7 @@ const Dashboard = () => {
           </div>
           <div className="flex items-center gap-4">
             <LanguageSelector />
+            <PlatformSelector />
             <div className="flex items-center gap-2">
               <Avatar className="h-8 w-8 cursor-pointer" onClick={() => navigate("/profile")}>
                 <AvatarImage src={avatarUrl || undefined} />
