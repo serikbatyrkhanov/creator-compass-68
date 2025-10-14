@@ -769,9 +769,6 @@ const ContentCalendar = () => {
               <CardContent>
                 <Calendar className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
                 <h3 className="text-xl font-semibold mb-2">{t("calendar.noPlans")}</h3>
-                <p className="text-muted-foreground mb-4">
-                  {t("calendar.noPlansDescription")}
-                </p>
                 <Button onClick={() => navigate("/quiz")}>{t("calendar.takeQuiz")}</Button>
               </CardContent>
             </Card>
