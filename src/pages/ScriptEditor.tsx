@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -16,6 +17,7 @@ export default function ScriptEditor() {
   const { taskId } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useTranslation();
   
   const [task, setTask] = useState<PlanTask | null>(null);
   const [scriptDoc, setScriptDoc] = useState<ScriptDocument | null>(null);
@@ -73,8 +75,8 @@ export default function ScriptEditor() {
     } catch (error) {
       console.error("Error loading data:", error);
       toast({
-        title: "Error",
-        description: "Failed to load script",
+        title: t("scriptEditor.error"),
+        description: t("scriptEditor.errorLoading"),
         variant: "destructive",
       });
     } finally {
@@ -120,14 +122,14 @@ export default function ScriptEditor() {
       }
 
       toast({
-        title: "Saved",
-        description: "Script saved successfully",
+        title: t("scriptEditor.saved"),
+        description: t("scriptEditor.scriptSaved"),
       });
     } catch (error) {
       console.error("Error saving:", error);
       toast({
-        title: "Error",
-        description: "Failed to save script",
+        title: t("scriptEditor.error"),
+        description: t("scriptEditor.errorSaving"),
         variant: "destructive",
       });
     } finally {
@@ -156,15 +158,15 @@ export default function ScriptEditor() {
       if (data?.script) {
         setScriptContent(data.script);
         toast({
-          title: "Generated",
-          description: "AI script generated successfully",
+          title: t("scriptEditor.generated"),
+          description: t("scriptEditor.aiGenerated"),
         });
       }
     } catch (error) {
       console.error("Error generating script:", error);
       toast({
-        title: "Error",
-        description: "Failed to generate script",
+        title: t("scriptEditor.error"),
+        description: t("scriptEditor.errorGenerating"),
         variant: "destructive",
       });
     } finally {
@@ -175,7 +177,7 @@ export default function ScriptEditor() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="text-muted-foreground">Loading...</p>
+        <p className="text-muted-foreground">{t("scriptEditor.loading")}</p>
       </div>
     );
   }
@@ -192,7 +194,7 @@ export default function ScriptEditor() {
             >
               <ArrowLeft className="h-4 w-4" />
             </Button>
-            <h1 className="text-2xl font-bold">Script Editor</h1>
+            <h1 className="text-2xl font-bold">{t("scriptEditor.title")}</h1>
           </div>
           <div className="flex items-center gap-2">
             <Button
@@ -201,14 +203,14 @@ export default function ScriptEditor() {
               variant="outline"
             >
               <Sparkles className="h-4 w-4 mr-2" />
-              {generating ? "Generating..." : "Generate with AI"}
+              {generating ? t("scriptEditor.generating") : t("scriptEditor.generateAI")}
             </Button>
             <Button
               onClick={handleSave}
               disabled={saving}
             >
               <Save className="h-4 w-4 mr-2" />
-              {saving ? "Saving..." : "Save"}
+              {saving ? t("scriptEditor.saving") : t("scriptEditor.save")}
             </Button>
           </div>
         </div>
@@ -217,22 +219,22 @@ export default function ScriptEditor() {
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         <div className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="title">Title</Label>
+            <Label htmlFor="title">{t("scriptEditor.titleLabel")}</Label>
             <Input
               id="title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="Enter script title"
+              placeholder={t("scriptEditor.titlePlaceholder")}
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="script">Script Content</Label>
+            <Label htmlFor="script">{t("scriptEditor.scriptContentLabel")}</Label>
             <Textarea
               id="script"
               value={scriptContent}
               onChange={(e) => setScriptContent(e.target.value)}
-              placeholder="Write your script here or generate one with AI..."
+              placeholder={t("scriptEditor.scriptContentPlaceholder")}
               className="min-h-[500px] font-mono"
             />
           </div>
