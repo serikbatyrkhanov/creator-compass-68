@@ -24,9 +24,9 @@
   },
   "index": {
     "hero": {
-      "title": "Grow Your YouTube Channel with",
+      "title": "Grow Your Audience with Climbley",
       "subtitle": "AI-Powered Growth",
-      "description": "Transform your YouTube journey with personalized content strategies, AI coaching, and data-driven insights.",
+      "description": "Transform your Content Creator journey with personalized plan, strategies, AI coaching, and data-driven insights.",
       "cta": "Start Free Quiz",
       "learnMore": "Learn More",
       "mainHeadline": "You've Always Wanted to Create Content...",
@@ -41,7 +41,7 @@
       },
       "ai": {
         "title": "AI Coach",
-        "description": "Get 24/7 guidance and answers to your YouTube growth questions"
+        "description": "Get 24/7 guidance and answers regarding content ideas"
       },
       "calendar": {
         "title": "Content Calendar",
@@ -49,7 +49,7 @@
       },
       "analytics": {
         "title": "Progress Tracking",
-        "description": "Monitor your growth with detailed analytics and insights"
+        "description": "Monitor your progress with analytics"
       }
     },
     "pricing": {
@@ -202,27 +202,10 @@
           "Evergreen, searchable content",
           "Natural path to courses & coaching"
         ],
-        "challenges": [
-          "Prep time for quality lessons",
-          "Consistency needed for growth"
-        ],
-        "platforms": [
-          "YouTube (tutorials)",
-          "TikTok/Reels (quick tips)",
-          "LinkedIn (pro topics)",
-          "Blog/Medium"
-        ],
-        "ideas": [
-          "Beginner Python in 7 days",
-          "5-minute productivity hacks",
-          "No-code app tutorial series"
-        ],
-        "monetization": [
-          "Courses",
-          "Workshops",
-          "Ebooks",
-          "Coaching/Consulting"
-        ]
+        "challenges": ["Prep time for quality lessons", "Consistency needed for growth"],
+        "platforms": ["YouTube (tutorials)", "TikTok/Reels (quick tips)", "LinkedIn (pro topics)", "Blog/Medium"],
+        "ideas": ["Beginner Python in 7 days", "5-minute productivity hacks", "No-code app tutorial series"],
+        "monetization": ["Courses", "Workshops", "Ebooks", "Coaching/Consulting"]
       },
       "entertainer": {
         "label": "Entertainer / Performer",
@@ -230,32 +213,11 @@
         "emoji": "🎭",
         "tagline": "Capture attention with humor, story, and energy.",
         "fullDescription": "You shine on camera and love making people feel something—laughs, thrills, or surprise. Great fit for trends and rapid iteration.",
-        "strengths": [
-          "High viral potential",
-          "Strong parasocial connection",
-          "Trend-friendly"
-        ],
-        "challenges": [
-          "High content cadence",
-          "Short shelf life for trends"
-        ],
-        "platforms": [
-          "TikTok",
-          "Instagram Reels",
-          "YouTube Shorts",
-          "Twitch (live)"
-        ],
-        "ideas": [
-          "Daily comedy skits",
-          "Reacting to viral clips",
-          "Gaming challenges with forfeits"
-        ],
-        "monetization": [
-          "Brand deals",
-          "Sponsorships",
-          "Merch",
-          "Patreon"
-        ]
+        "strengths": ["High viral potential", "Strong parasocial connection", "Trend-friendly"],
+        "challenges": ["High content cadence", "Short shelf life for trends"],
+        "platforms": ["TikTok", "Instagram Reels", "YouTube Shorts", "Twitch (live)"],
+        "ideas": ["Daily comedy skits", "Reacting to viral clips", "Gaming challenges with forfeits"],
+        "monetization": ["Brand deals", "Sponsorships", "Merch", "Patreon"]
       },
       "lifestyle": {
         "label": "Lifestyle & Inspiration",
@@ -263,32 +225,11 @@
         "emoji": "🌿",
         "tagline": "Make your habits and taste the brand.",
         "fullDescription": "You inspire through routines, aesthetics, and personal stories. Your personality is the product—show, don't tell.",
-        "strengths": [
-          "High relatability",
-          "Strong brand partnerships",
-          "Broad topics"
-        ],
-        "challenges": [
-          "Requires unique personal style",
-          "Consistency around your life"
-        ],
-        "platforms": [
-          "Instagram",
-          "TikTok",
-          "YouTube (vlogs)",
-          "Pinterest"
-        ],
-        "ideas": [
-          "AM/PM routine reels",
-          "Budget travel mini-vlogs",
-          "Healthy meal prep week"
-        ],
-        "monetization": [
-          "Sponsorships",
-          "Affiliate links",
-          "Product collabs",
-          "Digital presets/templates"
-        ]
+        "strengths": ["High relatability", "Strong brand partnerships", "Broad topics"],
+        "challenges": ["Requires unique personal style", "Consistency around your life"],
+        "platforms": ["Instagram", "TikTok", "YouTube (vlogs)", "Pinterest"],
+        "ideas": ["AM/PM routine reels", "Budget travel mini-vlogs", "Healthy meal prep week"],
+        "monetization": ["Sponsorships", "Affiliate links", "Product collabs", "Digital presets/templates"]
       },
       "reviewer": {
         "label": "Reviewer / Analyst",
@@ -296,32 +237,11 @@
         "emoji": "🔎",
         "tagline": "Help people decide with honest breakdowns.",
         "fullDescription": "You love testing, comparing, and forming opinions backed by evidence. Trust is your growth engine.",
-        "strengths": [
-          "Searchable & intent-rich",
-          "Credibility builds fast",
-          "Affiliate friendly"
-        ],
-        "challenges": [
-          "Access to products/services",
-          "Crowded in big niches"
-        ],
-        "platforms": [
-          "YouTube (deep dives)",
-          "TikTok/Reels (quick takes)",
-          "Blog/Medium/Substack",
-          "Reddit/Discord"
-        ],
-        "ideas": [
-          "Top 5 budget mics",
-          "iPhone vs Galaxy honest review",
-          "Weekly streaming picks"
-        ],
-        "monetization": [
-          "Affiliate programs",
-          "Sponsorships",
-          "Brand partnerships",
-          "Amazon Influencer"
-        ]
+        "strengths": ["Searchable & intent-rich", "Credibility builds fast", "Affiliate friendly"],
+        "challenges": ["Access to products/services", "Crowded in big niches"],
+        "platforms": ["YouTube (deep dives)", "TikTok/Reels (quick takes)", "Blog/Medium/Substack", "Reddit/Discord"],
+        "ideas": ["Top 5 budget mics", "iPhone vs Galaxy honest review", "Weekly streaming picks"],
+        "monetization": ["Affiliate programs", "Sponsorships", "Brand partnerships", "Amazon Influencer"]
       },
       "journey": {
         "label": "Journey / Documenter",
@@ -329,32 +249,11 @@
         "emoji": "🛤",
         "tagline": "Bring people along as you learn and build.",
         "fullDescription": "You share the real process—wins and stumbles. Authenticity and consistency turn long arcs into loyal communities.",
-        "strengths": [
-          "Highly relatable",
-          "Low barrier to start",
-          "Long-term loyalty"
-        ],
-        "challenges": [
-          "Slower monetization early",
-          "Results take time"
-        ],
-        "platforms": [
-          "YouTube (docu/progress)",
-          "TikTok (updates)",
-          "X/Twitter (threads)",
-          "Instagram Stories"
-        ],
-        "ideas": [
-          "90-day transformation log",
-          "Building a startup in public",
-          "Learning guitar: day-by-day"
-        ],
-        "monetization": [
-          "Patreon",
-          "Affiliate links",
-          "Courses later",
-          "Community"
-        ]
+        "strengths": ["Highly relatable", "Low barrier to start", "Long-term loyalty"],
+        "challenges": ["Slower monetization early", "Results take time"],
+        "platforms": ["YouTube (docu/progress)", "TikTok (updates)", "X/Twitter (threads)", "Instagram Stories"],
+        "ideas": ["90-day transformation log", "Building a startup in public", "Learning guitar: day-by-day"],
+        "monetization": ["Patreon", "Affiliate links", "Courses later", "Community"]
       }
     },
     "results": {
