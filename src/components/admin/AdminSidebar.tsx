@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { LayoutDashboard, Users, FileText, Image, MessageSquare, Newspaper, Link2 } from "lucide-react";
+import { LayoutDashboard, Users, FileText, Image, MessageSquare, Newspaper, Link2, Mail } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
@@ -10,6 +10,7 @@ const navItems = [
   { title: "Slider Images", icon: Image, path: "/admin/images" },
   { title: "Content", icon: FileText, path: "/admin/content" },
   { title: "SMS Test", icon: MessageSquare, path: "/admin/sms-test" },
+  { title: "Email Test", icon: Mail, path: "/admin/email-test" },
 ];
 
 export function AdminSidebar() {

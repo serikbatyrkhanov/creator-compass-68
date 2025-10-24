@@ -27,6 +27,7 @@ import AdminBlogEditor from "./pages/admin/AdminBlogEditor";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminImages from "./pages/admin/AdminImages";
 import AdminSmsTest from "./pages/admin/AdminSmsTest";
+import AdminEmailTest from "./pages/admin/AdminEmailTest";
 import AdminContent from "./pages/admin/AdminContent";
 import AdminReferrals from "./pages/admin/AdminReferrals";
 import ScriptEditor from "./pages/ScriptEditor";
@@ -72,6 +73,7 @@ const App = () => (
               <Route path="referrals" element={<AdminReferrals />} />
               <Route path="images" element={<AdminImages />} />
               <Route path="sms-test" element={<AdminSmsTest />} />
+              <Route path="email-test" element={<AdminEmailTest />} />
               <Route path="content" element={<AdminContent />} />
             </Route>
             
