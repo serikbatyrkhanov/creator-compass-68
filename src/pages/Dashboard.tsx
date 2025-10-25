@@ -180,9 +180,6 @@ const Dashboard = () => {
                   {firstName?.[0]}{lastName?.[0]}
                 </AvatarFallback>
               </Avatar>
-              <span className="text-sm text-muted-foreground">
-                {user.email}
-              </span>
               <Button variant="ghost" size="icon" onClick={() => navigate("/profile")}>
                 <Settings className="h-4 w-4" />
               </Button>
