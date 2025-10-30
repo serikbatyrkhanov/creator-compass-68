@@ -235,7 +235,7 @@ const ArchetypeCard: React.FC<ArchetypeCardProps> = ({
 }) => {
   const { t, i18n } = useTranslation();
   const { toast } = useToast();
-  const { niche, archetype, isValid } = useNicheArchetype();
+  const { niche, archetype: globalArchetype, isValid: isProfileValid } = useNicheArchetype();
   const recPlatforms = pickPlatforms(profile.platforms, time, extras);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [planDialogOpen, setPlanDialogOpen] = useState(false);
@@ -309,7 +309,7 @@ const ArchetypeCard: React.FC<ArchetypeCardProps> = ({
   };
 
   const generatePlan = async () => {
-    if (!isValid) {
+    if (!isProfileValid) {
       setShowNicheArchetypeModal(true);
       return;
     }
@@ -329,7 +329,7 @@ const ArchetypeCard: React.FC<ArchetypeCardProps> = ({
           selectedIdeas,
           quizResponseId,
           niche: sanitizeNiche(niche!),
-          globalArchetype: archetype!
+          globalArchetype: globalArchetype!
         }
       });
 
@@ -480,7 +480,7 @@ const ArchetypeCard: React.FC<ArchetypeCardProps> = ({
           <NicheArchetypeForm 
             inline
             initialNiche={niche || ""}
-            initialArchetype={archetype || ""}
+            initialArchetype={globalArchetype || ""}
             onSave={() => {
               setShowNicheArchetypeModal(false);
               setTimeout(() => generatePlan(), 500);
