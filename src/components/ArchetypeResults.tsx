@@ -9,10 +9,9 @@ import { ContentIdeasDialog } from "@/components/ContentIdeasDialog";
 import { ContentPlanDialog } from "@/components/ContentPlanDialog";
 import { AIChatCoach } from "@/components/AIChatCoach";
 import { NicheField } from "@/components/NicheField";
-import { ArchetypeSelect } from "@/components/ArchetypeSelect";
-import { NicheArchetypeForm } from "@/components/NicheArchetypeForm";
-import { useNicheArchetype } from "@/contexts/NicheArchetypeContext";
-import { sanitizeNiche, type ArchetypeEnum } from "@/lib/nicheArchetype";
+import { NicheForm } from "@/components/NicheForm";
+import { useNiche } from "@/contexts/NicheContext";
+import { sanitizeNiche } from "@/lib/nicheArchetype";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "react-i18next";
@@ -235,11 +234,11 @@ const ArchetypeCard: React.FC<ArchetypeCardProps> = ({
 }) => {
   const { t, i18n } = useTranslation();
   const { toast } = useToast();
-  const { niche, archetype: globalArchetype, isValid: isProfileValid } = useNicheArchetype();
+  const { niche, archetype, setNiche, primaryArchetype, secondaryArchetype, isValid } = useNiche();
   const recPlatforms = pickPlatforms(profile.platforms, time, extras);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [planDialogOpen, setPlanDialogOpen] = useState(false);
-  const [showNicheArchetypeModal, setShowNicheArchetypeModal] = useState(false);
+  const [showProfileIncompleteModal, setShowProfileIncompleteModal] = useState(false);
   const [ideas, setIdeas] = useState<any[]>([]);
   const [plan, setPlan] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -309,8 +308,8 @@ const ArchetypeCard: React.FC<ArchetypeCardProps> = ({
   };
 
   const generatePlan = async () => {
-    if (!isProfileValid) {
-      setShowNicheArchetypeModal(true);
+    if (!isValid) {
+      setShowProfileIncompleteModal(true);
       return;
     }
     
@@ -329,7 +328,8 @@ const ArchetypeCard: React.FC<ArchetypeCardProps> = ({
           selectedIdeas,
           quizResponseId,
           niche: sanitizeNiche(niche!),
-          globalArchetype: globalArchetype!
+          primaryArchetype: primaryArchetype!,
+          secondaryArchetype: secondaryArchetype!
         }
       });
 
@@ -469,23 +469,35 @@ const ArchetypeCard: React.FC<ArchetypeCardProps> = ({
         onRegenerate={generatePlan}
       />
       
-      <Dialog open={showNicheArchetypeModal} onOpenChange={setShowNicheArchetypeModal}>
+      <Dialog open={showProfileIncompleteModal} onOpenChange={setShowProfileIncompleteModal}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{t('profile.profileRequired')}</DialogTitle>
+            <DialogTitle>Complete Your Profile</DialogTitle>
             <DialogDescription>
-              {t('profile.profileRequiredDesc')}
+              You need both a niche and completed quiz results to generate content.
             </DialogDescription>
           </DialogHeader>
-          <NicheArchetypeForm 
+          <NicheForm 
             inline
             initialNiche={niche || ""}
-            initialArchetype={globalArchetype || ""}
             onSave={() => {
-              setShowNicheArchetypeModal(false);
+              setShowProfileIncompleteModal(false);
               setTimeout(() => generatePlan(), 500);
             }}
           />
+          {!primaryArchetype && (
+            <div className="mt-4 p-4 bg-amber-50 dark:bg-amber-950/20 rounded-lg border border-amber-200">
+              <p className="text-sm text-muted-foreground mb-2">
+                You also need to complete the quiz to set your archetype.
+              </p>
+              <Button className="w-full" onClick={() => {
+                setShowProfileIncompleteModal(false);
+                window.location.href = '/quiz';
+              }}>
+                Take Quiz
+              </Button>
+            </div>
+          )}
         </DialogContent>
       </Dialog>
     </motion.div>

@@ -22,10 +22,9 @@ import { PostingFrequencySelector } from "@/components/PostingFrequencySelector"
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { PlatformSelector } from "@/components/PlatformSelector";
 import { NicheField } from "@/components/NicheField";
-import { ArchetypeSelect } from "@/components/ArchetypeSelect";
-import { NicheArchetypeForm } from "@/components/NicheArchetypeForm";
-import { useNicheArchetype } from "@/contexts/NicheArchetypeContext";
-import { sanitizeNiche, type ArchetypeEnum } from "@/lib/nicheArchetype";
+import { NicheForm } from "@/components/NicheForm";
+import { useNiche } from "@/contexts/NicheContext";
+import { sanitizeNiche } from "@/lib/nicheArchetype";
 
 interface PlanTask {
   id: string;
@@ -66,7 +65,7 @@ const ContentCalendar = () => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { niche, archetype, isValid } = useNicheArchetype();
+  const { niche, archetype, setNiche, primaryArchetype, secondaryArchetype, isValid } = useNiche();
   
   // Get current locale for date-fns
   const getDateLocale = () => {
@@ -90,7 +89,7 @@ const ContentCalendar = () => {
   const [notesSaving, setNotesSaving] = useState<{ [key: string]: boolean }>({});
   const [notesSaved, setNotesSaved] = useState<{ [key: string]: boolean }>({});
   const [preferredPlatform, setPreferredPlatform] = useState<string | null>(null);
-  const [showNicheArchetypeModal, setShowNicheArchetypeModal] = useState(false);
+  const [showProfileIncompleteModal, setShowProfileIncompleteModal] = useState(false);
   const notesTimeouts = useRef<{ [key: string]: NodeJS.Timeout }>({});
   const postFieldTimeouts = useRef<{ [key: string]: NodeJS.Timeout }>({});
 
@@ -419,7 +418,7 @@ const ContentCalendar = () => {
   const generateNewPlan = async () => {
     // Check if niche and archetype are valid
     if (!isValid) {
-      setShowNicheArchetypeModal(true);
+      setShowProfileIncompleteModal(true);
       return;
     }
     
@@ -464,7 +463,8 @@ const ContentCalendar = () => {
           language: i18n.language,
           preferredPlatform: preferredPlatform,
           niche: sanitizeNiche(niche!),
-          globalArchetype: archetype!
+          primaryArchetype: primaryArchetype!,
+          secondaryArchetype: secondaryArchetype!
         },
         headers: {
           Authorization: `Bearer ${session?.access_token}`
@@ -746,8 +746,10 @@ const ContentCalendar = () => {
               </div>
             </div>
             <div className="flex items-center gap-2 flex-wrap">
-              <NicheField value={niche || ""} onChange={() => {}} compact />
-              <ArchetypeSelect value={archetype || ""} onChange={() => {}} compact />
+              <NicheField value={niche || ""} onChange={setNiche} compact />
+              <div className="text-sm text-muted-foreground ml-2">
+                <span className="font-medium">{archetype || "No quiz results"}</span>
+              </div>
               <PlatformSelector />
               <LanguageSelector />
               <Button onClick={generateNewPlan} disabled={generatingPlan}>
@@ -757,25 +759,32 @@ const ContentCalendar = () => {
             </div>
           </div>
 
-          {/* Niche/Archetype Modal */}
-          <Dialog open={showNicheArchetypeModal} onOpenChange={setShowNicheArchetypeModal}>
+          {/* Profile Incomplete Modal */}
+          <Dialog open={showProfileIncompleteModal} onOpenChange={setShowProfileIncompleteModal}>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>{t('profile.profileRequired')}</DialogTitle>
+                <DialogTitle>Complete Your Profile</DialogTitle>
                 <DialogDescription>
-                  {t('profile.profileRequiredDesc')}
+                  You need both a niche and completed quiz results to generate content.
                 </DialogDescription>
               </DialogHeader>
-              <NicheArchetypeForm 
+              <NicheForm 
                 inline
                 initialNiche={niche || ""}
-                initialArchetype={archetype || ""}
                 onSave={() => {
-                  setShowNicheArchetypeModal(false);
-                  // Automatically retry generation
-                  setTimeout(() => generateNewPlan(), 500);
+                  setShowProfileIncompleteModal(false);
                 }}
               />
+              {!primaryArchetype && (
+                <div className="mt-4">
+                  <Button className="w-full" onClick={() => {
+                    setShowProfileIncompleteModal(false);
+                    navigate('/quiz');
+                  }}>
+                    Take Quiz to Set Archetype
+                  </Button>
+                </div>
+              )}
             </DialogContent>
           </Dialog>
 

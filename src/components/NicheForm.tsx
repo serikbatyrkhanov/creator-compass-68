@@ -2,51 +2,39 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { NicheField } from "./NicheField";
-import { ArchetypeSelect } from "./ArchetypeSelect";
-import { sanitizeNiche, validateNiche, validateArchetype, type ArchetypeEnum } from "@/lib/nicheArchetype";
+import { sanitizeNiche, validateNiche } from "@/lib/nicheArchetype";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "react-i18next";
 
-interface NicheArchetypeFormProps {
-  onSave?: (niche: string, archetype: ArchetypeEnum) => void;
+interface NicheFormProps {
+  onSave?: (niche: string) => void;
   inline?: boolean;
   initialNiche?: string;
-  initialArchetype?: string;
 }
 
-export const NicheArchetypeForm = ({ 
+export const NicheForm = ({ 
   onSave, 
   inline = false, 
-  initialNiche = "", 
-  initialArchetype = "" 
-}: NicheArchetypeFormProps) => {
+  initialNiche = "" 
+}: NicheFormProps) => {
   const { t } = useTranslation();
   const { toast } = useToast();
   const [niche, setNiche] = useState(initialNiche);
-  const [archetype, setArchetype] = useState(initialArchetype);
   const [nicheError, setNicheError] = useState<string>();
-  const [archetypeError, setArchetypeError] = useState<string>();
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     setNiche(initialNiche);
-    setArchetype(initialArchetype);
-  }, [initialNiche, initialArchetype]);
+  }, [initialNiche]);
 
   const handleSave = async () => {
     // Validate
     const sanitized = sanitizeNiche(niche);
     const nicheValidation = validateNiche(sanitized);
-    const archetypeValidation = validateArchetype(archetype);
 
     if (!nicheValidation.valid) {
       setNicheError(nicheValidation.error);
-      return;
-    }
-    
-    if (!archetypeValidation.valid) {
-      setArchetypeError(archetypeValidation.error);
       return;
     }
 
@@ -66,27 +54,24 @@ export const NicheArchetypeForm = ({
 
       const { error } = await supabase
         .from('profiles')
-        .update({ 
-          niche: sanitized, 
-          archetype: archetype as ArchetypeEnum 
-        })
+        .update({ niche: sanitized })
         .eq('id', user.id);
 
       if (error) throw error;
 
       toast({
         title: t('profile.profileSaved'),
-        description: "Your content profile has been updated."
+        description: "Your niche has been updated."
       });
 
       if (onSave) {
-        onSave(sanitized, archetype as ArchetypeEnum);
+        onSave(sanitized);
       }
     } catch (error) {
-      console.error('Error saving profile:', error);
+      console.error('Error saving niche:', error);
       toast({
         title: "Error",
-        description: "Failed to save your profile. Please try again.",
+        description: "Failed to save your niche. Please try again.",
         variant: "destructive"
       });
     } finally {
@@ -100,12 +85,6 @@ export const NicheArchetypeForm = ({
         value={niche} 
         onChange={setNiche} 
         error={nicheError}
-        compact={inline}
-      />
-      <ArchetypeSelect 
-        value={archetype} 
-        onChange={setArchetype} 
-        error={archetypeError}
         compact={inline}
       />
       <Button 
@@ -125,9 +104,9 @@ export const NicheArchetypeForm = ({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Your Content Profile</CardTitle>
+        <CardTitle>Your Niche</CardTitle>
         <CardDescription>
-          Define your niche and creator style to get personalized content plans.
+          Define your content niche to get personalized recommendations.
         </CardDescription>
       </CardHeader>
       <CardContent>

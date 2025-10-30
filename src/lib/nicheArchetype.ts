@@ -40,10 +40,4 @@ export const validateNiche = (value: string): { valid: boolean; error?: string }
   return { valid: true };
 };
 
-export const validateArchetype = (value: string): { valid: boolean; error?: string } => {
-  const validValues = ARCHETYPE_OPTIONS.map(opt => opt.value);
-  if (!validValues.includes(value as ArchetypeEnum)) {
-    return { valid: false, error: "Choose a valid archetype." };
-  }
-  return { valid: true };
-};
+// Archetype validation removed - archetypes are now auto-populated from quiz results

@@ -18,8 +18,9 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { AIChatCoach } from "@/components/AIChatCoach";
 import { TrendingTitlesDialog } from "@/components/TrendingTitlesDialog";
-import { NicheArchetypeForm } from "@/components/NicheArchetypeForm";
-import { useNicheArchetype } from "@/contexts/NicheArchetypeContext";
+import { NicheField } from "@/components/NicheField";
+import { Label } from "@/components/ui/label";
+import { useNiche } from "@/contexts/NicheContext";
 import logo from "@/assets/climbley-logo.png";
 import { useTranslation } from "react-i18next";
 import { LanguageSelector } from "@/components/LanguageSelector";
@@ -30,7 +31,7 @@ const Dashboard = () => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { niche, archetype } = useNicheArchetype();
+  const { niche, archetype, setNiche, primaryArchetype } = useNiche();
   const [user, setUser] = useState<any>(null);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -236,10 +237,37 @@ const Dashboard = () => {
           )}
 
           {/* Content Profile */}
-          <NicheArchetypeForm 
-            initialNiche={niche || ""} 
-            initialArchetype={archetype || ""}
-          />
+          <Card>
+            <CardHeader>
+              <CardTitle>Your Content Profile</CardTitle>
+              <CardDescription>
+                Your niche and archetype (from quiz results)
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {/* Niche input - editable */}
+              <div>
+                <NicheField value={niche || ""} onChange={(val) => setNiche(val)} />
+              </div>
+              
+              {/* Archetype display - read-only */}
+              <div className="border rounded-lg p-4 bg-muted/50">
+                <Label className="text-sm text-muted-foreground">Content Creator Archetype</Label>
+                <div className="flex items-center justify-between mt-2">
+                  <span className="font-medium">
+                    {archetype || "Not set - take the quiz first"}
+                  </span>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => navigate('/quiz')}
+                  >
+                    {archetype ? "Retake Quiz" : "Take Quiz"}
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
           {/* Quick Actions */}
           <div className={`grid gap-6 animate-slide-up ${lastQuizResult ? 'md:grid-cols-4' : 'md:grid-cols-4'}`}>

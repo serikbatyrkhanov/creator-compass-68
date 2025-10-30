@@ -12,9 +12,9 @@ serve(async (req) => {
   }
 
   try {
-    const { archetype, topics, timeBucket, gear, selectedIdeas, quizResponseId, postingDays, duration = 7, language = 'en', preferredPlatform, niche, globalArchetype } = await req.json();
+const { archetype, topics, timeBucket, gear, selectedIdeas, quizResponseId, postingDays, duration = 7, language = 'en', preferredPlatform, niche, primaryArchetype, secondaryArchetype } = await req.json();
     
-    console.log('[GENERATE-PLAN] Starting generation', { archetype, timeBucket, ideasCount: selectedIdeas?.length, postingDays, duration, language, preferredPlatform, niche, globalArchetype });
+console.log('[GENERATE-PLAN] Starting generation', { archetype, timeBucket, ideasCount: selectedIdeas?.length, postingDays, duration, language, preferredPlatform, niche, primaryArchetype, secondaryArchetype });
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {

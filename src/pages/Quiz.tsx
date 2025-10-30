@@ -14,6 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "react-i18next";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { PlatformSelector } from "@/components/PlatformSelector";
+import { useNiche } from "@/contexts/NicheContext";
 
 const Quiz = () => {
   const { t } = useTranslation();
@@ -21,6 +22,7 @@ const Quiz = () => {
   const [answers, setAnswers] = useState<Record<string, string[]>>({});
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { refresh } = useNiche();
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
@@ -172,6 +174,9 @@ const Quiz = () => {
 
       if (error) throw error;
 
+      // Refresh the global context to pick up new archetype
+      await refresh();
+      
       // Navigate to results with the response ID
       navigate(`/quiz-results/${data.id}`);
     } catch (error) {
