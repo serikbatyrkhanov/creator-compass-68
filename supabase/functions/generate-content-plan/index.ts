@@ -12,9 +12,9 @@ serve(async (req) => {
   }
 
   try {
-    const { archetype, topics, timeBucket, gear, selectedIdeas, quizResponseId, postingDays, duration = 7, language = 'en', preferredPlatform } = await req.json();
+    const { archetype, topics, timeBucket, gear, selectedIdeas, quizResponseId, postingDays, duration = 7, language = 'en', preferredPlatform, niche, globalArchetype } = await req.json();
     
-    console.log('[GENERATE-PLAN] Starting generation', { archetype, timeBucket, ideasCount: selectedIdeas?.length, postingDays, duration, language, preferredPlatform });
+    console.log('[GENERATE-PLAN] Starting generation', { archetype, timeBucket, ideasCount: selectedIdeas?.length, postingDays, duration, language, preferredPlatform, niche, globalArchetype });
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
@@ -50,11 +50,13 @@ serve(async (req) => {
     const platformGuidelines = preferredPlatform ? `\nPlatform focus: ${preferredPlatform}\nPlatform requirements: ${getPlatformGuidelines(preferredPlatform)}` : '';
     const languageInstruction = language === 'ru' ? 'Russian' : 'English';
     
-    const systemPrompt = `You are an expert content planning coach. Create a realistic ${planType} content creation schedule for a ${archetype} creator.
+    const systemPrompt = `You are an expert content planning coach. Create a realistic ${planType} content creation schedule for a ${globalArchetype || archetype} creator.
 
 CRITICAL: Generate ALL text (tasks, titles, descriptions, tips) in ${languageInstruction}.
 Language: ${language}${platformGuidelines}
 
+Content Niche: ${niche || 'general content'}
+Creator Archetype: ${globalArchetype || archetype}
 The plan should be achievable within ${timeText} total per week.
 Available gear: ${gearText}
 Topics: ${topicsText}

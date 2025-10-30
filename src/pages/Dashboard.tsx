@@ -18,6 +18,8 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { AIChatCoach } from "@/components/AIChatCoach";
 import { TrendingTitlesDialog } from "@/components/TrendingTitlesDialog";
+import { NicheArchetypeForm } from "@/components/NicheArchetypeForm";
+import { useNicheArchetype } from "@/contexts/NicheArchetypeContext";
 import logo from "@/assets/climbley-logo.png";
 import { useTranslation } from "react-i18next";
 import { LanguageSelector } from "@/components/LanguageSelector";
@@ -28,6 +30,7 @@ const Dashboard = () => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { niche, archetype } = useNicheArchetype();
   const [user, setUser] = useState<any>(null);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -231,6 +234,12 @@ const Dashboard = () => {
               </CardContent>
             </Card>
           )}
+
+          {/* Content Profile */}
+          <NicheArchetypeForm 
+            initialNiche={niche || ""} 
+            initialArchetype={archetype || ""}
+          />
 
           {/* Quick Actions */}
           <div className={`grid gap-6 animate-slide-up ${lastQuizResult ? 'md:grid-cols-4' : 'md:grid-cols-4'}`}>

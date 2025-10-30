@@ -343,6 +343,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          archetype: string | null
           avatar_url: string | null
           created_at: string
           email: string
@@ -354,6 +355,7 @@ export type Database = {
           last_email_sent_date: string | null
           last_name: string | null
           last_sms_sent_date: string | null
+          niche: string | null
           notification_time: string | null
           phone: string | null
           preferred_platform: string | null
@@ -365,6 +367,7 @@ export type Database = {
           youtube_url: string | null
         }
         Insert: {
+          archetype?: string | null
           avatar_url?: string | null
           created_at?: string
           email: string
@@ -376,6 +379,7 @@ export type Database = {
           last_email_sent_date?: string | null
           last_name?: string | null
           last_sms_sent_date?: string | null
+          niche?: string | null
           notification_time?: string | null
           phone?: string | null
           preferred_platform?: string | null
@@ -387,6 +391,7 @@ export type Database = {
           youtube_url?: string | null
         }
         Update: {
+          archetype?: string | null
           avatar_url?: string | null
           created_at?: string
           email?: string
@@ -398,6 +403,7 @@ export type Database = {
           last_email_sent_date?: string | null
           last_name?: string | null
           last_sms_sent_date?: string | null
+          niche?: string | null
           notification_time?: string | null
           phone?: string | null
           preferred_platform?: string | null

@@ -111,8 +111,26 @@
     "sendReset": "Send Reset Link",
     "backToSignIn": "Back to Sign In"
   },
+  "profile": {
+    "niche": "Your Niche",
+    "nichePlaceholder": "e.g., AI tools for teachers",
+    "nicheDescription": "What topics do you focus on?",
+    "archetype": "Content Creator Archetype",
+    "archetypeDescription": "Your primary content style",
+    "saveProfile": "Save Profile",
+    "profileSaved": "Profile updated successfully",
+    "profileRequired": "Complete Your Profile",
+    "profileRequiredDesc": "We need your niche and archetype to generate a personalized content plan.",
+    "nicheError": {
+      "tooShort": "Please enter at least 3 characters.",
+      "tooLong": "Keep it under 44 characters.",
+      "invalid": "Use letters, numbers, spaces, and , & . / ' - only."
+    },
+    "archetypeError": {
+      "invalid": "Choose a valid archetype."
+    }
+  },
   "dashboard": {
-    "welcome": "Welcome back",
     "subtitle": "Your YouTube Growth Dashboard",
     "lastQuizResult": {
       "title": "Last Quiz Result",

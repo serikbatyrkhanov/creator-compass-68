@@ -21,6 +21,11 @@ import { enUS, ru } from "date-fns/locale";
 import { PostingFrequencySelector } from "@/components/PostingFrequencySelector";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { PlatformSelector } from "@/components/PlatformSelector";
+import { NicheField } from "@/components/NicheField";
+import { ArchetypeSelect } from "@/components/ArchetypeSelect";
+import { NicheArchetypeForm } from "@/components/NicheArchetypeForm";
+import { useNicheArchetype } from "@/contexts/NicheArchetypeContext";
+import { sanitizeNiche, type ArchetypeEnum } from "@/lib/nicheArchetype";
 
 interface PlanTask {
   id: string;
@@ -61,6 +66,7 @@ const ContentCalendar = () => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { niche, archetype, isValid } = useNicheArchetype();
   
   // Get current locale for date-fns
   const getDateLocale = () => {
@@ -84,6 +90,7 @@ const ContentCalendar = () => {
   const [notesSaving, setNotesSaving] = useState<{ [key: string]: boolean }>({});
   const [notesSaved, setNotesSaved] = useState<{ [key: string]: boolean }>({});
   const [preferredPlatform, setPreferredPlatform] = useState<string | null>(null);
+  const [showNicheArchetypeModal, setShowNicheArchetypeModal] = useState(false);
   const notesTimeouts = useRef<{ [key: string]: NodeJS.Timeout }>({});
   const postFieldTimeouts = useRef<{ [key: string]: NodeJS.Timeout }>({});
 
@@ -410,6 +417,12 @@ const ContentCalendar = () => {
   };
 
   const generateNewPlan = async () => {
+    // Check if niche and archetype are valid
+    if (!isValid) {
+      setShowNicheArchetypeModal(true);
+      return;
+    }
+    
     setGeneratingPlan(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
@@ -449,7 +462,9 @@ const ContentCalendar = () => {
           postingDays: currentPostingDays,
           duration: 7,
           language: i18n.language,
-          preferredPlatform: preferredPlatform
+          preferredPlatform: preferredPlatform,
+          niche: sanitizeNiche(niche!),
+          globalArchetype: archetype!
         },
         headers: {
           Authorization: `Bearer ${session?.access_token}`
@@ -730,7 +745,9 @@ const ContentCalendar = () => {
                 <p className="text-muted-foreground">{t("calendar.subtitle")}</p>
               </div>
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 flex-wrap">
+              <NicheField value={niche || ""} onChange={() => {}} compact />
+              <ArchetypeSelect value={archetype || ""} onChange={() => {}} compact />
               <PlatformSelector />
               <LanguageSelector />
               <Button onClick={generateNewPlan} disabled={generatingPlan}>
@@ -739,6 +756,28 @@ const ContentCalendar = () => {
               </Button>
             </div>
           </div>
+
+          {/* Niche/Archetype Modal */}
+          <Dialog open={showNicheArchetypeModal} onOpenChange={setShowNicheArchetypeModal}>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>{t('profile.profileRequired')}</DialogTitle>
+                <DialogDescription>
+                  {t('profile.profileRequiredDesc')}
+                </DialogDescription>
+              </DialogHeader>
+              <NicheArchetypeForm 
+                inline
+                initialNiche={niche || ""}
+                initialArchetype={archetype || ""}
+                onSave={() => {
+                  setShowNicheArchetypeModal(false);
+                  // Automatically retry generation
+                  setTimeout(() => generateNewPlan(), 500);
+                }}
+              />
+            </DialogContent>
+          </Dialog>
 
           {/* Posting Schedule Filter */}
           {currentUserId && (

@@ -2,11 +2,17 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Check, TrendingUp, BookOpen, VideoIcon, Zap, Clock, MessageCircle, Calendar } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import logo from "@/assets/climbley-logo.png";
 import { Button } from "@/components/ui/button";
 import { ContentIdeasDialog } from "@/components/ContentIdeasDialog";
 import { ContentPlanDialog } from "@/components/ContentPlanDialog";
 import { AIChatCoach } from "@/components/AIChatCoach";
+import { NicheField } from "@/components/NicheField";
+import { ArchetypeSelect } from "@/components/ArchetypeSelect";
+import { NicheArchetypeForm } from "@/components/NicheArchetypeForm";
+import { useNicheArchetype } from "@/contexts/NicheArchetypeContext";
+import { sanitizeNiche, type ArchetypeEnum } from "@/lib/nicheArchetype";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "react-i18next";
@@ -228,15 +234,17 @@ const ArchetypeCard: React.FC<ArchetypeCardProps> = ({
   targetAudience
 }) => {
   const { t, i18n } = useTranslation();
+  const { toast } = useToast();
+  const { niche, archetype, isValid } = useNicheArchetype();
   const recPlatforms = pickPlatforms(profile.platforms, time, extras);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [planDialogOpen, setPlanDialogOpen] = useState(false);
+  const [showNicheArchetypeModal, setShowNicheArchetypeModal] = useState(false);
   const [ideas, setIdeas] = useState<any[]>([]);
   const [plan, setPlan] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [planLoading, setPlanLoading] = useState(false);
   const [preferredPlatform, setPreferredPlatform] = useState<string | null>(null);
-  const { toast } = useToast();
 
   // Fetch user's preferred platform
   React.useEffect(() => {
@@ -301,6 +309,11 @@ const ArchetypeCard: React.FC<ArchetypeCardProps> = ({
   };
 
   const generatePlan = async () => {
+    if (!isValid) {
+      setShowNicheArchetypeModal(true);
+      return;
+    }
+    
     setPlanLoading(true);
     setPlanDialogOpen(true);
     
@@ -314,7 +327,9 @@ const ArchetypeCard: React.FC<ArchetypeCardProps> = ({
           timeBucket: time,
           gear: extras || [],
           selectedIdeas,
-          quizResponseId
+          quizResponseId,
+          niche: sanitizeNiche(niche!),
+          globalArchetype: archetype!
         }
       });
 
@@ -453,6 +468,26 @@ const ArchetypeCard: React.FC<ArchetypeCardProps> = ({
         loading={planLoading}
         onRegenerate={generatePlan}
       />
+      
+      <Dialog open={showNicheArchetypeModal} onOpenChange={setShowNicheArchetypeModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t('profile.profileRequired')}</DialogTitle>
+            <DialogDescription>
+              {t('profile.profileRequiredDesc')}
+            </DialogDescription>
+          </DialogHeader>
+          <NicheArchetypeForm 
+            inline
+            initialNiche={niche || ""}
+            initialArchetype={archetype || ""}
+            onSave={() => {
+              setShowNicheArchetypeModal(false);
+              setTimeout(() => generatePlan(), 500);
+            }}
+          />
+        </DialogContent>
+      </Dialog>
     </motion.div>
   );
 };
