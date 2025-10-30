@@ -209,65 +209,74 @@ const Dashboard = () => {
             </p>
           </div>
 
-          {/* Last Quiz Result */}
-          {lastQuizResult && (
-            <Card className="border-2 bg-gradient-to-br from-emerald-50 to-white dark:from-emerald-950/20 dark:to-background animate-fade-in">
-              <CardHeader>
-                <div className="flex items-start justify-between">
-                  <div className="h-12 w-12 rounded-lg bg-emerald-500/10 flex items-center justify-center mb-4">
-                    <FileCheck className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
+          {/* Profile Cards Row */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6">
+            {/* Last Quiz Result */}
+            {lastQuizResult && (
+              <Card className="border-2 bg-gradient-to-br from-emerald-50 to-white dark:from-emerald-950/20 dark:to-background">
+                <CardHeader className="pb-3">
+                  <div className="h-10 w-10 rounded-lg bg-emerald-500/10 flex items-center justify-center mb-2">
+                    <FileCheck className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
                   </div>
-                </div>
-                <CardTitle className="text-emerald-700 dark:text-emerald-300">{t('dashboard.lastQuizResult.title')}</CardTitle>
-                <CardDescription>
-                  {t('dashboard.lastQuizResult.yourArchetype')}: <span className="font-semibold capitalize">{t(`quiz.archetypes.${lastQuizResult.primary_archetype}.label`)}</span>
-                  <br />
-                  <span className="text-xs">{t('dashboard.lastQuizResult.completed')} {new Date(lastQuizResult.created_at).toLocaleDateString()}</span>
+                  <CardTitle className="text-lg text-emerald-700 dark:text-emerald-300">{t('dashboard.lastQuizResult.title')}</CardTitle>
+                  <CardDescription className="text-xs">
+                    {t('dashboard.lastQuizResult.yourArchetype')}: <span className="font-semibold capitalize">{t(`quiz.archetypes.${lastQuizResult.primary_archetype}.label`)}</span>
+                    <br />
+                    <span className="text-xs">{t('dashboard.lastQuizResult.completed')} {new Date(lastQuizResult.created_at).toLocaleDateString()}</span>
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="pb-4">
+                  <Button 
+                    size="sm"
+                    className="w-full bg-emerald-600 hover:bg-emerald-700 text-white" 
+                    onClick={() => navigate(`/quiz-results/${lastQuizResult.id}`)}
+                  >
+                    {t('dashboard.lastQuizResult.viewResults')}
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Content Profile */}
+            <Card className={!lastQuizResult ? "md:col-span-2" : ""}>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg">{t('profile.title')}</CardTitle>
+                <CardDescription className="text-xs">
+                  {t('profile.subtitle')}
                 </CardDescription>
               </CardHeader>
-              <CardContent>
-                <Button 
-                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-white" 
-                  onClick={() => navigate(`/quiz-results/${lastQuizResult.id}`)}
-                >
-                  {t('dashboard.lastQuizResult.viewResults')}
-                </Button>
+              <CardContent className="space-y-3 pb-4">
+                {/* Niche input */}
+                <div className="space-y-2">
+                  <Label className="text-sm">{t('profile.niche')}</Label>
+                  <NicheField value={niche || ""} onChange={(val) => setNiche(val)} compact />
+                </div>
+                
+                {/* Archetype display */}
+                <div className="space-y-2">
+                  <Label className="text-sm">{t('profile.archetype')}</Label>
+                  <div className="flex items-center gap-2">
+                    <div className="flex-1 border rounded-md px-3 py-2 bg-muted/50 text-sm">
+                      {archetype ? (
+                        <span className="font-medium capitalize">{archetype}</span>
+                      ) : (
+                        <span className="text-muted-foreground">
+                          {t('dashboard.takeQuizFirst')}
+                        </span>
+                      )}
+                    </div>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => navigate('/quiz')}
+                    >
+                      {archetype ? t('dashboard.quickActions.retakeQuiz') : t('quiz.title')}
+                    </Button>
+                  </div>
+                </div>
               </CardContent>
             </Card>
-          )}
-
-          {/* Content Profile */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Your Content Profile</CardTitle>
-              <CardDescription>
-                Your niche and archetype (from quiz results)
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {/* Niche input - editable */}
-              <div>
-                <NicheField value={niche || ""} onChange={(val) => setNiche(val)} />
-              </div>
-              
-              {/* Archetype display - read-only */}
-              <div className="border rounded-lg p-4 bg-muted/50">
-                <Label className="text-sm text-muted-foreground">Content Creator Archetype</Label>
-                <div className="flex items-center justify-between mt-2">
-                  <span className="font-medium">
-                    {archetype || "Not set - take the quiz first"}
-                  </span>
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    onClick={() => navigate('/quiz')}
-                  >
-                    {archetype ? "Retake Quiz" : "Take Quiz"}
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          </div>
 
           {/* Quick Actions */}
           <div className={`grid gap-6 animate-slide-up ${lastQuizResult ? 'md:grid-cols-4' : 'md:grid-cols-4'}`}>
