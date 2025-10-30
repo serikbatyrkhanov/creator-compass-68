@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar, TrendingUp, Target, LogOut, FileCheck, MessageCircle, CheckCircle2, Flame, Settings, BookOpen } from "lucide-react";
+import { Calendar, TrendingUp, Target, LogOut, FileCheck, MessageCircle, CheckCircle2, Flame, Settings, BookOpen, User } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { AIChatCoach } from "@/components/AIChatCoach";
 import { TrendingTitlesDialog } from "@/components/TrendingTitlesDialog";
@@ -193,9 +193,12 @@ const Dashboard = () => {
               </Card>}
 
             {/* Content Profile */}
-            <Card className={!lastQuizResult ? "md:col-span-2" : ""}>
+            <Card className={`border-2 bg-gradient-to-br from-gray-50 to-white dark:from-gray-900/20 dark:to-background ${!lastQuizResult ? "md:col-span-2" : ""}`}>
               <CardHeader className="pb-3">
-                <CardTitle className="text-lg">{t('profile.title', { defaultValue: 'Your Content Profile' })}</CardTitle>
+                <div className="h-10 w-10 rounded-lg bg-gray-500/10 flex items-center justify-center mb-2">
+                  <User className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+                </div>
+                <CardTitle className="text-lg text-gray-700 dark:text-gray-300">{t('profile.title', { defaultValue: 'Your Content Profile' })}</CardTitle>
                 <CardDescription className="text-xs">
                   {t('profile.subtitle', { defaultValue: 'Set your niche and view your creator archetype' })}
                 </CardDescription>
