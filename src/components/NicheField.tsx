@@ -65,10 +65,10 @@ export const NicheField = ({ value, onChange, error, compact = false }: NicheFie
           onChange={handleChange}
           onBlur={handleBlur}
           placeholder={t('profile.nichePlaceholder', { defaultValue: 'e.g., AI tools for teachers' })}
-          className={localError ? "border-destructive" : ""}
+          className={`pr-16 ${localError ? "border-destructive" : ""}`}
           maxLength={44}
         />
-        <span className="absolute right-3 top-2.5 text-xs text-muted-foreground">
+        <span className="absolute right-3 top-2.5 text-xs text-muted-foreground pointer-events-none">
           {charCount}/44
         </span>
       </div>
