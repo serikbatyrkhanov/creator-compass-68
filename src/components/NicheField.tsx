@@ -55,7 +55,7 @@ export const NicheField = ({ value, onChange, error, compact = false }: NicheFie
     <div className={compact ? "flex-1" : "space-y-2"}>
       {!compact && (
         <Label htmlFor="niche">
-          {t('profile.niche')}
+          {t('profile.niche', { defaultValue: 'Your Niche' })}
         </Label>
       )}
       <div className="relative">
@@ -64,7 +64,7 @@ export const NicheField = ({ value, onChange, error, compact = false }: NicheFie
           value={localValue}
           onChange={handleChange}
           onBlur={handleBlur}
-          placeholder={t('profile.nichePlaceholder')}
+          placeholder={t('profile.nichePlaceholder', { defaultValue: 'e.g., AI tools for teachers' })}
           className={localError ? "border-destructive" : ""}
           maxLength={44}
         />
@@ -76,7 +76,7 @@ export const NicheField = ({ value, onChange, error, compact = false }: NicheFie
         <p className="text-xs text-destructive mt-1">{localError}</p>
       )}
       {!compact && !localError && (
-        <p className="text-xs text-muted-foreground">{t('profile.nicheDescription')}</p>
+        <p className="text-xs text-muted-foreground">{t('profile.nicheDescription', { defaultValue: 'What topics do you focus on?' })}</p>
       )}
     </div>
   );

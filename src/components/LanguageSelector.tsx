@@ -20,10 +20,11 @@ export const LanguageSelector = () => {
     i18n.changeLanguage(langCode);
   };
 
-  const currentLanguage = languages.find((lang) => lang.code === i18n.language) || languages[0];
+  const currentLang = i18n.resolvedLanguage || i18n.language;
+  const currentLanguage = languages.find((lang) => lang.code === currentLang) || languages[0];
 
   return (
-    <Select value={i18n.language} onValueChange={handleLanguageChange}>
+    <Select value={currentLang} onValueChange={handleLanguageChange}>
       <SelectTrigger className="w-[160px] bg-background/50 backdrop-blur-sm border-primary/20">
         <Globe className="w-4 h-4 mr-2" />
         <SelectValue>

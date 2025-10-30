@@ -202,7 +202,7 @@ const Dashboard = () => {
           {/* Welcome Section */}
           <div className="animate-fade-in">
             <h1 className="text-4xl font-bold mb-2">
-              {t('dashboard.welcome')}, {firstName || user.user_metadata?.first_name || user.user_metadata?.name || "Creator"}! 👋
+              {t('dashboard.welcome', { defaultValue: 'Welcome back' })}, {firstName || user.user_metadata?.first_name || user.user_metadata?.name || "Creator"}! 👋
             </h1>
             <p className="text-muted-foreground text-lg">
               {t('dashboard.subtitle')}
@@ -240,15 +240,15 @@ const Dashboard = () => {
             {/* Content Profile */}
             <Card className={!lastQuizResult ? "md:col-span-2" : ""}>
               <CardHeader className="pb-3">
-                <CardTitle className="text-lg">{t('profile.title')}</CardTitle>
+                <CardTitle className="text-lg">{t('profile.title', { defaultValue: 'Your Content Profile' })}</CardTitle>
                 <CardDescription className="text-xs">
-                  {t('profile.subtitle')}
+                  {t('profile.subtitle', { defaultValue: 'Set your niche and view your creator archetype' })}
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-3 pb-4">
                 {/* Niche input */}
                 <div className="space-y-2">
-                  <Label className="text-sm">{t('profile.niche')}</Label>
+                  <Label className="text-sm">{t('profile.niche', { defaultValue: 'Your Niche' })}</Label>
                   <NicheField value={niche || ""} onChange={(val) => setNiche(val)} compact />
                 </div>
                 
@@ -261,7 +261,7 @@ const Dashboard = () => {
                         <span className="font-medium capitalize">{archetype}</span>
                       ) : (
                         <span className="text-muted-foreground">
-                          {t('dashboard.takeQuizFirst')}
+                          {t('dashboard.takeQuizFirst', { defaultValue: 'Take the quiz first to discover your archetype' })}
                         </span>
                       )}
                     </div>
