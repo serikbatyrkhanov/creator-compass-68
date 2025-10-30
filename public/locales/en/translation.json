@@ -112,6 +112,8 @@
     "backToSignIn": "Back to Sign In"
   },
   "profile": {
+    "title": "Your Content Profile",
+    "subtitle": "Set your niche and view your creator archetype",
     "niche": "Your Niche",
     "nichePlaceholder": "e.g., AI tools for teachers",
     "nicheDescription": "What topics do you focus on?",
@@ -131,7 +133,9 @@
     }
   },
   "dashboard": {
+    "welcome": "Welcome back",
     "subtitle": "Your YouTube Growth Dashboard",
+    "takeQuizFirst": "Take the quiz first to discover your archetype",
     "lastQuizResult": {
       "title": "Last Quiz Result",
       "yourArchetype": "Your archetype:",
