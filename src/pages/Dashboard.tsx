@@ -18,7 +18,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 const Dashboard = () => {
   const {
     t,
-    i18n
+    i18n,
+    ready
   } = useTranslation();
   const navigate = useNavigate();
   const {
@@ -128,6 +129,7 @@ const Dashboard = () => {
     navigate("/");
   };
   if (!user) return null;
+  if (!ready) return <div className="min-h-screen flex items-center justify-center">{t('common.loading', 'Loading...')}</div>;
   return <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted">
       {/* Navigation */}
       <nav className="border-b bg-card/50 backdrop-blur-sm">
