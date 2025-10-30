@@ -195,25 +195,25 @@ const Dashboard = () => {
             {/* Content Profile */}
             <Card className={!lastQuizResult ? "md:col-span-2" : ""}>
               <CardHeader className="pb-3">
-                <CardTitle className="text-lg">{t('profile.title')}</CardTitle>
+                <CardTitle className="text-lg">{t('profile.title', { defaultValue: 'Your Content Profile' })}</CardTitle>
                 <CardDescription className="text-xs">
-                  {t('profile.subtitle')}
+                  {t('profile.subtitle', { defaultValue: 'Set your niche and view your creator archetype' })}
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-3 pb-4">
                 {/* Niche input */}
                 <div className="space-y-2">
-                  <Label className="text-sm">{t('profile.niche')}</Label>
+                  <Label className="text-sm">{t('profile.niche', { defaultValue: 'Your Niche' })}</Label>
                   <NicheField value={niche || ""} onChange={val => setNiche(val)} compact />
                 </div>
                 
                 {/* Archetype display */}
                 <div className="space-y-2">
-                  <Label className="text-sm">{t('profile.archetype')}</Label>
+                  <Label className="text-sm">{t('profile.archetype', { defaultValue: 'Your Archetype' })}</Label>
                   <div className="flex items-center gap-2">
                     <div className="flex-1 border rounded-md px-3 py-2 bg-muted/50 text-sm">
                       {archetype ? <span className="font-medium capitalize">{archetype}</span> : <span className="text-muted-foreground">
-                          {t('dashboard.takeQuizFirst')}
+                          {t('dashboard.takeQuizFirst', { defaultValue: 'Take the quiz first to discover your archetype' })}
                         </span>}
                     </div>
                     <Button variant="outline" size="sm" onClick={() => navigate('/quiz')}>

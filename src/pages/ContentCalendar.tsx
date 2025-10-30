@@ -62,7 +62,7 @@ interface ContentPlan {
 }
 
 const ContentCalendar = () => {
-  const { t, i18n } = useTranslation();
+  const { t, i18n, ready } = useTranslation();
   const navigate = useNavigate();
   const { toast } = useToast();
   const { niche, archetype, setNiche, primaryArchetype, secondaryArchetype, isValid } = useNiche();
@@ -697,12 +697,12 @@ const ContentCalendar = () => {
     return grouped;
   };
 
-  if (loading) {
+  if (!ready || loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <RefreshCw className="h-8 w-8 animate-spin mx-auto mb-4 text-primary" />
-          <p>{t("calendar.loadingCalendar")}</p>
+          <p>{t("common.loading", "Loading...")}</p>
         </div>
       </div>
     );
@@ -762,12 +762,12 @@ const ContentCalendar = () => {
             {/* Second row: Niche + Archetype */}
             <div className="flex items-center gap-4 flex-wrap">
               <div className="flex items-center gap-2">
-                <span className="text-sm text-muted-foreground font-medium">Niche:</span>
+                <span className="text-sm text-muted-foreground font-medium">{t('profile.niche', { defaultValue: 'Your Niche' })}:</span>
                 <NicheField value={niche || ""} onChange={setNiche} compact />
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-sm text-muted-foreground font-medium">Archetype:</span>
-                <span className="text-sm font-medium">{archetype || "No quiz results"}</span>
+                <span className="text-sm text-muted-foreground font-medium">{t('profile.archetype', { defaultValue: 'Your Archetype' })}:</span>
+                <span className="text-sm font-medium">{archetype || t('dashboard.takeQuizFirst', { defaultValue: 'Take the quiz first to discover your archetype' })}</span>
               </div>
             </div>
           </div>
