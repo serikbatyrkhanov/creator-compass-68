@@ -3,18 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { 
-  Calendar, 
-  TrendingUp, 
-  Target, 
-  LogOut, 
-  FileCheck, 
-  MessageCircle, 
-  CheckCircle2,
-  Flame,
-  Settings,
-  BookOpen
-} from "lucide-react";
+import { Calendar, TrendingUp, Target, LogOut, FileCheck, MessageCircle, CheckCircle2, Flame, Settings, BookOpen } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { AIChatCoach } from "@/components/AIChatCoach";
 import { TrendingTitlesDialog } from "@/components/TrendingTitlesDialog";
@@ -26,12 +15,21 @@ import { useTranslation } from "react-i18next";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { PlatformSelector } from "@/components/PlatformSelector";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
 const Dashboard = () => {
-  const { t, i18n } = useTranslation();
+  const {
+    t,
+    i18n
+  } = useTranslation();
   const navigate = useNavigate();
-  const { toast } = useToast();
-  const { niche, archetype, setNiche, primaryArchetype } = useNiche();
+  const {
+    toast
+  } = useToast();
+  const {
+    niche,
+    archetype,
+    setNiche,
+    primaryArchetype
+  } = useNiche();
   const [user, setUser] = useState<any>(null);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -47,63 +45,33 @@ const Dashboard = () => {
     hasChatted: false
   });
   const [blogPosts, setBlogPosts] = useState<any[]>([]);
-
   useEffect(() => {
     // Check if user is authenticated
     const checkAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: {
+          session
+        }
+      } = await supabase.auth.getSession();
       if (!session) {
         navigate("/auth");
         return;
       }
       setUser(session.user);
-      
+
       // Fetch last quiz result
-      const { data: quizData } = await supabase
-        .from("quiz_responses")
-        .select("id, primary_archetype, created_at")
-        .eq("user_id", session.user.id)
-        .order("created_at", { ascending: false })
-        .limit(1)
-        .maybeSingle();
-      
+      const {
+        data: quizData
+      } = await supabase.from("quiz_responses").select("id, primary_archetype, created_at").eq("user_id", session.user.id).order("created_at", {
+        ascending: false
+      }).limit(1).maybeSingle();
       if (quizData) {
         setLastQuizResult(quizData);
       }
 
       // Fetch journey progress
       if (session?.user) {
-        const [ideas, plans, tasks, messages] = await Promise.all([
-          supabase
-            .from("generated_ideas")
-            .select("id")
-            .eq("user_id", session.user.id)
-            .limit(1)
-            .maybeSingle(),
-          
-          supabase
-            .from("content_plans")
-            .select("id")
-            .eq("user_id", session.user.id)
-            .limit(1)
-            .maybeSingle(),
-          
-          supabase
-            .from("plan_tasks")
-            .select("id")
-            .eq("user_id", session.user.id)
-            .eq("completed", true)
-            .limit(1)
-            .maybeSingle(),
-          
-          supabase
-            .from("chat_messages")
-            .select("id")
-            .eq("user_id", session.user.id)
-            .limit(1)
-            .maybeSingle()
-        ]);
-
+        const [ideas, plans, tasks, messages] = await Promise.all([supabase.from("generated_ideas").select("id").eq("user_id", session.user.id).limit(1).maybeSingle(), supabase.from("content_plans").select("id").eq("user_id", session.user.id).limit(1).maybeSingle(), supabase.from("plan_tasks").select("id").eq("user_id", session.user.id).eq("completed", true).limit(1).maybeSingle(), supabase.from("chat_messages").select("id").eq("user_id", session.user.id).limit(1).maybeSingle()]);
         setJourneyProgress({
           hasQuiz: !!quizData,
           hasIdeas: !!ideas.data,
@@ -113,12 +81,9 @@ const Dashboard = () => {
         });
 
         // Load profile data
-        const { data: profileData } = await supabase
-          .from('profiles')
-          .select('first_name, last_name, avatar_url')
-          .eq('id', session.user.id)
-          .single();
-        
+        const {
+          data: profileData
+        } = await supabase.from('profiles').select('first_name, last_name, avatar_url').eq('id', session.user.id).single();
         if (profileData) {
           setFirstName(profileData.first_name || '');
           setLastName(profileData.last_name || '');
@@ -127,47 +92,43 @@ const Dashboard = () => {
       }
 
       // Fetch featured blog posts
-      const { data: postsData } = await supabase
-        .from('blog_posts')
-        .select('id, title, slug, excerpt, cover_image_url, published_at, is_featured')
-        .eq('status', 'published')
-        .eq('language', i18n.language)
-        .order('is_featured', { ascending: false })
-        .order('published_at', { ascending: false })
-        .limit(3);
-      
+      const {
+        data: postsData
+      } = await supabase.from('blog_posts').select('id, title, slug, excerpt, cover_image_url, published_at, is_featured').eq('status', 'published').eq('language', i18n.language).order('is_featured', {
+        ascending: false
+      }).order('published_at', {
+        ascending: false
+      }).limit(3);
       if (postsData) {
         setBlogPosts(postsData);
       }
     };
-
     checkAuth();
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const {
+      data: {
+        subscription
+      }
+    } = supabase.auth.onAuthStateChange((_event, session) => {
       if (!session) {
         navigate("/auth");
       } else {
         setUser(session.user);
       }
     });
-
     return () => subscription.unsubscribe();
   }, [navigate, i18n.language]);
-
   const handleSignOut = async () => {
     await supabase.auth.signOut();
     toast({
       title: "Signed out",
-      description: "You've been successfully signed out.",
+      description: "You've been successfully signed out."
     });
     navigate("/");
   };
-
   if (!user) return null;
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted">
+  return <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted">
       {/* Navigation */}
       <nav className="border-b bg-card/50 backdrop-blur-sm">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
@@ -202,18 +163,15 @@ const Dashboard = () => {
           {/* Welcome Section */}
           <div className="animate-fade-in">
             <h1 className="text-4xl font-bold mb-2">
-              {t('dashboard.welcome', { defaultValue: 'Welcome back' })}, {firstName || user.user_metadata?.first_name || user.user_metadata?.name || "Creator"}! 👋
+              {t('dashboard.welcome')}, {firstName || user.user_metadata?.first_name || user.user_metadata?.name || "Creator"}! 👋
             </h1>
-            <p className="text-muted-foreground text-lg">
-              {t('dashboard.subtitle')}
-            </p>
+            
           </div>
 
           {/* Profile Cards Row */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6">
             {/* Last Quiz Result */}
-            {lastQuizResult && (
-              <Card className="border-2 bg-gradient-to-br from-emerald-50 to-white dark:from-emerald-950/20 dark:to-background">
+            {lastQuizResult && <Card className="border-2 bg-gradient-to-br from-emerald-50 to-white dark:from-emerald-950/20 dark:to-background">
                 <CardHeader className="pb-3">
                   <div className="h-10 w-10 rounded-lg bg-emerald-500/10 flex items-center justify-center mb-2">
                     <FileCheck className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
@@ -226,30 +184,25 @@ const Dashboard = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="pb-4">
-                  <Button 
-                    size="sm"
-                    className="w-full bg-emerald-600 hover:bg-emerald-700 text-white" 
-                    onClick={() => navigate(`/quiz-results/${lastQuizResult.id}`)}
-                  >
+                  <Button size="sm" className="w-full bg-emerald-600 hover:bg-emerald-700 text-white" onClick={() => navigate(`/quiz-results/${lastQuizResult.id}`)}>
                     {t('dashboard.lastQuizResult.viewResults')}
                   </Button>
                 </CardContent>
-              </Card>
-            )}
+              </Card>}
 
             {/* Content Profile */}
             <Card className={!lastQuizResult ? "md:col-span-2" : ""}>
               <CardHeader className="pb-3">
-                <CardTitle className="text-lg">{t('profile.title', { defaultValue: 'Your Content Profile' })}</CardTitle>
+                <CardTitle className="text-lg">{t('profile.title')}</CardTitle>
                 <CardDescription className="text-xs">
-                  {t('profile.subtitle', { defaultValue: 'Set your niche and view your creator archetype' })}
+                  {t('profile.subtitle')}
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-3 pb-4">
                 {/* Niche input */}
                 <div className="space-y-2">
-                  <Label className="text-sm">{t('profile.niche', { defaultValue: 'Your Niche' })}</Label>
-                  <NicheField value={niche || ""} onChange={(val) => setNiche(val)} compact />
+                  <Label className="text-sm">{t('profile.niche')}</Label>
+                  <NicheField value={niche || ""} onChange={val => setNiche(val)} compact />
                 </div>
                 
                 {/* Archetype display */}
@@ -257,19 +210,11 @@ const Dashboard = () => {
                   <Label className="text-sm">{t('profile.archetype')}</Label>
                   <div className="flex items-center gap-2">
                     <div className="flex-1 border rounded-md px-3 py-2 bg-muted/50 text-sm">
-                      {archetype ? (
-                        <span className="font-medium capitalize">{archetype}</span>
-                      ) : (
-                        <span className="text-muted-foreground">
-                          {t('dashboard.takeQuizFirst', { defaultValue: 'Take the quiz first to discover your archetype' })}
-                        </span>
-                      )}
+                      {archetype ? <span className="font-medium capitalize">{archetype}</span> : <span className="text-muted-foreground">
+                          {t('dashboard.takeQuizFirst')}
+                        </span>}
                     </div>
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={() => navigate('/quiz')}
-                    >
+                    <Button variant="outline" size="sm" onClick={() => navigate('/quiz')}>
                       {archetype ? t('dashboard.quickActions.retakeQuiz') : t('quiz.title')}
                     </Button>
                   </div>
@@ -363,8 +308,7 @@ const Dashboard = () => {
           </div>
 
           {/* Educational Resources Section */}
-          {blogPosts.length > 0 && (
-            <Card className="border-2">
+          {blogPosts.length > 0 && <Card className="border-2">
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <div>
@@ -380,19 +324,8 @@ const Dashboard = () => {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {blogPosts.map((post) => (
-                    <Card 
-                      key={post.id} 
-                      className="cursor-pointer hover:shadow-lg transition-shadow"
-                      onClick={() => navigate(`/blog/${post.slug}`)}
-                    >
-                      {post.cover_image_url && (
-                        <img
-                          src={post.cover_image_url}
-                          alt={post.title}
-                          className="w-full h-32 object-cover rounded-t-lg"
-                        />
-                      )}
+                  {blogPosts.map(post => <Card key={post.id} className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => navigate(`/blog/${post.slug}`)}>
+                      {post.cover_image_url && <img src={post.cover_image_url} alt={post.title} className="w-full h-32 object-cover rounded-t-lg" />}
                       <CardHeader className="p-4">
                         <CardTitle className="text-base line-clamp-2">{post.title}</CardTitle>
                         <CardDescription className="text-sm line-clamp-2">
@@ -407,12 +340,10 @@ const Dashboard = () => {
                           </Button>
                         </div>
                       </CardContent>
-                    </Card>
-                  ))}
+                    </Card>)}
                 </div>
               </CardContent>
-            </Card>
-          )}
+            </Card>}
 
           {/* Your Journey Section */}
           <Card className="border-2">
@@ -423,19 +354,8 @@ const Dashboard = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
-              <div 
-                className={`flex items-start gap-4 p-4 rounded-lg transition-all cursor-pointer hover:shadow-md ${
-                  journeyProgress.hasQuiz 
-                    ? 'bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200' 
-                    : 'bg-muted/50 hover:bg-muted'
-                }`}
-                onClick={() => !journeyProgress.hasQuiz && navigate("/quiz")}
-              >
-                <div className={`h-8 w-8 rounded-full flex items-center justify-center ${
-                  journeyProgress.hasQuiz 
-                    ? 'bg-emerald-500 text-white' 
-                    : 'bg-primary/20 text-primary'
-                }`}>
+              <div className={`flex items-start gap-4 p-4 rounded-lg transition-all cursor-pointer hover:shadow-md ${journeyProgress.hasQuiz ? 'bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200' : 'bg-muted/50 hover:bg-muted'}`} onClick={() => !journeyProgress.hasQuiz && navigate("/quiz")}>
+                <div className={`h-8 w-8 rounded-full flex items-center justify-center ${journeyProgress.hasQuiz ? 'bg-emerald-500 text-white' : 'bg-primary/20 text-primary'}`}>
                   {journeyProgress.hasQuiz ? <CheckCircle2 className="h-5 w-5" /> : '1'}
                 </div>
                 <div className="flex-1">
@@ -446,27 +366,12 @@ const Dashboard = () => {
                 </div>
               </div>
 
-              <div 
-                className={`flex items-start gap-4 p-4 rounded-lg transition-all ${
-                  journeyProgress.hasIdeas 
-                    ? 'bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200' 
-                    : journeyProgress.hasQuiz 
-                      ? 'bg-muted/50 hover:bg-muted cursor-pointer hover:shadow-md' 
-                      : 'bg-muted/30 opacity-60'
-                }`}
-                onClick={() => {
-                  if (journeyProgress.hasQuiz && !journeyProgress.hasIdeas && lastQuizResult) {
-                    navigate(`/quiz-results/${lastQuizResult.id}`);
-                  }
-                }}
-              >
-                <div className={`h-8 w-8 rounded-full flex items-center justify-center ${
-                  journeyProgress.hasIdeas 
-                    ? 'bg-emerald-500 text-white' 
-                    : journeyProgress.hasQuiz
-                      ? 'bg-primary/20 text-primary'
-                      : 'bg-muted text-muted-foreground'
-                }`}>
+              <div className={`flex items-start gap-4 p-4 rounded-lg transition-all ${journeyProgress.hasIdeas ? 'bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200' : journeyProgress.hasQuiz ? 'bg-muted/50 hover:bg-muted cursor-pointer hover:shadow-md' : 'bg-muted/30 opacity-60'}`} onClick={() => {
+              if (journeyProgress.hasQuiz && !journeyProgress.hasIdeas && lastQuizResult) {
+                navigate(`/quiz-results/${lastQuizResult.id}`);
+              }
+            }}>
+                <div className={`h-8 w-8 rounded-full flex items-center justify-center ${journeyProgress.hasIdeas ? 'bg-emerald-500 text-white' : journeyProgress.hasQuiz ? 'bg-primary/20 text-primary' : 'bg-muted text-muted-foreground'}`}>
                   {journeyProgress.hasIdeas ? <CheckCircle2 className="h-5 w-5" /> : '2'}
                 </div>
                 <div className="flex-1">
@@ -477,27 +382,12 @@ const Dashboard = () => {
                 </div>
               </div>
 
-              <div 
-                className={`flex items-start gap-4 p-4 rounded-lg transition-all ${
-                  journeyProgress.hasPlan 
-                    ? 'bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200' 
-                    : journeyProgress.hasIdeas 
-                      ? 'bg-muted/50 hover:bg-muted cursor-pointer hover:shadow-md' 
-                      : 'bg-muted/30 opacity-60'
-                }`}
-                onClick={() => {
-                  if (journeyProgress.hasIdeas && !journeyProgress.hasPlan && lastQuizResult) {
-                    navigate(`/quiz-results/${lastQuizResult.id}`);
-                  }
-                }}
-              >
-                <div className={`h-8 w-8 rounded-full flex items-center justify-center ${
-                  journeyProgress.hasPlan 
-                    ? 'bg-emerald-500 text-white' 
-                    : journeyProgress.hasIdeas
-                      ? 'bg-primary/20 text-primary'
-                      : 'bg-muted text-muted-foreground'
-                }`}>
+              <div className={`flex items-start gap-4 p-4 rounded-lg transition-all ${journeyProgress.hasPlan ? 'bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200' : journeyProgress.hasIdeas ? 'bg-muted/50 hover:bg-muted cursor-pointer hover:shadow-md' : 'bg-muted/30 opacity-60'}`} onClick={() => {
+              if (journeyProgress.hasIdeas && !journeyProgress.hasPlan && lastQuizResult) {
+                navigate(`/quiz-results/${lastQuizResult.id}`);
+              }
+            }}>
+                <div className={`h-8 w-8 rounded-full flex items-center justify-center ${journeyProgress.hasPlan ? 'bg-emerald-500 text-white' : journeyProgress.hasIdeas ? 'bg-primary/20 text-primary' : 'bg-muted text-muted-foreground'}`}>
                   {journeyProgress.hasPlan ? <CheckCircle2 className="h-5 w-5" /> : '3'}
                 </div>
                 <div className="flex-1">
@@ -508,27 +398,12 @@ const Dashboard = () => {
                 </div>
               </div>
 
-              <div 
-                className={`flex items-start gap-4 p-4 rounded-lg transition-all ${
-                  journeyProgress.hasCompletedTask 
-                    ? 'bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200' 
-                    : journeyProgress.hasPlan 
-                      ? 'bg-muted/50 hover:bg-muted cursor-pointer hover:shadow-md' 
-                      : 'bg-muted/30 opacity-60'
-                }`}
-                onClick={() => {
-                  if (journeyProgress.hasPlan && !journeyProgress.hasCompletedTask) {
-                    navigate("/content-calendar");
-                  }
-                }}
-              >
-                <div className={`h-8 w-8 rounded-full flex items-center justify-center ${
-                  journeyProgress.hasCompletedTask 
-                    ? 'bg-emerald-500 text-white' 
-                    : journeyProgress.hasPlan
-                      ? 'bg-primary/20 text-primary'
-                      : 'bg-muted text-muted-foreground'
-                }`}>
+              <div className={`flex items-start gap-4 p-4 rounded-lg transition-all ${journeyProgress.hasCompletedTask ? 'bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200' : journeyProgress.hasPlan ? 'bg-muted/50 hover:bg-muted cursor-pointer hover:shadow-md' : 'bg-muted/30 opacity-60'}`} onClick={() => {
+              if (journeyProgress.hasPlan && !journeyProgress.hasCompletedTask) {
+                navigate("/content-calendar");
+              }
+            }}>
+                <div className={`h-8 w-8 rounded-full flex items-center justify-center ${journeyProgress.hasCompletedTask ? 'bg-emerald-500 text-white' : journeyProgress.hasPlan ? 'bg-primary/20 text-primary' : 'bg-muted text-muted-foreground'}`}>
                   {journeyProgress.hasCompletedTask ? <CheckCircle2 className="h-5 w-5" /> : '4'}
                 </div>
                 <div className="flex-1">
@@ -539,19 +414,8 @@ const Dashboard = () => {
                 </div>
               </div>
 
-              <div 
-                className={`flex items-start gap-4 p-4 rounded-lg transition-all cursor-pointer hover:shadow-md ${
-                  journeyProgress.hasChatted 
-                    ? 'bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200' 
-                    : 'bg-muted/50 hover:bg-muted'
-                }`}
-                onClick={() => setChatOpen(true)}
-              >
-                <div className={`h-8 w-8 rounded-full flex items-center justify-center ${
-                  journeyProgress.hasChatted 
-                    ? 'bg-emerald-500 text-white' 
-                    : 'bg-primary/20 text-primary'
-                }`}>
+              <div className={`flex items-start gap-4 p-4 rounded-lg transition-all cursor-pointer hover:shadow-md ${journeyProgress.hasChatted ? 'bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200' : 'bg-muted/50 hover:bg-muted'}`} onClick={() => setChatOpen(true)}>
+                <div className={`h-8 w-8 rounded-full flex items-center justify-center ${journeyProgress.hasChatted ? 'bg-emerald-500 text-white' : 'bg-primary/20 text-primary'}`}>
                   {journeyProgress.hasChatted ? <CheckCircle2 className="h-5 w-5" /> : '5'}
                 </div>
                 <div className="flex-1">
@@ -566,11 +430,7 @@ const Dashboard = () => {
 
           {/* Contact Us Button */}
           <div className="flex justify-center pt-4">
-            <Button 
-              variant="ghost" 
-              onClick={() => navigate("/contact")}
-              className="text-muted-foreground hover:text-foreground"
-            >
+            <Button variant="ghost" onClick={() => navigate("/contact")} className="text-muted-foreground hover:text-foreground">
               {t('dashboard.contactButton')}
             </Button>
           </div>
@@ -579,8 +439,6 @@ const Dashboard = () => {
       
       <AIChatCoach open={chatOpen} onOpenChange={setChatOpen} />
       <TrendingTitlesDialog open={trendingTitlesOpen} onOpenChange={setTrendingTitlesOpen} />
-    </div>
-  );
+    </div>;
 };
-
 export default Dashboard;
