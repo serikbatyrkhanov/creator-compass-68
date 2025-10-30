@@ -193,12 +193,12 @@ const Dashboard = () => {
               </Card>}
 
             {/* Content Profile */}
-            <Card className={`border-2 bg-gradient-to-br from-gray-50 to-white dark:from-gray-900/20 dark:to-background ${!lastQuizResult ? "md:col-span-2" : ""}`}>
+            <Card className={`border-2 bg-gradient-to-br from-gray-100 to-gray-50 dark:from-gray-900/30 dark:to-gray-950/20 ${!lastQuizResult ? "md:col-span-2" : ""}`}>
               <CardHeader className="pb-3">
-                <div className="h-10 w-10 rounded-lg bg-gray-500/10 flex items-center justify-center mb-2">
-                  <User className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+                <div className="h-10 w-10 rounded-lg bg-gray-500/20 flex items-center justify-center mb-2">
+                  <User className="h-5 w-5 text-gray-700 dark:text-gray-300" />
                 </div>
-                <CardTitle className="text-lg text-gray-700 dark:text-gray-300">{t('profile.title', { defaultValue: 'Your Content Profile' })}</CardTitle>
+                <CardTitle className="text-lg text-gray-800 dark:text-gray-200">{t('profile.title', { defaultValue: 'Your Content Profile' })}</CardTitle>
                 <CardDescription className="text-xs">
                   {t('profile.subtitle', { defaultValue: 'Set your niche and view your creator archetype' })}
                 </CardDescription>
