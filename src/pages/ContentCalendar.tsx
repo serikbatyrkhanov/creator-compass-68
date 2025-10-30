@@ -731,31 +731,44 @@ const ContentCalendar = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-7xl mx-auto space-y-6">
           {/* Header */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Button variant="ghost" size="sm" onClick={() => navigate("/dashboard")}>
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                {t("common.back")}
-              </Button>
-              <div>
-                <h1 className="text-3xl font-bold flex items-center gap-2">
-                  <Calendar className="h-8 w-8 text-primary" />
-                  {t("calendar.title")}
-                </h1>
-                <p className="text-muted-foreground">{t("calendar.subtitle")}</p>
+          <div className="flex flex-col gap-4">
+            {/* Top row: Back button + Title + Action buttons */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <Button variant="ghost" size="sm" onClick={() => navigate("/dashboard")}>
+                  <ArrowLeft className="h-4 w-4 mr-2" />
+                  {t("common.back")}
+                </Button>
+                <div>
+                  <h1 className="text-3xl font-bold flex items-center gap-2">
+                    <Calendar className="h-8 w-8 text-primary" />
+                    {t("calendar.title")}
+                  </h1>
+                  <p className="text-muted-foreground">{t("calendar.subtitle")}</p>
+                </div>
+              </div>
+              
+              {/* Action buttons row */}
+              <div className="flex items-center gap-2">
+                <PlatformSelector />
+                <LanguageSelector />
+                <Button onClick={generateNewPlan} disabled={generatingPlan}>
+                  <img src={logo} alt="" className="h-4 w-4 mr-2" />
+                  {generatingPlan ? t("calendar.generating") : t("calendar.generateNew")}
+                </Button>
               </div>
             </div>
-            <div className="flex items-center gap-2 flex-wrap">
-              <NicheField value={niche || ""} onChange={setNiche} compact />
-              <div className="text-sm text-muted-foreground ml-2">
-                <span className="font-medium">{archetype || "No quiz results"}</span>
+            
+            {/* Second row: Niche + Archetype */}
+            <div className="flex items-center gap-4 flex-wrap">
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-muted-foreground font-medium">Niche:</span>
+                <NicheField value={niche || ""} onChange={setNiche} compact />
               </div>
-              <PlatformSelector />
-              <LanguageSelector />
-              <Button onClick={generateNewPlan} disabled={generatingPlan}>
-                <img src={logo} alt="" className="h-4 w-4 mr-2" />
-                {generatingPlan ? t("calendar.generating") : t("calendar.generateNew")}
-              </Button>
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-muted-foreground font-medium">Archetype:</span>
+                <span className="text-sm font-medium">{archetype || "No quiz results"}</span>
+              </div>
             </div>
           </div>
 
