@@ -50,13 +50,13 @@ console.log('[GENERATE-PLAN] Starting generation', { archetype, timeBucket, idea
     const platformGuidelines = preferredPlatform ? `\nPlatform focus: ${preferredPlatform}\nPlatform requirements: ${getPlatformGuidelines(preferredPlatform)}` : '';
     const languageInstruction = language === 'ru' ? 'Russian' : 'English';
     
-    const systemPrompt = `You are an expert content planning coach. Create a realistic ${planType} content creation schedule for a ${globalArchetype || archetype} creator.
+    const systemPrompt = `You are an expert content planning coach. Create a realistic ${planType} content creation schedule for a ${primaryArchetype || archetype} creator.
 
 CRITICAL: Generate ALL text (tasks, titles, descriptions, tips) in ${languageInstruction}.
 Language: ${language}${platformGuidelines}
 
 Content Niche: ${niche || 'general content'}
-Creator Archetype: ${globalArchetype || archetype}
+Creator Archetype: ${primaryArchetype || archetype}
 The plan should be achievable within ${timeText} total per week.
 Available gear: ${gearText}
 Topics: ${topicsText}
