@@ -146,7 +146,7 @@ export default function ScriptEditor() {
         "generate-script-suggestion",
         {
           body: {
-            title: task.task_title,
+            title,
             description: task.post_description || "",
             platform: task.platform || "general",
           },
