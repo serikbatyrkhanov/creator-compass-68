@@ -27,6 +27,7 @@ export default function ScriptEditor() {
   const [saving, setSaving] = useState(false);
   const [generating, setGenerating] = useState(false);
   const titleSaveTimeout = useRef<NodeJS.Timeout | null>(null);
+  const scriptSaveTimeout = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     loadData();
@@ -69,6 +70,37 @@ export default function ScriptEditor() {
       }
     };
   }, [title, taskId, task]);
+
+  // Auto-save script content on manual edits
+  useEffect(() => {
+    // Don't auto-save on initial load or if no script loaded yet
+    if (!scriptDoc || scriptContent === "") return;
+    
+    // Don't save if content hasn't actually changed from database
+    const currentDbContent = typeof scriptDoc.content === "string" 
+      ? scriptDoc.content 
+      : scriptDoc.content && typeof scriptDoc.content === "object" && "text" in scriptDoc.content
+      ? String(scriptDoc.content.text) || ""
+      : JSON.stringify(scriptDoc.content, null, 2);
+      
+    if (scriptContent === currentDbContent) return;
+    
+    // Clear previous timeout
+    if (scriptSaveTimeout.current) {
+      clearTimeout(scriptSaveTimeout.current);
+    }
+    
+    // Debounce: save after 2 seconds of no changes
+    scriptSaveTimeout.current = setTimeout(async () => {
+      await autoSaveScript(scriptContent);
+    }, 2000);
+    
+    return () => {
+      if (scriptSaveTimeout.current) {
+        clearTimeout(scriptSaveTimeout.current);
+      }
+    };
+  }, [scriptContent, scriptDoc]);
 
   const loadData = async () => {
     if (!taskId) return;
@@ -191,6 +223,64 @@ export default function ScriptEditor() {
     }
   };
 
+  const autoSaveScript = async (content: string) => {
+    if (!taskId) return;
+    
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Not authenticated");
+
+      if (scriptDoc) {
+        // Update existing document
+        const { error } = await supabase
+          .from("script_documents")
+          .update({
+            title,
+            content,
+            last_edited_at: new Date().toISOString(),
+          })
+          .eq("id", scriptDoc.id);
+
+        if (error) throw error;
+      } else {
+        // Create new document
+        const { data: newDoc, error } = await supabase
+          .from("script_documents")
+          .insert({
+            task_id: taskId,
+            user_id: user.id,
+            title,
+            content,
+          })
+          .select()
+          .single();
+
+        if (error) throw error;
+        
+        // Update local state so future saves will update instead of insert
+        setScriptDoc(newDoc);
+      }
+
+      // Also update the post_title in plan_tasks table to keep in sync
+      const { error: taskError } = await supabase
+        .from("plan_tasks")
+        .update({ post_title: title })
+        .eq("id", taskId);
+
+      if (taskError) throw taskError;
+
+      // Update local task state
+      if (task) {
+        setTask({ ...task, post_title: title });
+      }
+
+      console.log('Script auto-saved');
+    } catch (error) {
+      console.error("Failed to auto-save script:", error);
+      // Silent fail - don't interrupt user flow with error toast
+    }
+  };
+
   const handleGenerateScript = async () => {
     if (!task) return;
     
@@ -209,13 +299,17 @@ export default function ScriptEditor() {
 
       if (error) throw error;
 
-      if (data?.script) {
-        setScriptContent(data.script);
-        toast({
-          title: t("scriptEditor.generated"),
-          description: t("scriptEditor.aiGenerated"),
-        });
-      }
+    if (data?.script) {
+      setScriptContent(data.script);
+      
+      // Auto-save the generated script immediately
+      await autoSaveScript(data.script);
+      
+      toast({
+        title: t("scriptEditor.generated"),
+        description: t("scriptEditor.aiGenerated"),
+      });
+    }
     } catch (error) {
       console.error("Error generating script:", error);
       toast({
