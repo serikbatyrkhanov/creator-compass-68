@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
@@ -26,10 +26,49 @@ export default function ScriptEditor() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [generating, setGenerating] = useState(false);
+  const titleSaveTimeout = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     loadData();
   }, [taskId]);
+
+  // Auto-save title to plan_tasks when it changes
+  useEffect(() => {
+    // Don't auto-save on initial load or if no task loaded yet
+    if (!task || !taskId) return;
+    
+    // Don't save if title hasn't actually changed from what's in the database
+    const currentDbTitle = task.post_title || task.task_title;
+    if (title === currentDbTitle || title === "") return;
+    
+    // Clear previous timeout
+    if (titleSaveTimeout.current) {
+      clearTimeout(titleSaveTimeout.current);
+    }
+    
+    // Debounce: save after 1 second of no changes
+    titleSaveTimeout.current = setTimeout(async () => {
+      try {
+        const { error } = await supabase
+          .from("plan_tasks")
+          .update({ post_title: title })
+          .eq("id", taskId);
+        
+        if (error) throw error;
+        
+        // Update local state
+        setTask(prev => prev ? { ...prev, post_title: title } : null);
+      } catch (error) {
+        console.error("Failed to auto-save title:", error);
+      }
+    }, 1000);
+    
+    return () => {
+      if (titleSaveTimeout.current) {
+        clearTimeout(titleSaveTimeout.current);
+      }
+    };
+  }, [title, taskId, task]);
 
   const loadData = async () => {
     if (!taskId) return;
@@ -59,7 +98,8 @@ export default function ScriptEditor() {
 
       if (scriptData) {
         setScriptDoc(scriptData);
-        setTitle(scriptData.title || taskData.task_title);
+        // Prioritize: script document title > task post_title > task_title
+        setTitle(scriptData.title || taskData.post_title || taskData.task_title);
         
         // Handle content - could be string or JSON object
         if (typeof scriptData.content === "string") {
@@ -70,7 +110,8 @@ export default function ScriptEditor() {
           setScriptContent(JSON.stringify(scriptData.content, null, 2));
         }
       } else {
-        setTitle(taskData.task_title);
+        // Use post_title if available, otherwise fall back to task_title
+        setTitle(taskData.post_title || taskData.task_title);
       }
     } catch (error) {
       console.error("Error loading data:", error);
@@ -119,6 +160,19 @@ export default function ScriptEditor() {
 
         if (error) throw error;
         setScriptDoc(data);
+      }
+
+      // Also update the post_title in plan_tasks table to keep in sync
+      const { error: taskError } = await supabase
+        .from("plan_tasks")
+        .update({ post_title: title })
+        .eq("id", taskId);
+
+      if (taskError) throw taskError;
+
+      // Update local task state to reflect the change
+      if (task) {
+        setTask({ ...task, post_title: title });
       }
 
       toast({
