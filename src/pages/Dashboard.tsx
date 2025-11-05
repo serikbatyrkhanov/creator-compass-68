@@ -10,7 +10,7 @@ import { TrendingTitlesDialog } from "@/components/TrendingTitlesDialog";
 import { NicheField } from "@/components/NicheField";
 import { Label } from "@/components/ui/label";
 import { useNiche } from "@/contexts/NicheContext";
-import logo from "@/assets/climbley-logo.png";
+import logo from "@/assets/no_background.png";
 import { useTranslation } from "react-i18next";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { PlatformSelector } from "@/components/PlatformSelector";
@@ -133,9 +133,9 @@ const Dashboard = () => {
   return <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted">
       {/* Navigation */}
       <nav className="border-b bg-card/50 backdrop-blur-sm">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+        <div className="container mx-auto px-4 py-6 flex justify-between items-center">
           <div className="flex items-center gap-2">
-            <img src={logo} alt="Climbley Logo" className="h-8 w-auto" />
+            <img src={logo} alt="Climbley Logo" className="h-14 w-auto drop-shadow-md hover:drop-shadow-lg transition-all duration-200" />
           </div>
           <div className="flex items-center gap-4">
             <LanguageSelector />
