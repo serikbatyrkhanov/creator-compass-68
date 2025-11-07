@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { LogOut, Settings, Gamepad2, Puzzle, Brain, Zap, Trophy } from "lucide-react";
+import { LogOut, Settings, Gamepad2, Puzzle, Brain, Zap, Trophy, Car } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import logo from "@/assets/no_background.png";
 import { useTranslation } from "react-i18next";
@@ -72,6 +72,17 @@ const Games = () => {
       textClass: "text-blue-600",
       buttonClass: "bg-blue-600 hover:bg-blue-700",
       route: "/games/memory-match"
+    },
+    {
+      id: "tiny-drivers",
+      title: "Tiny Drivers",
+      description: "Educational driving adventures with colors and shapes",
+      icon: Car,
+      color: "red",
+      bgClass: "bg-red-500/10",
+      textClass: "text-red-600",
+      buttonClass: "bg-red-600 hover:bg-red-700",
+      route: "/games/tiny-drivers"
     },
     {
       id: "word-puzzle",
