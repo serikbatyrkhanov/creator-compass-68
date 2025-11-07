@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { LogOut, Settings, Gamepad2, Puzzle, Brain, Zap, Trophy, Car, Loader2 } from "lucide-react";
+import { LogOut, Settings, Gamepad2, Puzzle, Brain, Zap, Trophy, Car } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import logo from "@/assets/no_background.png";
 import { useTranslation } from "react-i18next";
@@ -21,31 +21,23 @@ const Games = () => {
 
   useEffect(() => {
     const checkAuth = async () => {
-      try {
-        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-        if (sessionError) throw sessionError;
-        if (!session) {
-          navigate("/auth");
-          return;
-        }
-        setUser(session.user);
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        navigate("/auth");
+        return;
+      }
+      setUser(session.user);
 
-        const { data: profileData, error: profileError } = await supabase
-          .from('profiles')
-          .select('first_name, last_name, avatar_url')
-          .eq('id', session.user.id)
-          .single();
+      const { data: profileData } = await supabase
+        .from('profiles')
+        .select('first_name, last_name, avatar_url')
+        .eq('id', session.user.id)
+        .single();
 
-        if (profileError) throw profileError;
-
-        if (profileData) {
-          setFirstName(profileData.first_name || '');
-          setLastName(profileData.last_name || '');
-          setAvatarUrl(profileData.avatar_url);
-        }
-      } catch (err) {
-        console.error('Games auth check failed:', err);
-        toast({ title: 'Error loading games', description: 'Please try refreshing or log in again.' });
+      if (profileData) {
+        setFirstName(profileData.first_name || '');
+        setLastName(profileData.last_name || '');
+        setAvatarUrl(profileData.avatar_url);
       }
     };
     checkAuth();
@@ -58,7 +50,7 @@ const Games = () => {
       }
     });
     return () => subscription.unsubscribe();
-  }, [navigate, toast]);
+  }, [navigate]);
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -130,19 +122,7 @@ const Games = () => {
     }
   ];
 
-  if (!user) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted flex items-center justify-center">
-        <div className="text-center space-y-4">
-          <div className="flex items-center justify-center gap-2 text-muted-foreground">
-            <Loader2 className="h-5 w-5 animate-spin" />
-            <span>Checking authentication…</span>
-          </div>
-          <Button variant="outline" onClick={() => navigate("/auth")}>Go to Login</Button>
-        </div>
-      </div>
-    );
-  }
+  if (!user) return null;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted">
