@@ -34,6 +34,9 @@ import AdminReferrals from "./pages/admin/AdminReferrals";
 import ScriptEditor from "./pages/ScriptEditor";
 import Games from "./pages/Games";
 import MemoryMatch from "./pages/games/MemoryMatch";
+import TinyDrivers from "./pages/games/TinyDrivers";
+import ColorCamry from "./pages/games/tiny-drivers/ColorCamry";
+import MatchWheels from "./pages/games/tiny-drivers/MatchWheels";
 import { Navigate } from "react-router-dom";
 
 const queryClient = new QueryClient();
@@ -62,8 +65,11 @@ const App = () => (
               <Route path="/script-editor/:taskId" element={<ScriptEditor />} />
               
               {/* Games Routes */}
-              <Route path="/games" element={<Games />} />
-              <Route path="/games/memory-match" element={<MemoryMatch />} />
+            <Route path="/games" element={<Games />} />
+            <Route path="/games/memory-match" element={<MemoryMatch />} />
+            <Route path="/games/tiny-drivers" element={<TinyDrivers />} />
+            <Route path="/games/tiny-drivers/color-camry" element={<ColorCamry />} />
+            <Route path="/games/tiny-drivers/match-wheels" element={<MatchWheels />} />
               
               {/* Blog Routes */}
               <Route path="/blog" element={<BlogIndex />} />
