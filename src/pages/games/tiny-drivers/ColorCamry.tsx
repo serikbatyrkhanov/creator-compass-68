@@ -91,27 +91,30 @@ const ColorCamry = () => {
                   g.beginFill(0x000000, 0);
                   g.drawRect(200, 250, 560, 120);
                   g.endFill();
+                  (g as any).eventMode = 'static';
+                  (g as any).cursor = 'pointer';
+                  (g as any).on('pointerdown', () => handlePartClick('body'));
                 }}
-                interactive={true}
-                pointerdown={() => handlePartClick('body')}
               />
               <Graphics
                 draw={(g) => {
                   g.beginFill(0x000000, 0);
                   g.drawRect(350, 260, 180, 100);
                   g.endFill();
+                  (g as any).eventMode = 'static';
+                  (g as any).cursor = 'pointer';
+                  (g as any).on('pointerdown', () => handlePartClick('door'));
                 }}
-                interactive={true}
-                pointerdown={() => handlePartClick('door')}
               />
               <Graphics
                 draw={(g) => {
                   g.beginFill(0x000000, 0);
                   g.drawRect(580, 260, 150, 100);
                   g.endFill();
+                  (g as any).eventMode = 'static';
+                  (g as any).cursor = 'pointer';
+                  (g as any).on('pointerdown', () => handlePartClick('hood'));
                 }}
-                interactive={true}
-                pointerdown={() => handlePartClick('hood')}
               />
             </Stage>
           </div>

@@ -155,15 +155,15 @@ const MatchWheels = () => {
                     g.beginFill(0x666666);
                     g.drawCircle(0, 0, 20);
                     g.endFill();
+                    (g as any).eventMode = 'static';
+                    (g as any).cursor = 'pointer';
+                    (g as any).on('pointerdown', () => handleDragStart(wheel.id));
+                    (g as any).on('pointermove', handleDragMove);
+                    (g as any).on('pointerup', handleDragEnd);
+                    (g as any).on('pointerupoutside', handleDragEnd);
                   }}
                   x={wheel.x}
                   y={wheel.y}
-                  interactive={true}
-                  buttonMode={true}
-                  pointerdown={() => handleDragStart(wheel.id)}
-                  pointermove={handleDragMove}
-                  pointerup={handleDragEnd}
-                  pointerupoutside={handleDragEnd}
                 />
               ))}
             </Stage>
