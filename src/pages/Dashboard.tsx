@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar, TrendingUp, Target, LogOut, FileCheck, MessageCircle, CheckCircle2, Flame, Settings, BookOpen, User } from "lucide-react";
+import { Calendar, TrendingUp, Target, LogOut, FileCheck, MessageCircle, CheckCircle2, Flame, Settings, BookOpen, User, Gamepad2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { AIChatCoach } from "@/components/AIChatCoach";
 import { TrendingTitlesDialog } from "@/components/TrendingTitlesDialog";
@@ -308,6 +308,21 @@ const Dashboard = () => {
               </CardHeader>
               <CardContent className="mt-auto">
                 <Button variant="outline" className="w-full">{t('nav.progress')}</Button>
+              </CardContent>
+            </Card>
+
+            <Card className="border-2 hover:shadow-lg transition-all cursor-pointer flex flex-col" onClick={() => navigate("/games")}>
+              <CardHeader>
+                <div className="h-12 w-12 rounded-lg bg-purple-500/10 flex items-center justify-center mb-4">
+                  <Gamepad2 className="h-6 w-6 text-purple-600" />
+                </div>
+                <CardTitle>Games</CardTitle>
+                <CardDescription>
+                  Take a break and play fun games
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="mt-auto">
+                <Button variant="outline" className="w-full">Play Games</Button>
               </CardContent>
             </Card>
           </div>
