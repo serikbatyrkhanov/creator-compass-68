@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ChevronLeft, ChevronRight, Undo, RotateCcw, Palette, ArrowLeft } from "lucide-react";
+import { ChevronLeft, ChevronRight, Undo, RotateCcw, Palette, ArrowLeft, Eraser } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface Vehicle {
@@ -393,6 +393,7 @@ const ColorTheCars = () => {
   const [history, setHistory] = useState<{ [vehicleId: string]: { [pathIndex: number]: string }[] }>({});
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [isEraserMode, setIsEraserMode] = useState(false);
 
   const currentVehicle = vehicles[currentIndex];
 
@@ -453,25 +454,40 @@ const ColorTheCars = () => {
 
       const pathObj = new Path2D(path.d);
       if (ctx.isPointInPath(pathObj, x, y)) {
-        const newColors = {
-          ...coloredPaths,
-          [currentVehicle.id]: {
-            ...(coloredPaths[currentVehicle.id] || {}),
-            [i]: selectedColor
-          }
-        };
+        const currentVehicleColors = coloredPaths[currentVehicle.id] || {};
         
+        // Store current state in history
         setHistory({
           ...history,
-          [currentVehicle.id]: [...(history[currentVehicle.id] || []), coloredPaths[currentVehicle.id] || {}]
+          [currentVehicle.id]: [...(history[currentVehicle.id] || []), currentVehicleColors]
         });
+        
+        let newColors;
+        if (isEraserMode) {
+          // Eraser mode: remove the color from this path
+          const updatedVehicleColors = { ...currentVehicleColors };
+          delete updatedVehicleColors[i];
+          newColors = {
+            ...coloredPaths,
+            [currentVehicle.id]: updatedVehicleColors
+          };
+        } else {
+          // Color mode: apply the selected color
+          newColors = {
+            ...coloredPaths,
+            [currentVehicle.id]: {
+              ...currentVehicleColors,
+              [i]: selectedColor
+            }
+          };
+        }
         
         setColoredPaths(newColors);
         saveColors(newColors);
         break;
       }
     }
-  }, [currentVehicle, coloredPaths, selectedColor, history, saveColors]);
+  }, [currentVehicle, coloredPaths, selectedColor, history, saveColors, isEraserMode]);
 
   const handleCanvasClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
     colorPath(e.clientX, e.clientY);
@@ -626,15 +642,20 @@ const ColorTheCars = () => {
           <div className="mb-6">
             <div className="flex items-center gap-2 mb-3">
               <Palette className="h-4 w-4 text-muted-foreground" />
-              <span className="text-sm font-medium">Choose a color:</span>
+              <span className="text-sm font-medium">
+                {isEraserMode ? 'Eraser mode active' : 'Choose a color:'}
+              </span>
             </div>
             <div className="grid grid-cols-6 sm:grid-cols-12 gap-2">
               {colors.map((color) => (
                 <button
                   key={color.name}
-                  onClick={() => setSelectedColor(color.value)}
+                  onClick={() => {
+                    setSelectedColor(color.value);
+                    setIsEraserMode(false);
+                  }}
                   className={`h-10 w-10 rounded-lg border-2 transition-all hover:scale-110 ${
-                    selectedColor === color.value ? 'border-primary ring-2 ring-primary/50' : 'border-border'
+                    selectedColor === color.value && !isEraserMode ? 'border-primary ring-2 ring-primary/50' : 'border-border'
                   }`}
                   style={{ backgroundColor: color.value }}
                   title={color.name}
@@ -643,7 +664,7 @@ const ColorTheCars = () => {
             </div>
           </div>
 
-          <div className="flex gap-2 justify-center">
+          <div className="flex gap-2 justify-center flex-wrap">
             <Button
               variant="outline"
               onClick={handleUndo}
@@ -651,6 +672,13 @@ const ColorTheCars = () => {
             >
               <Undo className="h-4 w-4 mr-2" />
               Undo
+            </Button>
+            <Button 
+              variant={isEraserMode ? "default" : "outline"}
+              onClick={() => setIsEraserMode(!isEraserMode)}
+            >
+              <Eraser className="h-4 w-4 mr-2" />
+              Eraser
             </Button>
             <Button variant="outline" onClick={handleClear}>
               <RotateCcw className="h-4 w-4 mr-2" />
