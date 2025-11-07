@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { LogOut, Settings, Gamepad2, Puzzle, Brain, Zap, Trophy } from "lucide-react";
+import { LogOut, Settings, Gamepad2, Puzzle, Brain, Zap, Trophy, Palette } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import logo from "@/assets/no_background.png";
 import { useTranslation } from "react-i18next";
@@ -72,6 +72,17 @@ const Games = () => {
       textClass: "text-blue-600",
       buttonClass: "bg-blue-600 hover:bg-blue-700",
       route: "/games/memory-match"
+    },
+    {
+      id: "color-the-cars",
+      title: "Color the Cars",
+      description: "Paint vehicles and swipe to discover new ones",
+      icon: Palette,
+      color: "pink",
+      bgClass: "bg-pink-500/10",
+      textClass: "text-pink-600",
+      buttonClass: "bg-pink-600 hover:bg-pink-700",
+      route: "/games/color-the-cars"
     },
     {
       id: "word-puzzle",
