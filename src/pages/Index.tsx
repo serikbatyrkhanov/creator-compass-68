@@ -2,8 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowRight, Target, TrendingUp, Calendar, Star } from "lucide-react";
 import { Link } from "react-router-dom";
-import logo from "@/assets/climbley-logo-updated.png";
-import logoRaw from "@/assets/climbley-logo-raw.png";
+import logo from "@/assets/no_background.png";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
@@ -76,7 +75,7 @@ const Index = () => {
       {/* Navigation */}
       <nav className="container mx-auto px-4 py-6 flex justify-between items-center relative z-20">
         <div className="flex items-center gap-2">
-          <img src={logo} alt="Climbley" className="h-24 w-auto" />
+          <img src={logo} alt="Climbley" className="h-24 w-auto drop-shadow-md hover:drop-shadow-lg transition-all duration-200" />
         </div>
         <div className="flex items-center gap-4">
           <LanguageSelector />
@@ -254,7 +253,7 @@ const Index = () => {
           <Card className="border-2 border-primary shadow-xl">
             <CardHeader className="text-center pb-8">
               <div className="mx-auto w-16 h-16 rounded-full bg-white flex items-center justify-center mb-4 p-3">
-                <img src={logoRaw} alt="Climbley" className="h-full w-full object-contain" />
+                <img src={logo} alt="Climbley" className="h-full w-full object-contain" />
               </div>
               <CardTitle className="text-2xl mb-2">{t('index.pricing.cardTitle')}</CardTitle>
               <div className="flex items-baseline justify-center gap-2">
@@ -384,7 +383,7 @@ const Index = () => {
       {/* Footer */}
       <footer className="container mx-auto px-4 py-8 border-t border-border mt-20">
         <div className="flex flex-col items-center gap-2 text-sm text-muted-foreground">
-          <img src={logo} alt="Climbley" className="h-6 w-auto" />
+          <img src={logo} alt="Climbley" className="h-6 w-auto drop-shadow-sm" />
           <span>Climbley © 2025</span>
         </div>
       </footer>
