@@ -31,9 +31,6 @@ import AdminEmailTest from "./pages/admin/AdminEmailTest";
 import AdminContent from "./pages/admin/AdminContent";
 import AdminReferrals from "./pages/admin/AdminReferrals";
 import ScriptEditor from "./pages/ScriptEditor";
-import Games from "./pages/Games";
-import MemoryMatch from "./pages/games/MemoryMatch";
-import ColorTheCars from "./pages/games/ColorTheCars";
 import { Navigate } from "react-router-dom";
 
 const queryClient = new QueryClient();
@@ -60,11 +57,6 @@ const App = () => (
               <Route path="/profile" element={<Profile />} />
               <Route path="/learn-more" element={<LearnMore />} />
               <Route path="/script-editor/:taskId" element={<ScriptEditor />} />
-              
-              {/* Games Routes */}
-              <Route path="/games" element={<Games />} />
-              <Route path="/games/memory-match" element={<MemoryMatch />} />
-              <Route path="/games/color-the-cars" element={<ColorTheCars />} />
               
               {/* Blog Routes */}
               <Route path="/blog" element={<BlogIndex />} />
