@@ -19,9 +19,7 @@ interface User {
   email: string;
   first_name: string | null;
   last_name: string | null;
-  phone: string | null;
   created_at: string;
-  sms_consent: boolean | null;
 }
 
 export default function AdminUsers() {
@@ -36,7 +34,7 @@ export default function AdminUsers() {
   const fetchUsers = async () => {
     const { data, error } = await supabase
       .from('profiles')
-      .select('id, email, first_name, last_name, phone, created_at, sms_consent')
+      .select('id, email, first_name, last_name, created_at')
       .order('created_at', { ascending: false });
 
     if (!error && data) {
@@ -74,16 +72,14 @@ export default function AdminUsers() {
               <TableRow>
                 <TableHead>Name</TableHead>
                 <TableHead>Email</TableHead>
-                <TableHead>Phone</TableHead>
-                <TableHead>SMS</TableHead>
                 <TableHead>Joined</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredUsers.length === 0 ? (
+            {filteredUsers.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                  <TableCell colSpan={4} className="text-center py-8 text-muted-foreground">
                     {loading ? "Loading..." : "No users found"}
                   </TableCell>
                 </TableRow>
@@ -96,14 +92,6 @@ export default function AdminUsers() {
                         : "No name"}
                     </TableCell>
                     <TableCell>{user.email}</TableCell>
-                    <TableCell>{user.phone || "-"}</TableCell>
-                    <TableCell>
-                      {user.sms_consent ? (
-                        <Badge variant="default">Enabled</Badge>
-                      ) : (
-                        <Badge variant="secondary">Disabled</Badge>
-                      )}
-                    </TableCell>
                     <TableCell>
                       {new Date(user.created_at).toLocaleDateString()}
                     </TableCell>
