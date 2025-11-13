@@ -38,7 +38,6 @@ export default function Profile() {
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [phone, setPhone] = useState("");
   const [timezone, setTimezone] = useState("America/New_York");
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   
@@ -47,12 +46,9 @@ export default function Profile() {
   const [instagramUrl, setInstagramUrl] = useState("");
   const [tiktokUrl, setTiktokUrl] = useState("");
   
-  // SMS settings
-  const [smsConsent, setSmsConsent] = useState(false);
-  const [smsEnabled, setSmsEnabled] = useState(false);
+  // Email settings
   const [emailConsent, setEmailConsent] = useState(false);
   const [emailEnabled, setEmailEnabled] = useState(false);
-  const [notificationTime, setNotificationTime] = useState("09:00");
 
   useEffect(() => {
     loadProfile();
@@ -78,17 +74,13 @@ export default function Profile() {
       if (profile) {
         setFirstName(profile.first_name || "");
         setLastName(profile.last_name || "");
-        setPhone(profile.phone || "");
         setTimezone(profile.timezone || "America/New_York");
         setAvatarUrl(profile.avatar_url);
         setYoutubeUrl(profile.youtube_url || "");
         setInstagramUrl(profile.instagram_url || "");
         setTiktokUrl(profile.tiktok_url || "");
-      setSmsConsent(profile.sms_consent || false);
-      setSmsEnabled(profile.sms_notifications_enabled || false);
-      setEmailConsent(profile.email_consent || false);
-      setEmailEnabled(profile.email_notifications_enabled || false);
-      setNotificationTime(profile.notification_time?.substring(0, 5) || "09:00");
+        setEmailConsent(profile.email_consent || false);
+        setEmailEnabled(profile.email_notifications_enabled || false);
       }
     } catch (error: any) {
       console.error("Error loading profile:", error);
@@ -209,28 +201,6 @@ export default function Profile() {
     }
   };
 
-  const handleSmsConsentChange = async (checked: boolean) => {
-    setSmsConsent(checked);
-    if (!checked) {
-      setSmsEnabled(false);
-      await handleUpdateProfile("sms_notifications_enabled", false);
-    }
-    await handleUpdateProfile("sms_consent", checked);
-  };
-
-  const handleSmsEnabledChange = async (checked: boolean) => {
-    if (!smsConsent) {
-      toast.error("Please agree to receive SMS notifications first");
-      return;
-    }
-    if (!phone) {
-      toast.error("Please add a phone number first");
-      return;
-    }
-    setSmsEnabled(checked);
-    await handleUpdateProfile("sms_notifications_enabled", checked);
-  };
-
   const handleEmailConsentChange = async (checked: boolean) => {
     setEmailConsent(checked);
     if (!checked) {
@@ -247,11 +217,6 @@ export default function Profile() {
     }
     setEmailEnabled(checked);
     await handleUpdateProfile("email_notifications_enabled", checked);
-  };
-
-  const handleNotificationTimeChange = async (time: string) => {
-    setNotificationTime(time);
-    await handleUpdateProfile("notification_time", time + ":00");
   };
 
   if (loading) {
@@ -340,22 +305,6 @@ export default function Profile() {
                   onChange={(e) => setEmail(e.target.value)}
                 />
                 <Button onClick={handleUpdateEmail}>Update</Button>
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="phone">Phone Number</Label>
-              <div className="flex gap-2">
-                <Input
-                  id="phone"
-                  type="tel"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  placeholder="+1234567890"
-                />
-                <Button onClick={() => handleUpdateProfile("phone", phone)}>
-                  Update
-                </Button>
               </div>
             </div>
 
@@ -469,43 +418,6 @@ export default function Profile() {
           </CardContent>
         </Card>
 
-        {/* SMS Notifications */}
-        <Card>
-          <CardHeader>
-            <CardTitle>SMS Notifications</CardTitle>
-            <CardDescription>
-              Receive daily reminders about your content tasks at 9:00 AM in your timezone
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="sms-consent"
-                checked={smsConsent}
-                onCheckedChange={handleSmsConsentChange}
-              />
-              <Label htmlFor="sms-consent" className="text-sm font-normal">
-                I agree to receive SMS notifications from Climbley about my content tasks and reminders
-              </Label>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <Label>Enable SMS Notifications</Label>
-                <p className="text-sm text-muted-foreground">
-                  {!smsConsent && "Please agree to receive SMS first"}
-                  {smsConsent && !phone && "Please add a phone number first"}
-                </p>
-              </div>
-              <Switch
-                checked={smsEnabled}
-                onCheckedChange={handleSmsEnabledChange}
-                disabled={!smsConsent || !phone}
-              />
-            </div>
-          </CardContent>
-        </Card>
-
         {/* Email Notifications */}
         <Card>
           <CardHeader>
@@ -538,33 +450,6 @@ export default function Profile() {
                 onCheckedChange={handleEmailEnabledChange}
                 disabled={!emailConsent}
               />
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Notification Time Preference */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Notification Time</CardTitle>
-            <CardDescription>
-              Choose what time you want to receive your daily reminders (applies to both SMS and email)
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-2">
-              <Label htmlFor="notification-time">Preferred Time</Label>
-              <div className="flex gap-2 items-center">
-                <Input
-                  id="notification-time"
-                  type="time"
-                  value={notificationTime}
-                  onChange={(e) => handleNotificationTimeChange(e.target.value)}
-                  className="w-40"
-                />
-                <span className="text-sm text-muted-foreground">
-                  in your timezone ({timezone})
-                </span>
-              </div>
             </div>
           </CardContent>
         </Card>

@@ -27,7 +27,6 @@ import AdminBlog from "./pages/admin/AdminBlog";
 import AdminBlogEditor from "./pages/admin/AdminBlogEditor";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminImages from "./pages/admin/AdminImages";
-import AdminSmsTest from "./pages/admin/AdminSmsTest";
 import AdminEmailTest from "./pages/admin/AdminEmailTest";
 import AdminContent from "./pages/admin/AdminContent";
 import AdminReferrals from "./pages/admin/AdminReferrals";
@@ -82,7 +81,6 @@ const App = () => (
                 <Route path="users" element={<AdminUsers />} />
                 <Route path="referrals" element={<AdminReferrals />} />
                 <Route path="images" element={<AdminImages />} />
-                <Route path="sms-test" element={<AdminSmsTest />} />
                 <Route path="email-test" element={<AdminEmailTest />} />
                 <Route path="content" element={<AdminContent />} />
               </Route>
