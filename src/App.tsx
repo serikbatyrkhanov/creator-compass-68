@@ -34,6 +34,7 @@ import ScriptEditor from "./pages/ScriptEditor";
 import ConsultationPayment from "./pages/ConsultationPayment";
 import ConsultationSuccess from "./pages/ConsultationSuccess";
 import ConsultationCancel from "./pages/ConsultationCancel";
+import ConsultationDetails from "./pages/ConsultationDetails";
 import { Navigate } from "react-router-dom";
 
 const queryClient = new QueryClient();
@@ -60,6 +61,7 @@ const App = () => (
               <Route path="/profile" element={<Profile />} />
               <Route path="/learn-more" element={<LearnMore />} />
               <Route path="/script-editor/:taskId" element={<ScriptEditor />} />
+              <Route path="/consultation" element={<ConsultationDetails />} />
               <Route path="/consultation-payment" element={<ConsultationPayment />} />
               <Route path="/consultation-success" element={<ConsultationSuccess />} />
               <Route path="/consultation-cancel" element={<ConsultationCancel />} />

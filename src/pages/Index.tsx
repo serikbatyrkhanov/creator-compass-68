@@ -393,6 +393,11 @@ const Index = () => {
                     </li>
                   </ul>
                   <div className="flex flex-col sm:flex-row gap-4 items-center justify-center md:justify-start">
+                    <Link to="/consultation">
+                      <Button size="lg" variant="outline">
+                        Подробнее
+                      </Button>
+                    </Link>
                     <Link to="/consultation-payment">
                       <Button size="lg" className="bg-gradient-to-r from-secondary to-primary hover:opacity-90">
                         Записаться на консультацию
