@@ -53,7 +53,7 @@ const Index = () => {
     t
   } = useTranslation();
   const [currentSlide, setCurrentSlide] = useState(0);
-  
+
   // Capture referral code from URL
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -64,7 +64,6 @@ const Index = () => {
       console.log('Referral code captured on Index page:', refCode);
     }
   }, []);
-
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide(prev => (prev + 1) % sliderImages.length);
@@ -73,19 +72,7 @@ const Index = () => {
   }, []);
   return <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted">
       {/* Navigation */}
-      <nav className="container mx-auto px-4 py-6 flex justify-between items-center relative z-20">
-        <div className="flex items-center gap-2">
-          <img src={logo} alt="Climbley" className="h-24 w-auto drop-shadow-md hover:drop-shadow-lg transition-all duration-200" />
-        </div>
-        <div className="flex items-center gap-4">
-          <LanguageSelector />
-          <Link to="/auth">
-            <Button variant="outline" className="rounded-full">
-              {t('nav.signUp')}
-            </Button>
-          </Link>
-        </div>
-      </nav>
+      
 
       {/* Hero Section with Image Slider */}
       <section className="relative min-h-[85vh] overflow-hidden">
@@ -208,85 +195,16 @@ const Index = () => {
       {/* Features Section */}
       <section className="container mx-auto px-4 py-20">
         <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          <div className="p-8 rounded-2xl bg-card border border-border hover:shadow-lg transition-all animate-slide-up">
-            <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-6">
-              <Target className="h-6 w-6 text-primary" />
-            </div>
-            <h3 className="text-xl font-semibold mb-3">{t('index.features.quiz.title')}</h3>
-            <p className="text-muted-foreground">
-              {t('index.features.quiz.description')}
-            </p>
-          </div>
+          
 
-          <div className="p-8 rounded-2xl bg-card border border-border hover:shadow-lg transition-all animate-slide-up [animation-delay:0.1s]">
-            <div className="h-12 w-12 rounded-lg bg-secondary/10 flex items-center justify-center mb-6">
-              <Calendar className="h-6 w-6 text-secondary" />
-            </div>
-            <h3 className="text-xl font-semibold mb-3">{t('index.features.calendar.title')}</h3>
-            <p className="text-muted-foreground">
-              {t('index.features.calendar.description')}
-            </p>
-          </div>
+          
 
-          <div className="p-8 rounded-2xl bg-card border border-border hover:shadow-lg transition-all animate-slide-up [animation-delay:0.2s]">
-            <div className="h-12 w-12 rounded-lg bg-accent/10 flex items-center justify-center mb-6">
-              <TrendingUp className="h-6 w-6 text-accent" />
-            </div>
-            <h3 className="text-xl font-semibold mb-3">{t('index.features.analytics.title')}</h3>
-            <p className="text-muted-foreground">
-              {t('index.features.analytics.description')}
-            </p>
-          </div>
+          
         </div>
       </section>
 
       {/* Pricing Section */}
-      <section className="container mx-auto px-4 py-20">
-        <div className="max-w-4xl mx-auto text-center mb-12">
-          <h2 className="text-3xl lg:text-4xl font-bold mb-4">{t('index.pricing.title')}</h2>
-          <p className="text-lg text-muted-foreground">
-            {t('index.pricing.subtitle')}
-          </p>
-        </div>
-        
-        <div className="max-w-md mx-auto">
-          <Card className="border-2 border-primary shadow-xl">
-            <CardHeader className="text-center pb-8">
-              <div className="mx-auto w-16 h-16 rounded-full bg-white flex items-center justify-center mb-4 p-3">
-                <img src={logo} alt="Climbley" className="h-full w-full object-contain" />
-              </div>
-              <CardTitle className="text-2xl mb-2">{t('index.pricing.cardTitle')}</CardTitle>
-              <div className="flex items-baseline justify-center gap-2">
-                <span className="text-5xl font-bold">{t('index.pricing.price')}</span>
-                <span className="text-muted-foreground">{t('index.pricing.perMonth')}</span>
-              </div>
-              <p className="text-sm text-muted-foreground mt-2">{t('index.pricing.trial')}</p>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <ul className="space-y-3">
-                <li className="flex items-start gap-3">
-                  <Target className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                  <span>{t('index.pricing.features.niche')}</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <Calendar className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                  <span>{t('index.pricing.features.planning')}</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <TrendingUp className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                  <span>{t('index.pricing.features.analytics')}</span>
-                </li>
-              </ul>
-              <Link to="/auth">
-                <Button size="lg" className="w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90">
-                  {t('index.pricing.cta')}
-                  <ArrowRight className="h-4 w-4 ml-2" />
-                </Button>
-              </Link>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
+      
 
 
       {/* Consultation Section */}
@@ -345,20 +263,7 @@ const Index = () => {
 
       {/* CTA Section */}
       <section className="container mx-auto px-4 py-20">
-        <div className="max-w-4xl mx-auto text-center p-12 rounded-3xl bg-gradient-to-r from-primary/10 via-secondary/10 to-accent/10 border border-primary/20">
-          <h2 className="text-3xl lg:text-4xl font-bold mb-4">
-            {t('index.cta.title')}
-          </h2>
-          <p className="text-lg text-muted-foreground mb-8">
-            {t('index.cta.subtitle')}
-          </p>
-          <Link to="/auth">
-            <Button size="lg" className="rounded-full gap-2 bg-gradient-to-r from-primary to-secondary hover:opacity-90">
-              {t('index.cta.button')}
-              <ArrowRight className="h-4 w-4" />
-            </Button>
-          </Link>
-        </div>
+        
       </section>
 
       {/* Footer */}
