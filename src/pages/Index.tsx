@@ -2,7 +2,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowRight, Target, TrendingUp, Calendar, Star } from "lucide-react";
 import { Link } from "react-router-dom";
-import logo from "@/assets/no_background.png";
+import logo from "@/assets/climbley-logo-updated.png";
+import logoRaw from "@/assets/climbley-logo-raw.png";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
@@ -75,7 +76,7 @@ const Index = () => {
       {/* Navigation */}
       <nav className="container mx-auto px-4 py-6 flex justify-between items-center relative z-20">
         <div className="flex items-center gap-2">
-          <img src={logo} alt="Climbley" className="h-24 w-auto drop-shadow-md hover:drop-shadow-lg transition-all duration-200" />
+          <img src={logo} alt="Climbley" className="h-24 w-auto" />
         </div>
         <div className="flex items-center gap-4">
           <LanguageSelector />
@@ -253,7 +254,7 @@ const Index = () => {
           <Card className="border-2 border-primary shadow-xl">
             <CardHeader className="text-center pb-8">
               <div className="mx-auto w-16 h-16 rounded-full bg-white flex items-center justify-center mb-4 p-3">
-                <img src={logo} alt="Climbley" className="h-full w-full object-contain" />
+                <img src={logoRaw} alt="Climbley" className="h-full w-full object-contain" />
               </div>
               <CardTitle className="text-2xl mb-2">{t('index.pricing.cardTitle')}</CardTitle>
               <div className="flex items-baseline justify-center gap-2">
@@ -362,55 +363,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Consultation Section */}
-      <section className="container mx-auto px-4 py-20">
-        <div className="max-w-4xl mx-auto">
-          <Card className="border-2 border-secondary shadow-xl overflow-hidden">
-            <div className="bg-gradient-to-br from-secondary/20 via-primary/10 to-accent/10 p-8 md:p-12">
-              <div className="flex flex-col md:flex-row gap-8 items-center">
-                <div className="flex-1 text-center md:text-left">
-                  <div className="inline-block px-4 py-1 bg-secondary/20 rounded-full text-sm font-medium mb-4">
-                    Персональная консультация
-                  </div>
-                  <h2 className="text-3xl lg:text-4xl font-bold mb-4">
-                    Как создать дополнительный доход $2000/месяц
-                  </h2>
-                  <p className="text-lg text-muted-foreground mb-6">
-                    1-часовая персональная консультация по Zoom. Получите индивидуальный план действий и ответы на все ваши вопросы.
-                  </p>
-                  <ul className="text-left space-y-2 mb-8">
-                    <li className="flex items-start gap-2">
-                      <Star className="h-5 w-5 text-secondary shrink-0 mt-0.5" />
-                      <span>Анализ вашей ситуации и возможностей</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <Star className="h-5 w-5 text-secondary shrink-0 mt-0.5" />
-                      <span>Персональная стратегия монетизации</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <Star className="h-5 w-5 text-secondary shrink-0 mt-0.5" />
-                      <span>Конкретные шаги для достижения цели</span>
-                    </li>
-                  </ul>
-                  <div className="flex flex-col sm:flex-row gap-4 items-center justify-center md:justify-start">
-                    <Link to="/consultation-payment">
-                      <Button size="lg" className="bg-gradient-to-r from-secondary to-primary hover:opacity-90">
-                        Записаться на консультацию
-                        <ArrowRight className="h-4 w-4 ml-2" />
-                      </Button>
-                    </Link>
-                    <div className="text-center">
-                      <div className="text-3xl font-bold">$500</div>
-                      <div className="text-sm text-muted-foreground">разовый платеж</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </Card>
-        </div>
-      </section>
-
       {/* CTA Section */}
       <section className="container mx-auto px-4 py-20">
         <div className="max-w-4xl mx-auto text-center p-12 rounded-3xl bg-gradient-to-r from-primary/10 via-secondary/10 to-accent/10 border border-primary/20">
@@ -432,7 +384,7 @@ const Index = () => {
       {/* Footer */}
       <footer className="container mx-auto px-4 py-8 border-t border-border mt-20">
         <div className="flex flex-col items-center gap-2 text-sm text-muted-foreground">
-          <img src={logo} alt="Climbley" className="h-6 w-auto drop-shadow-sm" />
+          <img src={logo} alt="Climbley" className="h-6 w-auto" />
           <span>Climbley © 2025</span>
         </div>
       </footer>
