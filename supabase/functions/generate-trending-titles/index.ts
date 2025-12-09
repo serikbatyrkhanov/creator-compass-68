@@ -1,9 +1,15 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
+
+// Input validation schema
+const requestSchema = z.object({
+  prompt: z.string().trim().min(1, "Prompt is required").max(500, "Prompt must be 500 characters or less"),
+});
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -11,16 +17,22 @@ serve(async (req) => {
   }
 
   try {
-    const { prompt } = await req.json();
+    const body = await req.json();
     
-    if (!prompt) {
+    // Validate input
+    const parseResult = requestSchema.safeParse(body);
+    if (!parseResult.success) {
+      const errorMessage = parseResult.error.errors[0]?.message || "Invalid input";
+      console.error("Validation error:", errorMessage);
       return new Response(
-        JSON.stringify({ error: "Prompt is required" }),
+        JSON.stringify({ error: errorMessage }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    console.log("Generating 7 trending titles for prompt:", prompt);
+    const { prompt } = parseResult.data;
+
+    console.log("Generating 7 trending titles for prompt:", prompt.substring(0, 100) + (prompt.length > 100 ? "..." : ""));
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {

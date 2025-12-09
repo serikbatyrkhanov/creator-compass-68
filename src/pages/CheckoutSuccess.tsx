@@ -25,18 +25,18 @@ const CheckoutSuccess = () => {
       try {
         console.log("Starting account creation after successful payment");
         
-        // Try localStorage first (shared across tabs)
-        const pendingSignup = localStorage.getItem('pendingSignup');
+        // Try sessionStorage first (more secure than localStorage)
+        const pendingSignup = sessionStorage.getItem('pendingSignup');
         
         if (pendingSignup) {
           // Path 1: localStorage available
           const { email, password, firstName, lastName, phone } = JSON.parse(pendingSignup);
-          console.log("Retrieved credentials from localStorage for email:", email);
+          console.log("Retrieved credentials from sessionStorage for email:", email);
 
           await completeSignup(email, password, firstName, lastName, phone);
         } else {
           // Path 2: Fallback to session_id from URL
-          console.log("No localStorage found, attempting session_id fallback");
+          console.log("No sessionStorage found, attempting session_id fallback");
           const sessionId = searchParams.get('session_id');
           
           if (!sessionId) {
@@ -194,8 +194,8 @@ const CheckoutSuccess = () => {
     }
 
     // Step 3: Clear stored credentials
-    localStorage.removeItem('pendingSignup');
-    console.log("Cleared localStorage");
+    sessionStorage.removeItem('pendingSignup');
+    console.log("Cleared sessionStorage");
 
     setStatus("success");
     
