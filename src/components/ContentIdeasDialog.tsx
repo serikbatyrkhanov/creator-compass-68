@@ -9,7 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Clock, RefreshCw } from "lucide-react";
-import logo from "@/assets/climbley-logo.png";
+import logo from "@/assets/no_background.png";
 
 interface ContentIdea {
   title: string;

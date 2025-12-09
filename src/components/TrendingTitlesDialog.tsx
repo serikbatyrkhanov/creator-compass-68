@@ -9,7 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import logo from "@/assets/climbley-logo.png";
+import logo from "@/assets/no_background.png";
 
 interface TrendingTitlesDialogProps {
   open: boolean;

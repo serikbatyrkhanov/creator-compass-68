@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import logo from "@/assets/climbley-logo.png";
+import logo from "@/assets/no_background.png";
 import { useTranslation } from "react-i18next";
 import { LanguageSelector } from "@/components/LanguageSelector";
 
@@ -101,7 +101,7 @@ const ContactUs = () => {
       <nav className="border-b bg-card/50 backdrop-blur-sm">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center gap-2">
-            <img src={logo} alt="Climbley Logo" className="h-8 w-auto" />
+            <img src={logo} alt="Climbley Logo" className="h-14 w-auto drop-shadow-md hover:drop-shadow-lg transition-all duration-200" />
           </div>
           <div className="flex items-center gap-4">
             <LanguageSelector />

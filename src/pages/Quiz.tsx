@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { ChevronLeft, ChevronRight, Home } from "lucide-react";
 import { quizQuestions, archetypes } from "@/data/quizData";
-import logo from "@/assets/climbley-logo.png";
+import logo from "@/assets/no_background.png";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "react-i18next";

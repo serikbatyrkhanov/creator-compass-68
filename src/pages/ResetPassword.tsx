@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link, useNavigate } from "react-router-dom";
-import logo from "@/assets/climbley-logo.png";
+import logo from "@/assets/no_background.png";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -84,7 +84,7 @@ const ResetPassword = () => {
       <div className="w-full max-w-md animate-scale-in relative z-10">
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center mb-4">
-            <img src={logo} alt="Climbley" className="h-12 w-auto" />
+            <img src={logo} alt="Climbley" className="h-14 w-auto drop-shadow-md" />
           </Link>
           <p className="text-muted-foreground text-lg">Reset your password</p>
         </div>

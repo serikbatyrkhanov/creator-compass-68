@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Target, TrendingUp, Calendar, Bell } from "lucide-react";
 import { Link } from "react-router-dom";
-import logo from "@/assets/climbley-logo-updated.png";
+import logo from "@/assets/no_background.png";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { useTranslation } from "react-i18next";
 import slider1 from "@/assets/slider/1.jpg";
@@ -21,7 +21,7 @@ const LearnMore = () => {
       {/* Navigation */}
       <nav className="container mx-auto px-4 py-6 flex justify-between items-center sticky top-0 bg-background/80 backdrop-blur-md z-50 border-b border-border/50">
         <Link to="/" className="flex items-center gap-2">
-          <img src={logo} alt="Climbley" className="h-20 w-auto" />
+          <img src={logo} alt="Climbley" className="h-20 w-auto drop-shadow-md hover:drop-shadow-lg transition-all duration-200" />
         </Link>
         <div className="flex items-center gap-4">
           <LanguageSelector />
