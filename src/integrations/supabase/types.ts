@@ -354,8 +354,13 @@ export type Database = {
           instagram_url: string | null
           last_email_sent_date: string | null
           last_name: string | null
+          last_sms_sent_date: string | null
           niche: string | null
+          notification_time: string | null
+          phone: string | null
           preferred_platform: string | null
+          sms_consent: boolean | null
+          sms_notifications_enabled: boolean | null
           tiktok_url: string | null
           timezone: string | null
           updated_at: string
@@ -373,8 +378,13 @@ export type Database = {
           instagram_url?: string | null
           last_email_sent_date?: string | null
           last_name?: string | null
+          last_sms_sent_date?: string | null
           niche?: string | null
+          notification_time?: string | null
+          phone?: string | null
           preferred_platform?: string | null
+          sms_consent?: boolean | null
+          sms_notifications_enabled?: boolean | null
           tiktok_url?: string | null
           timezone?: string | null
           updated_at?: string
@@ -392,8 +402,13 @@ export type Database = {
           instagram_url?: string | null
           last_email_sent_date?: string | null
           last_name?: string | null
+          last_sms_sent_date?: string | null
           niche?: string | null
+          notification_time?: string | null
+          phone?: string | null
           preferred_platform?: string | null
+          sms_consent?: boolean | null
+          sms_notifications_enabled?: boolean | null
           tiktok_url?: string | null
           timezone?: string | null
           updated_at?: string
