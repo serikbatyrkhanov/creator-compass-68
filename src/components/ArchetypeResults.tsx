@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Check, TrendingUp, BookOpen, VideoIcon, Zap, Clock, MessageCircle, Calendar } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import logo from "@/assets/climbley-logo.png";
+import logo from "@/assets/no_background.png";
 import { Button } from "@/components/ui/button";
 import { ContentIdeasDialog } from "@/components/ContentIdeasDialog";
 import { ContentPlanDialog } from "@/components/ContentPlanDialog";

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calendar, ArrowLeft, CheckCircle2, Circle, RefreshCw, Edit2, Save, X, StickyNote, Trash2, Check } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import logo from "@/assets/climbley-logo.png";
+import logo from "@/assets/no_background.png";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
