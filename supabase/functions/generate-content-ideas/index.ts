@@ -1,10 +1,44 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.58.0";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
+
+// Valid archetype values
+const validArchetypes = [
+  "The Educator",
+  "The Entertainer", 
+  "The Storyteller",
+  "The Innovator",
+  "The Curator",
+  "The Connector",
+  "The Advocate",
+  "The Artist"
+] as const;
+
+// Valid platform values
+const validPlatforms = [
+  "youtube_video",
+  "youtube_shorts",
+  "instagram_post",
+  "instagram_reels",
+  "tiktok"
+] as const;
+
+// Input validation schema
+const requestSchema = z.object({
+  archetype: z.string().max(100).optional(),
+  topics: z.array(z.string().max(100)).max(10).optional(),
+  timeBucket: z.string().max(50).optional(),
+  gear: z.array(z.string().max(100)).max(10).optional(),
+  targetAudience: z.string().max(200).optional(),
+  quizResponseId: z.string().uuid().optional(),
+  preferredPlatform: z.enum(validPlatforms).optional(),
+  language: z.enum(["en", "ru"]).optional(),
+});
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -12,7 +46,20 @@ serve(async (req) => {
   }
 
   try {
-    const { archetype, topics, timeBucket, gear, targetAudience, quizResponseId, preferredPlatform, language } = await req.json();
+    const body = await req.json();
+    
+    // Validate input
+    const parseResult = requestSchema.safeParse(body);
+    if (!parseResult.success) {
+      const errorMessage = parseResult.error.errors[0]?.message || "Invalid input";
+      console.error('[GENERATE-IDEAS] Validation error:', errorMessage);
+      return new Response(
+        JSON.stringify({ error: errorMessage }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const { archetype, topics, timeBucket, gear, targetAudience, quizResponseId, preferredPlatform, language } = parseResult.data;
     
     console.log('[GENERATE-IDEAS] Starting generation', { archetype, topics, timeBucket, preferredPlatform, language });
 
@@ -40,7 +87,7 @@ serve(async (req) => {
       ? `\nPlatform focus: ${platformGuidelines[preferredPlatform]}`
       : '\nPlatform focus: General multi-platform approach';
     
-    const systemPrompt = `You are an expert content creator coach. Generate specific, actionable content ideas for a ${archetype} creator.
+    const systemPrompt = `You are an expert content creator coach. Generate specific, actionable content ideas for a ${archetype || 'content'} creator.
 Focus on practical, platform-specific ideas that can be executed with ${gearText} in ${timeText}.
 Target audience: ${targetAudience || 'general audience'}.
 Topics: ${topicsText}.${platformContext}
@@ -49,7 +96,7 @@ CRITICAL: Generate ALL content (titles, descriptions, steps) in ${targetLanguage
 
     const userPrompt = `Generate 3 unique content ideas optimized for ${preferredPlatform ? platformGuidelines[preferredPlatform] : 'general platforms'}. Each idea should be:
 1. Specific and actionable
-2. Optimized for their archetype (${archetype})
+2. Optimized for their archetype (${archetype || 'general'})
 3. Executable within their time constraints (${timeText})
 4. Suitable for their topics: ${topicsText}
 5. Formatted appropriately for ${preferredPlatform || 'multiple platforms'}

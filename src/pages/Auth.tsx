@@ -57,8 +57,9 @@ const Auth = () => {
     const phone = formData.get("phone") as string;
 
     try {
-      // Store signup credentials for account creation after checkout (using localStorage for cross-tab access)
-      localStorage.setItem('pendingSignup', JSON.stringify({ 
+      // Store signup credentials for account creation after checkout (using sessionStorage for security)
+      // sessionStorage is more secure as it's not shared across tabs and clears on tab close
+      sessionStorage.setItem('pendingSignup', JSON.stringify({ 
         email, 
         password, 
         firstName, 
